@@ -1,0 +1,27 @@
+{
+  "name": "ibm-users",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://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@github.com/CarlosChivas/ibm-users.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/CarlosChivas/ibm-users/issues"
+  },
+  "homepage": "https://github.com/CarlosChivas/ibm-users#readme",
+  "dependencies": {
+    "express": "^4.17.3",
+    "ibm_db": "^2.8.1"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.15"
+  }
+}
