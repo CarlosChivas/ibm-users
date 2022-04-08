@@ -59,8 +59,8 @@ jobs:
     # Push the image to IBM Container Registry
     - name: Push the image to ICR
       run: |
-        docker tag ibm-users2 us.icr.io/carlos14/ibm-usres2:1.2.0
-        docker push ibm-users2 us.icr.io/carlos14/ibm-usres2:1.2.0
+        docker tag ibm-users2 us.icr.io/carlos14/ibm-users2:1.2.0
+        docker push us.icr.io/carlos14/ibm-users2:1.2.0
 
     # Deploy the Docker image to the IKS cluster
     - name: Deploy to IKS
