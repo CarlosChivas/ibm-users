@@ -1,17 +1,17 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: ibm-test
+  name: ibm-users
 spec:
   replicas: 
   selector:
     matchLabels:
-      app: ibm-test
+      app: ibm-users
   template:
     metadata:
       labels:
-        app: ibm-test
+        app: ibm-users
     spec:
       containers:
-      - name: ibm-test
-        image: us.icr.io/carlos14/ibm-test:1.0.0
+      - name: ibm-users
+        image: us.icr.io/carlos14/us.icr.io/carlos14/ibm-users:3-main-18825daf-20220406231558

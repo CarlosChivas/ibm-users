@@ -1,0 +1,93 @@
+const usersCtrl = {};
+const pool = require("../database")
+const jwt = require("jsonwebtoken")
+
+usersCtrl.getHome = async (req, res) => {
+  res.send("Hola mundo");
+};
+
+usersCtrl.login = async (req, res) => {
+    //res.send(process.env.DATABASE_STRING);
+    try{
+        pool.open(process.env.DATABASE_STRING, function (err, db) {
+            if (err) {
+                res.send(err);
+            } else{
+                db.query("SELECT * FROM users WHERE email = ?", [req.body.email],function(err, data) {
+                    if(err){
+                        console.log("Salio mal 1");
+                      res.send(err);
+                    } else{
+                      if(data.length == 0 || data[0].PASSWORD != req.body.password){
+                          console.log(data)
+                            res.send("Credenciales incorrectas");
+                      } else{
+                          const id = data[0].ID;
+                          const token = jwt.sign({id:id}, process.env.JWT_SECRETKEY)
+                          console.log(token)
+                          const cookieOptions = {
+                              expires: new Date(Date.now()+90*24*60*1000),
+                              httpOnly: true
+                          }
+                          res.cookie('jwt', token, cookieOptions);
+                          res.send("Todo terminado")
+                      }
+                    }
+                })
+                db.close(function (error) { // RETURN CONNECTION TO POOL
+                    if (error) {
+                        res.send("Error mientras se cerraba la conexion")
+                    }
+                });
+            }
+            
+        });
+    } catch (err){
+        console.log(err)
+    }
+        
+}
+
+usersCtrl.validateToken = async(req, res, next) => {
+    //console.log(req.cookies)
+    jwt.verify(req.cookies.jwt, process.env.JWT_SECRETKEY, function(err, decoded) {
+        if(err){
+            next();
+        } else{
+            pool.open(process.env.DATABASE_STRING, function (err, db) {
+                if (err) {
+                    next();
+                } else{
+                    db.query("SELECT * FROM users WHERE ID = ?",[decoded.id], function(err, data){
+                        if(err){
+                            next();
+                        } else{
+                            if(data.length>0){
+                                req.user = data[0];
+                            }
+                            next();
+                        }
+                    })
+                    db.close(function (error) { // RETURN CONNECTION TO POOL
+                        if (error) {
+                            res.send("Error mientras se cerraba la conexion")
+                        }
+                    });
+                }})
+        }
+    });
+}
+
+usersCtrl.getUserData = async(req, res) => {
+    if(req.user){
+        res.send(req.user);
+    } else{
+        res.send("Token no valido");
+    }
+}
+usersCtrl.logout = async(req, res) => {
+    res.clearCookie('jwt');
+    res.send("Sesion cerrada correctamente");
+}
+
+module.exports = usersCtrl;
