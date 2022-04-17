@@ -14,4 +14,4 @@ spec:
     spec:
       containers:
       - name: ibm-users
-        image: us.icr.io/carlos14/us.icr.io/carlos14/ibm-users:3-main-18825daf-20220406231558
+        image: us.icr.io/carlos14/ibm-users2:9d546af7981dcfcfcf7c26d46e9473848608d04e
