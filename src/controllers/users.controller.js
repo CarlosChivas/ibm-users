@@ -26,7 +26,8 @@ usersCtrl.login = async (req, res) => {
                             const cookieOptions = {
                                 expires: new Date(Date.now()+90*24*60*1000),
                                 httpOnly: true,
-                                sameSite: 'None'
+                                sameSite: 'None',
+                                secure: true
                             }
                             res.cookie('jwt', token, cookieOptions);
                             res.status(200).send("Inicio de sesion correcto")
