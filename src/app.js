@@ -1,5 +1,6 @@
 const express = require("express");
 const cookieParser = require("cookie-parser")
+const cors = require('cors');
 const { cookie } = require("express/lib/response");
 const { SQL_MULT_RESULT_SETS } = require("ibm_db/lib/climacros");
 var ibmdb = require("ibm_db")
@@ -8,7 +9,9 @@ var ibmdb = require("ibm_db")
 
 require("dotenv").config();
 const app = express();
-
+app.use(cors({
+  origin: "*"
+}))
 //Procesar datos enviados desde forms
 app.use(express.json())
 app.use(express.urlencoded({extended:true}))
