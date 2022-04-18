@@ -3,7 +3,7 @@ const pool = require("../database")
 const jwt = require("jsonwebtoken")
 
 usersCtrl.getHome = async (req, res) => {
-  res.send("Hola mundo");
+  res.send("Hola mundo desde Zapotiltic");
 };
 
 usersCtrl.login = async (req, res) => {
