@@ -70,6 +70,6 @@ jobs:
         kubectl create deployment d1 --image=us.icr.io/carlos14/ibm-users2:$GITHUB_SHA --dry-run -o yaml > deployment.yaml
         kubectl apply -f deployment.yaml
         kubectl rollout status deployment/d1
-        kubectl create service loadbalancer d1 --tcp=80:$PORT --dry-run -o yaml > service.yaml
+        kubectl create service NodePort d1 --tcp=80:$PORT --dry-run -o yaml > service.yaml
         kubectl apply -f service.yaml
         kubectl get services -o wide
