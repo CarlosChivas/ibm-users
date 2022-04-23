@@ -21,6 +21,7 @@ app.use(cookieParser())
 
 
 app.use('/', require("./routes/users.routes.js"));
+app.use('/', require("./routes/roles.routes.js"));
 
 /*
 app.post('/login', (req,res) => {

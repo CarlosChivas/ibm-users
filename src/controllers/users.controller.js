@@ -1,12 +1,14 @@
 const usersCtrl = {};
 const pool = require("../database")
-const jwt = require("jsonwebtoken")
+const jwt = require("jsonwebtoken");
+const bcryptjs = require("bcryptjs");
 
 usersCtrl.getHome = async (req, res) => {
   res.status(200).send("Hola mundo *");
 };
 
 usersCtrl.login = async (req, res) => {
+    await bcryptjs.compare(req.body.password, "123456");
     //res.send(process.env.DATABASE_STRING);
     try{
         pool.open(process.env.DATABASE_STRING, function (err, db) {
@@ -17,7 +19,7 @@ usersCtrl.login = async (req, res) => {
                     if(err){
                       res.send(err);
                     } else{
-                      if(data.length == 0 || data[0].PASSWORD != req.body.password){
+                      if(data.length == 0 || !checkPassword(req.body.password, data[0].PASSWORD)/*!(await bcryptjs.compare(req.body.password, data[0].PASSWORD))*/){
                             res.status(401).send("Credenciales incorrectas");
                       } else{
                             const id = data[0].ID;
@@ -49,36 +51,6 @@ usersCtrl.login = async (req, res) => {
         
 }
 
-usersCtrl.validateToken = async(req, res, next) => {
-    //console.log(req.cookies)
-    jwt.verify(req.cookies.jwt, process.env.JWT_SECRETKEY, function(err, decoded) {
-        if(err){
-            res.status(401).send("Inicio de sesion requerido");
-        } else{
-            pool.open(process.env.DATABASE_STRING, function (err, db) {
-                if (err) {
-                    next();
-                } else{
-                    db.query("SELECT * FROM users WHERE ID = ?",[decoded.id], function(err, data){
-                        if(err){
-                            next();
-                        } else{
-                            if(data.length>0){
-                                req.user = data[0];
-                            }
-                            next();
-                        }
-                    })
-                    db.close(function (error) { // RETURN CONNECTION TO POOL
-                        if (error) {
-                            res.send("Error mientras se cerraba la conexion")
-                        }
-                    });
-                }})
-        }
-    });
-}
-
 usersCtrl.getUserData = async(req, res) => {
     if(req.user){
         res.send(req.user);
@@ -86,9 +58,41 @@ usersCtrl.getUserData = async(req, res) => {
         res.status(401).send("Inicio de sesion requerido");
     }
 }
+
 usersCtrl.logout = async(req, res) => {
     res.clearCookie('jwt');
     res.status(200).send("Sesion cerrada correctamente");
+}
+
+usersCtrl.register = async(req,res) => {
+    const email = req.body.email;
+    const password = await bcryptjs.hash(req.body.password, 10);
+    const name = req.body.name;
+
+    pool.open(process.env.DATABASE_STRING, function (err, db) {
+        if (err) {
+            console.log(process.env.DATABASE_STRING)
+            console.log(err)
+            res.status(400).send(err)
+        } else{
+            db.query("INSERT INTO users(name, email,password) VALUES (?, ?, ?);",[name,email,password], function(err, data){
+                if(err){
+                    res.status(400).send(err)
+                } else{
+                    res.status(200).send("Usuario creado correctamente")
+                }
+            })
+            db.close(function (error) { // RETURN CONNECTION TO POOL
+                if (error) {
+                    res.send("Error mientras se cerraba la conexion")
+                }
+            });
+        }})
+
+}
+
+async function checkPassword(password1, password2){
+    return await bcryptjs.compare(password1, password2);
 }
 
 module.exports = usersCtrl;
