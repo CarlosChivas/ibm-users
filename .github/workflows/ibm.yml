@@ -82,10 +82,10 @@ jobs:
       run: |
         docker build -t ibm-peripherals ./ibm-peripherals
 
-    # Push the image to IBM Container Registry
+    # Push the image to IBM Container Registry7f78dff689-h2blj
     - name: Push the image to ICR
       run: |
-        docker tag ibm-users2 us.icr.io/carlos14/ibm-peripherals:$GITHUB_SHA
+        docker tag ibm-peripherals us.icr.io/carlos14/ibm-peripherals:$GITHUB_SHA
         docker push us.icr.io/carlos14/ibm-peripherals:$GITHUB_SHA
 
     # Deploy the Docker image to the IKS cluster
