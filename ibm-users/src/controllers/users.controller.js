@@ -7,48 +7,62 @@ usersCtrl.getHome = async (req, res) => {
   res.status(200).send("Hola mundo *");
 };
 
-usersCtrl.login = async (req, res) => {
-    await bcryptjs.compare(req.body.password, "123456");
+usersCtrl.matchEmail = async (req, res, next) => {
+    //await bcryptjs.compare(req.body.password, "123456");
     //res.send(process.env.DATABASE_STRING);
+    var userFound;
     try{
         pool.open(process.env.DATABASE_STRING, function (err, db) {
             if (err) {
-                res.send(err);
+                res.status(403).send(err);
             } else{
                 db.query("SELECT * FROM users WHERE email = ?", [req.body.email],function(err, data) {
                     if(err){
                       res.send(err);
                     } else{
-                      if(data.length == 0 || !checkPassword(req.body.password, data[0].PASSWORD)/*!(await bcryptjs.compare(req.body.password, data[0].PASSWORD))*/){
+                        //const res = await checkPassword(req.body.password, data[0].PASSWORD)
+                        //console.log("Me regresa check password: ", res)
+                      if(data.length == 0 /*|| await checkPassword(req.body.password, data[0].PASSWORD)/*!(await bcryptjs.compare(req.body.password, data[0].PASSWORD))*/){
                             res.status(401).send("Credenciales incorrectas");
                       } else{
-                            const id = data[0].ID;
-                            const token = jwt.sign({id:id}, process.env.JWT_SECRETKEY)
-                            console.log(token)
-                            const cookieOptions = {
-                                expires: new Date(Date.now()+90*24*60*1000),
-                                httpOnly: true,
-                                sameSite: 'none',
-                                secure: true,
-                                domain: ""
-                            }
-                            res.cookie('jwt', token, cookieOptions);
-                            res.status(200).send("Inicio de sesion correcto")
+                            req.user = data[0]
+                            next()
                       }
                     }
                 })
                 db.close(function (error) { // RETURN CONNECTION TO POOL
                     if (error) {
-                        res.send("Error mientras se cerraba la conexion")
+                        res.status(403).send("Error mientras se cerraba la conexion")
                     }
                 });
             }
             
-        });
+        })
     } catch (err){
         console.log(err)
     }
+
+    console.log("Hola mundo")
         
+}
+
+usersCtrl.matchPassword = async (req, res, next) => {
+    if(await bcryptjs.compare(req.body.password,req.user.PASSWORD)){
+        const id = req.user.ID;
+        const token = jwt.sign({id:id}, process.env.JWT_SECRETKEY)
+        console.log(token)
+        const cookieOptions = {
+            expires: new Date(Date.now()+90*24*60*1000),
+            httpOnly: true,
+            sameSite: 'none',
+            secure: true,
+            domain: ""
+        }
+        res.cookie('jwt', token, cookieOptions);
+        res.status(200).send("Inicio de sesion correcto")
+    } else{ 
+        res.status(401).send("Credenciales incorrectas")
+    }
 }
 
 usersCtrl.getUserData = async(req, res) => {
@@ -67,7 +81,11 @@ usersCtrl.logout = async(req, res) => {
 usersCtrl.register = async(req,res) => {
     const email = req.body.email;
     const password = await bcryptjs.hash(req.body.password, 10);
-    const name = req.body.name;
+    const firstName = req.body.firstName;
+    const lastName = req.body.lastName;
+    const department = req.body.department;
+    const role = req.body.role;
+
 
     pool.open(process.env.DATABASE_STRING, function (err, db) {
         if (err) {
@@ -75,7 +93,7 @@ usersCtrl.register = async(req,res) => {
             console.log(err)
             res.status(400).send(err)
         } else{
-            db.query("INSERT INTO users(name, email,password) VALUES (?, ?, ?);",[name,email,password], function(err, data){
+            db.query("INSERT INTO users(email,password,first_name,last_name,department,role) VALUES (?, ?, ?, ?, ?, ?);",[email,password,firstName,lastName, department, role], function(err, data){
                 if(err){
                     res.status(400).send(err)
                 } else{
@@ -92,7 +110,11 @@ usersCtrl.register = async(req,res) => {
 }
 
 async function checkPassword(password1, password2){
-    return await bcryptjs.compare(password1, password2);
+    //console.log(await bcryptjs.compare(password1, password2))
+    //console.log(!(await bcryptjs.compare(password1, password2)))
+    const  res = await bcryptjs.compare(password1, password2);
+    console.log(res);
+    return res;
 }
 
 module.exports = usersCtrl;
