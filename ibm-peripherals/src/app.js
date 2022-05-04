@@ -2,8 +2,7 @@ const express = require("express");
 
 const app = express();
 
-app.get('/', (req,res) => {
-    res.send("Service 2 running");
-})
+app.use('/', require("./routes/roles.routes.js"));
+
 
 module.exports = app;

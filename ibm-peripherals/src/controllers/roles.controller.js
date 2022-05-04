@@ -14,7 +14,13 @@ rolesCtrl.validateToken = async(req, res, next) => {
                 if (err) {
                     res.status(401).send(err);
                 } else{
-                    db.query("SELECT * FROM users WHERE ID = ?",[decoded.id], function(err, data){
+                    
+                    db.query(`SELECT users.id, users.first_name, users.last_name, 
+                            role.name as role_name, department.name as department_name 
+                            FROM users 
+                            INNER JOIN role ON users.role=role.id 
+                            INNER JOIN department ON users.department=department.id 
+                            WHERE users.id = ?;`,[decoded.id], function(err, data){
                         if(err){
                             res.status(401).send(err);
                         } else{
@@ -39,26 +45,34 @@ rolesCtrl.validateToken = async(req, res, next) => {
 rolesCtrl.isAdmin = async(req,res,next) => {
     //console.log(req.cookies)
     console.log(req.user)
-    if(req.user.ROLE === "Adminstrator"){
-        next();
+    if(req.user.ROLE_NAME === "Adminstrator"){
+        //next();
+        res.status(200).send("Correct access 'Administrator'")
     } else{
         res.status(401).send("You don't have access");
     }
 }
 rolesCtrl.isFocal = async(req,res,next) => {
     //console.log(req.cookies)
-    if(req.user.ROLE === "Focal"){
-        next();
+    if(req.user.ROLE_NAME === "Focal"){
+        //next();
+        res.status(200).send("Correct access 'Focal'")
     } else{
         res.status(401).send("You don't have access");
     }
 }
 rolesCtrl.isEmpoyee = async(req,res,next) => {
     //console.log(req.cookies)
-    if(req.user.ROLE === "Employee"){
-        next();
+    if(req.user.ROLE_NAME === "Employee"){
+        //next();
+        res.status(200).send("Correct access 'Employee'")
+        
     } else{
         res.status(401).send("You don't have access");
     }
 }
+
+
 module.exports = rolesCtrl;
+
+

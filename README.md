@@ -20,6 +20,20 @@ Casos
 
 ### [GET] /logout: 
 *Body no requerido*
+#### Response: 
+Casos 
+- Logout correcto: Status(200), Mensaje("Sesion cerrada correctamente")
 
 
 ### [POST] /register:
+Body: {
+    "email": "",
+    "password": "",
+    "firstName": "",
+    "lastName": "",
+    "department": Foreign Key(Int),
+    "role": Foreign Key(Int)
+}
+
+
+

@@ -41,8 +41,6 @@ usersCtrl.matchEmail = async (req, res, next) => {
     } catch (err){
         console.log(err)
     }
-
-    console.log("Hola mundo")
         
 }
 
@@ -54,9 +52,9 @@ usersCtrl.matchPassword = async (req, res, next) => {
         const cookieOptions = {
             expires: new Date(Date.now()+90*24*60*1000),
             httpOnly: true,
-            sameSite: 'none',
-            secure: true,
-            domain: ""
+            //sameSite: 'none',
+            //secure: true,
+            //domain: ""
         }
         res.cookie('jwt', token, cookieOptions);
         res.status(200).send("Inicio de sesion correcto")
