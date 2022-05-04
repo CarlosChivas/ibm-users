@@ -66,6 +66,7 @@ rolesCtrl.isEmpoyee = async(req,res,next) => {
     if(req.user.ROLE_NAME === "Employee"){
         //next();
         res.status(200).send("Correct access 'Employee'")
+        
     } else{
         res.status(401).send("You don't have access");
     }

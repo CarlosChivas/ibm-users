@@ -107,6 +107,10 @@ usersCtrl.register = async(req,res) => {
 
 }
 
+usersCtrl.getAllUsers = async (req, res) => {
+    
+}
+
 async function checkPassword(password1, password2){
     //console.log(await bcryptjs.compare(password1, password2))
     //console.log(!(await bcryptjs.compare(password1, password2)))
