@@ -60,6 +60,7 @@ jobs:
     # Push the image to IBM Container Registry
     - name: Push the image to ICR
       run: |
+        ibmcloud cr region-set us-south
         docker tag ibm-users2 us.icr.io/loans/ibm-users2:$GITHUB_SHA
         docker push us.icr.io/loans/ibm-users2:$GITHUB_SHA
 
