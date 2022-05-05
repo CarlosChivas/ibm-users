@@ -55,21 +55,21 @@ jobs:
     # Build the Docker image USERS
     - name: Build with Docker users service
       run: |
-        docker build -t us.icr.io/loans/ibm-users2 ./ibm-users 
+        docker build -t ibm-users2 ./ibm-users 
 
     # Push the image to IBM Container Registry
     - name: Push the image to ICR
       run: |
         ibmcloud cr region-set us-south
-        docker tag ibm-users2 us.icr.io/loans/ibm-users2:$GITHUB_SHA
-        docker push us.icr.io/loans/ibm-users2:$GITHUB_SHA
+        docker tag ibm-users2 us.icr.io/loans2/ibm-users2:$GITHUB_SHA
+        docker push us.icr.io/loans2/ibm-users2:$GITHUB_SHA
 
     # Deploy the Docker image to the IKS cluster
     - name: Deploy to IKS
       run: |
         ibmcloud ks cluster config --cluster $IKS_CLUSTER
         kubectl config current-context
-        kubectl create deployment d1 --image=us.icr.io/loans/ibm-users2:$GITHUB_SHA --dry-run -o yaml > deployment.yaml
+        kubectl create deployment d1 --image=us.icr.io/loans2/ibm-users2:$GITHUB_SHA --dry-run -o yaml > deployment.yaml
         kubectl apply -f deployment.yaml
         kubectl rollout status deployment/d1
         kubectl create service loadbalancer d1 --tcp=80:$PORT --dry-run -o yaml > service.yaml
