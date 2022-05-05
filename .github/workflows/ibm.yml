@@ -56,12 +56,6 @@ jobs:
     - name: Build with Docker users service
       run: |
         docker build -t ibm-users2 ./ibm-users 
-    
-    #Remove images
-    - name: Remove images
-      run: |
-        ibmcloud cr image-rm us.icr.io/loans2/ibm-users2:latest
-        ibmcloud cr image-rm us.icr.io/loans2/peripherals:latest
 
     # Push the image to IBM Container Registry
     - name: Push the image to ICR
