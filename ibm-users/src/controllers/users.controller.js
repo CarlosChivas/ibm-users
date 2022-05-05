@@ -89,6 +89,7 @@ usersCtrl.register = async(req,res) => {
         if (err) {
             res.status(400).send(err)
         } else{
+            
             db.query("INSERT INTO users(email,password,first_name,last_name,department,role) VALUES (?, ?, ?, ?, ?, ?);",[email,password,firstName,lastName, department, role], function(err, data){
                 if(err){
                     res.status(400).send(err)
