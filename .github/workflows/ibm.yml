@@ -55,7 +55,7 @@ jobs:
     # Build the Docker image USERS
     - name: Build with Docker users service
       run: |
-        docker build -t ibm-users2 us.icr.io/loans/ibm-users2 ./ibm-users 
+        docker build -t us.icr.io/loans/ibm-users2 ./ibm-users 
 
     # Push the image to IBM Container Registry
     - name: Push the image to ICR
