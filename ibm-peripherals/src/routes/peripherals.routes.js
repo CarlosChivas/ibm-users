@@ -17,4 +17,6 @@ router.get("/Admin/getAllPeripherals", rolesCtrl.validateToken,
                                        rolesCtrl.isAdmin,
                                        peripheralsCtrl.getAllPeripherals);
 
+// router.delete("/deletePeripheral", peripheralsCtrl.deletePeripheral);
+
 module.exports = router;

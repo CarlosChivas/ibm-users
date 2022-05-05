@@ -92,7 +92,7 @@ peripheralsCtrl.findPeripheralStatus = async (req, res, next) => {
 }    
 
 peripheralsCtrl.createPeripheral = async (req, res) => {
-
+    
     pool.open(process.env.DATABASE_STRING, function (err, db) {
         
         if (err) {
@@ -145,5 +145,27 @@ peripheralsCtrl.getAllPeripherals = async (req, res) => {
         }
     })
 }
+
+// peripheralsCtrl.deletePeripheral = async (req, res) => {
+//     pool.open(process.env.DATABASE_STRING, function (err, db) {
+        
+//         if (err) {
+//             res.status(403).send(err)
+//         } else{
+//             db.query("DELETE FROM peripheral where description = 'New mouse added';", function(err, data){
+//                 if(err){
+//                     res.status(400).send(err);
+//                 } else{
+//                     res.status(201).send("Deleted");
+//                 }
+//             })
+//             db.close(function (error) { // RETURN CONNECTION TO POOL
+//                 if (error) {
+//                     res.send("Error mientras se cerraba la conexion");
+//                 }
+//             });
+//         }
+//     })
+// }
 
 module.exports = peripheralsCtrl;
