@@ -8,11 +8,13 @@ router.get("/", peripheralsCtrl.getHome);
 
 router.post("/login", peripheralsCtrl.matchEmail, peripheralsCtrl.matchPassword);
 
-router.post("/Focal/CreatePeripheral", rolesCtrl.validateToken, 
+router.post("/Focal/createPeripheral", rolesCtrl.validateToken, 
                                        rolesCtrl.isFocal, 
                                        peripheralsCtrl.findPtype,
                                        peripheralsCtrl.findBrand,
                                        peripheralsCtrl.findPeripheralStatus,
                                        peripheralsCtrl.createPeripheral);
+
+// router.get("/getPeripheral", peripheralsCtrl.getPeripherals);
 
 module.exports = router;
