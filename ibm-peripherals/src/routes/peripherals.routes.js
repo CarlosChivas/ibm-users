@@ -6,8 +6,6 @@ const router = Router();
 
 router.get("/", peripheralsCtrl.getHome);
 
-router.post("/login", peripheralsCtrl.matchEmail, peripheralsCtrl.matchPassword);
-
 router.post("/Focal/createPeripheral", rolesCtrl.validateToken, 
                                        rolesCtrl.isFocal, 
                                        peripheralsCtrl.findPtype,

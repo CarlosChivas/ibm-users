@@ -7,62 +7,6 @@ peripheralsCtrl.getHome = async (req, res) => {
     res.status(200).send("Working!");
   };
 
-peripheralsCtrl.matchEmail = async (req, res, next) => {
-    //await bcryptjs.compare(req.body.password, "123456");
-    //res.send(process.env.DATABASE_STRING);
-    var userFound;
-    try{
-        pool.open(process.env.DATABASE_STRING, function (err, db) {
-            if (err) {
-                res.status(403).send(err);
-            } else{
-                db.query("SELECT * FROM users WHERE email = ?", [req.body.email],function(err, data) {
-                    if(err){
-                      res.send(err);
-                    } else{
-                        //const res = await checkPassword(req.body.password, data[0].PASSWORD)
-                        //console.log("Me regresa check password: ", res)
-                        if(data.length == 0 /*|| await checkPassword(req.body.password, data[0].PASSWORD)/*!(await bcryptjs.compare(req.body.password, data[0].PASSWORD))*/){
-                            res.status(401).send("Credenciales incorrectas");
-                      } else{
-                            req.user = data[0]
-                            next()
-                      }
-                    }
-                })
-                db.close(function (error) { // RETURN CONNECTION TO POOL
-                    if (error) {
-                        res.status(403).send("Error mientras se cerraba la conexion")
-                    }
-                });
-            }
-            
-        })
-    } catch (err){
-        console.log(err)
-    }
-        
-}
-
-peripheralsCtrl.matchPassword = async (req, res, next) => {
-    if(await bcryptjs.compare(req.body.password,req.user.PASSWORD)){
-        const id = req.user.ID;
-        const token = jwt.sign({id:id}, process.env.JWT_SECRETKEY)
-        console.log(token)
-        const cookieOptions = {
-            expires: new Date(Date.now()+90*24*60*1000),
-            httpOnly: true,
-            //sameSite: 'none',
-            //secure: true,
-            //domain: ""
-        }
-        res.cookie('jwt', token, cookieOptions);
-        res.status(200).send("Inicio de sesion correcto")
-    } else{ 
-        res.status(401).send("Credenciales incorrectas")
-    }
-}
-
 peripheralsCtrl.findPtype = async (req, res, next) => {
 
     pool.open(process.env.DATABASE_STRING, function (err, db) {
