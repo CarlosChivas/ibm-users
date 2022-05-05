@@ -45,9 +45,9 @@ rolesCtrl.validateToken = async(req, res, next) => {
 rolesCtrl.isAdmin = async(req,res,next) => {
     //console.log(req.cookies)
     console.log(req.user)
-    if(req.user.ROLE_NAME === "Adminstrator"){
+    if(req.user.ROLE_NAME === "Administrator"){
         //next();
-        res.status(200).send("Correct access 'Administrator'")
+        next()
     } else{
         res.status(401).send("You don't have access");
     }
