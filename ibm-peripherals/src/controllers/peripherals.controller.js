@@ -41,6 +41,7 @@ peripheralsCtrl.findBrand = async (req, res, next) => {
         if (err) {
             res.status(403).send(err)
         } else{
+            db.odbc.
             db.query("SELECT id FROM brand WHERE name = ?;",[req.body.brand], function(err, data){
                 if(err){
                     res.status(400).send(err);
