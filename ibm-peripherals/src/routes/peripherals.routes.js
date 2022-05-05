@@ -13,6 +13,10 @@ router.post("/Focal/createPeripheral", rolesCtrl.validateToken,
                                        peripheralsCtrl.findPeripheralStatus,
                                        peripheralsCtrl.createPeripheral);
 
-// router.get("/getPeripheral", peripheralsCtrl.getPeripherals);
+router.get("/Admin/getAllPeripherals", rolesCtrl.validateToken, 
+                                       rolesCtrl.isAdmin,
+                                       peripheralsCtrl.getAllPeripherals);
+
+// router.delete("/deletePeripheral", peripheralsCtrl.deletePeripheral);
 
 module.exports = router;

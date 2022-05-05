@@ -92,7 +92,7 @@ peripheralsCtrl.findPeripheralStatus = async (req, res, next) => {
 }    
 
 peripheralsCtrl.createPeripheral = async (req, res) => {
-
+    
     pool.open(process.env.DATABASE_STRING, function (err, db) {
         
         if (err) {
@@ -114,18 +114,49 @@ peripheralsCtrl.createPeripheral = async (req, res) => {
     })
 }
 
-// peripheralsCtrl.getPeripherals = async (req, res) => {
+peripheralsCtrl.getAllPeripherals = async (req, res) => {
     
+    pool.open(process.env.DATABASE_STRING, function (err, db) {
+        
+        if (err) {
+            res.status(403).send(err)
+        } else{
+            db.query(`SELECT peripheral.serial, 
+                             ptype.name as ptype, 
+                             peripheral.description, 
+                             brand.name as brand, 
+                             peripheral.model, 
+                             peripheral_status.name as peripheral_status
+            FROM peripheral
+            INNER JOIN ptype ON peripheral.ptype = ptype.id
+            INNER JOIN brand ON peripheral.brand = brand.id
+            INNER JOIN peripheral_status ON peripheral.peripheral_status = peripheral_status.id;`, function(err, data){
+                if(err){
+                    res.status(400).send(err);
+                } else{
+                    res.status(200).send(data);
+                }
+            })
+            db.close(function (error) { // RETURN CONNECTION TO POOL
+                if (error) {
+                    res.send("Error mientras se cerraba la conexion");
+                }
+            });
+        }
+    })
+}
+
+// peripheralsCtrl.deletePeripheral = async (req, res) => {
 //     pool.open(process.env.DATABASE_STRING, function (err, db) {
         
 //         if (err) {
 //             res.status(403).send(err)
 //         } else{
-//             db.query("SELECT * FROM peripheral;", function(err, data){
+//             db.query("DELETE FROM peripheral where description = 'New mouse added';", function(err, data){
 //                 if(err){
 //                     res.status(400).send(err);
 //                 } else{
-//                     res.status(200).send(data);
+//                     res.status(201).send("Deleted");
 //                 }
 //             })
 //             db.close(function (error) { // RETURN CONNECTION TO POOL

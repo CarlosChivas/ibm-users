@@ -46,8 +46,8 @@ rolesCtrl.isAdmin = async(req,res,next) => {
     //console.log(req.cookies)
     console.log(req.user)
     if(req.user.ROLE_NAME === "Administrator"){
-        //next();
-        res.status(200).send("Correct access 'Administrator'")
+        next();
+        // res.status(200).send("Correct access 'Administrator'")
     } else{
         res.status(401).send("You don't have access");
     }
@@ -56,7 +56,7 @@ rolesCtrl.isFocal = async(req,res,next) => {
     //console.log(req.cookies)
     if(req.user.ROLE_NAME === "Focal"){
         next();
-        //res.status(200).send("Correct access 'Focal'")
+        // res.status(200).send("Correct access 'Focal'")
     } else{
         res.status(401).send("You don't have access");
     }
@@ -64,8 +64,8 @@ rolesCtrl.isFocal = async(req,res,next) => {
 rolesCtrl.isEmpoyee = async(req,res,next) => {
     //console.log(req.cookies)
     if(req.user.ROLE_NAME === "Employee"){
-        //next();
-        res.status(200).send("Correct access 'Employee'")
+        next();
+        // res.status(200).send("Correct access 'Employee'")
         
     } else{
         res.status(401).send("You don't have access");
