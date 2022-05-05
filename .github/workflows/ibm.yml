@@ -56,20 +56,26 @@ jobs:
     - name: Build with Docker users service
       run: |
         docker build -t ibm-users2 ./ibm-users 
+    
+    #Remove images
+    - name: Remove images
+      run: |
+        ibmcloud cr image-rm us.icr.io/loans2/ibm-users2:latest
+        ibmcloud cr image-rm us.icr.io/loans2/peripherals:latest
 
     # Push the image to IBM Container Registry
     - name: Push the image to ICR
       run: |
         ibmcloud cr region-set us-south
-        docker tag ibm-users2 us.icr.io/loans2/ibm-users2:$GITHUB_SHA
-        docker push us.icr.io/loans2/ibm-users2:$GITHUB_SHA
+        docker tag ibm-users2 us.icr.io/loans2/ibm-users2:latest
+        docker push us.icr.io/loans2/ibm-users2:latest
 
     # Deploy the Docker image to the IKS cluster
     - name: Deploy to IKS
       run: |
         ibmcloud ks cluster config --cluster $IKS_CLUSTER
         kubectl config current-context
-        kubectl create deployment d1 --image=us.icr.io/loans2/ibm-users2:$GITHUB_SHA --dry-run -o yaml > deployment.yaml
+        kubectl create deployment d1 --image=us.icr.io/loans2/ibm-users2:latest --dry-run -o yaml > deployment.yaml
         kubectl apply -f deployment.yaml
         kubectl rollout status deployment/d1
         kubectl create service loadbalancer d1 --tcp=80:$PORT --dry-run -o yaml > service.yaml
@@ -86,15 +92,15 @@ jobs:
     # Push the image to IBM Container Registry7f78dff689-h2blj
     - name: Push the image to ICR
       run: |
-        docker tag ibm-peripherals us.icr.io/loans2/ibm-peripherals:$GITHUB_SHA
-        docker push us.icr.io/loans2/ibm-peripherals:$GITHUB_SHA
+        docker tag ibm-peripherals us.icr.io/loans2/ibm-peripherals:latest
+        docker push us.icr.io/loans2/ibm-peripherals:latest
 
     # Deploy the Docker image to the IKS cluster
     - name: Deploy to IKS
       run: |
         ibmcloud ks cluster config --cluster $IKS_CLUSTER
         kubectl config current-context
-        kubectl create deployment d2 --image=us.icr.io/loans2/ibm-peripherals:$GITHUB_SHA --dry-run -o yaml > deployment.yaml
+        kubectl create deployment d2 --image=us.icr.io/loans2/ibm-peripherals:latest --dry-run -o yaml > deployment.yaml
         kubectl apply -f deployment.yaml
         kubectl rollout status deployment/d2
         kubectl create service loadbalancer d2 --tcp=80:$PORT2 --dry-run -o yaml > service.yaml
