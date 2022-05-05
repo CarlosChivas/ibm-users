@@ -10,7 +10,7 @@ var ibmdb = require("ibm_db")
 require("dotenv").config();
 const app = express();
 app.use(cors({
-  origin: "http://localhost:4200",
+  origin: "*",
   credentials: true
 }))
 //Procesar datos enviados desde forms
