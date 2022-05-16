@@ -41,7 +41,6 @@ peripheralsCtrl.findBrand = async (req, res, next) => {
         if (err) {
             res.status(403).send(err)
         } else{
-            db.odbc.
             db.query("SELECT id FROM brand WHERE name = ?;",[req.body.brand], function(err, data){
                 if(err){
                     res.status(400).send(err);
@@ -147,13 +146,46 @@ peripheralsCtrl.getAllPeripherals = async (req, res) => {
     })
 }
 
+peripheralsCtrl.getAvailablePeripherals = async (req, res) => {
+    
+    pool.open(process.env.DATABASE_STRING, function (err, db) {
+        
+        if (err) {
+            res.status(403).send(err)
+        } else{
+            db.query(`SELECT peripheral.serial, 
+                             ptype.name as ptype, 
+                             peripheral.description, 
+                             brand.name as brand, 
+                             peripheral.model, 
+                             peripheral_status.name as peripheral_status
+            FROM peripheral
+            INNER JOIN ptype ON peripheral.ptype = ptype.id
+            INNER JOIN brand ON peripheral.brand = brand.id
+            INNER JOIN peripheral_status ON peripheral.peripheral_status = peripheral_status.id
+            WHERE peripheral_status.name = 'Available';`, function(err, data){
+                if(err){
+                    res.status(400).send(err);
+                } else{
+                    res.status(200).send(data);
+                }
+            })
+            db.close(function (error) { // RETURN CONNECTION TO POOL
+                if (error) {
+                    res.send("Error mientras se cerraba la conexion");
+                }
+            });
+        }
+    })
+}
+
 // peripheralsCtrl.deletePeripheral = async (req, res) => {
 //     pool.open(process.env.DATABASE_STRING, function (err, db) {
         
 //         if (err) {
 //             res.status(403).send(err)
 //         } else{
-//             db.query("DELETE FROM peripheral where description = 'New mouse added';", function(err, data){
+//             db.query("DELETE FROM peripheral where description = 'Mouse with other new features';", function(err, data){
 //                 if(err){
 //                     res.status(400).send(err);
 //                 } else{

@@ -13,9 +13,12 @@ router.post("/Focal/createPeripheral", rolesCtrl.validateToken,
                                        peripheralsCtrl.findPeripheralStatus,
                                        peripheralsCtrl.createPeripheral);
 
-router.get("/Admin/getAllPeripherals", rolesCtrl.validateToken, 
-                                       rolesCtrl.isAdmin,
-                                       peripheralsCtrl.getAllPeripherals);
+router.get("/getAllPeripherals", rolesCtrl.validateToken, 
+                                 peripheralsCtrl.getAllPeripherals);
+
+router.get("/Focal/getAvailablePeripherals", rolesCtrl.validateToken,
+                                             rolesCtrl.isFocal,
+                                             peripheralsCtrl.getAvailablePeripherals);
 
 // router.delete("/deletePeripheral", peripheralsCtrl.deletePeripheral);
 
