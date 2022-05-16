@@ -1,0 +1,20 @@
+{
+    "/login": {
+        "target": "http://169.51.203.100:32688/login",
+        "secure": false,
+        "logLevel": "debug",
+        "pathRewrite": {
+            "^/login": ""
+        },
+        "changeOrigin": true
+    },
+    "/logout": {
+        "target": "http://169.51.203.100:32688/logout",
+        "secure": false,
+        "logLevel": "debug",
+        "pathRewrite": {
+            "^/login": ""
+        },
+        "changeOrigin": true
+    }
+}

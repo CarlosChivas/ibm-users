@@ -1,0 +1,10 @@
+@import '~carbon-components/scss/globals/scss/styles';
+
+hr {
+    display: block;
+    width: 14rem;
+    height: 1px;
+    border: none;
+    margin: 0.5rem 1rem;
+    background: gray;
+}

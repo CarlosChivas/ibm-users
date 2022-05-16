@@ -1,0 +1,27 @@
+<app-menu-bar></app-menu-bar>
+<style>
+</style>
+<section class="overview-page__banner" aria-label="overview page banner">
+    <div class="LoanInfo">
+        <h2 class="page-title"> {{ title }} </h2>
+        <ibm-tabs>
+            <ibm-tab *ngFor="let item of myLoans | keyvalue" heading="{{item.key}}" class="tab">
+                <div class="CardParent">
+                    <div *ngFor="let device of item.value" class="DeviceCard">
+                        <img src="../../assets/device.png" alt="">
+                        <div class="DeviceCard--Info">
+                           
+                            <p>{{device.description}}</p>
+                        </div>
+                    </div>
+                </div>
+            </ibm-tab>
+        </ibm-tabs>
+        <div></div>
+    </div>
+    <div class="LoanChart">
+        <img src="../../assets/chart.png" alt="">
+        <img src="../../assets/chart.png" alt="">
+    </div>
+</section>
+  
