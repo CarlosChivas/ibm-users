@@ -16,6 +16,7 @@ usersCtrl.matchEmail = async (req, res, next) => {
             if (err) {
                 res.status(403).send(err);
             } else{
+                
                 db.query("SELECT * FROM users WHERE email = ?", [req.body.email],function(err, data) {
                     if(err){
                       res.send(err);
