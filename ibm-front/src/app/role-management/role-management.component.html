@@ -1,0 +1,94 @@
+<app-menu-bar></app-menu-bar>
+<section class="overview-page__banner" aria-label="overview page banner">
+
+  <div class="container">
+    <div class="Separate">
+      <h2>Employee Role Management</h2>
+    </div>
+    <div ibmGrid>
+        <div ibmRow>
+          <div ibmCol >
+            <div class="bx--search bx--search--lg" role="search" tabindex="0"  >
+              <input class="bx--search-input" type="text" id="search-20" autocomplete="on" placeholder="Search"  style="width : 100%;">
+              <svg class="bx--search-magnifier-icon" ibmIcon="search" size="16" xmlns="" focusable="false" preserveAspectRatio="xMidYMid meet" aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" ></svg>
+
+            </div>
+
+          </div>
+            <div ibmCol>
+                <a ibmButton="secondary" [routerLink]="['../home']"style="float: right;">Save Changes</a>
+            </div>
+        </div>
+      <div ibmRow>
+        <div ibmCol class="multi-selection">
+          <button ibmButton="primary" (click)="resetFilters()" class="reset-button">Reset Filters</button>
+          <fieldset class="bx--fieldset">
+            <div ibmRow>
+              <div ibmCol>
+                <legend class="bx--label">Employee Role</legend>
+              </div>
+              <div ibmCol>
+                <ibm-tag-filter *ngIf="deviceTypeFilters.length > 0">
+                  {{deviceTypeFilters.length}}
+                </ibm-tag-filter>
+              </div>
+            </div>
+            <ibm-checkbox *ngFor="let listItem of deviceType" [checked]="listItem.checked" >
+              {{ listItem.value }}
+            </ibm-checkbox>
+          </fieldset>
+        </div>
+
+
+
+        <div ibmCol [columnNumbers]="{'lg': 10, 'md': 10, 'sm': 3}" class="data-table">
+          <ibm-structured-list>
+            <ibm-list-header>
+              <ibm-list-column *ngFor="let product of columns" class="listColumn--Header">
+                  {{product}}
+              </ibm-list-column>
+              <ibm-list-column></ibm-list-column>
+            </ibm-list-header>
+
+          
+            <ibm-list-row *ngFor="let product of employees ">
+
+
+
+              
+              <ibm-list-column class="listColumn">
+                {{product.emploeeID}}
+              </ibm-list-column>
+              <ibm-list-column class="listColumn">
+                {{product.firstName}}
+              </ibm-list-column>
+              <ibm-list-column class="listColumn">
+                {{product.lastName}}
+              </ibm-list-column>
+              <ibm-list-column class="listColumn">
+                {{product.email}}
+              </ibm-list-column>
+              <ibm-list-column class="listColumn">
+                {{product.Department}}
+              </ibm-list-column>
+              <ibm-list-column class="listColumn">
+                {{product.isAdmin}}
+                <svg ibmIcon="checkmark--filled" size="20" style="width: 80%;"></svg>
+              </ibm-list-column>
+              <ibm-list-column class="listColumn">
+                {{product.isFocalPoint}}
+                <svg ibmIcon="checkmark--filled" size="20" style="width: 90%;"></svg>
+              </ibm-list-column>
+              <ibm-list-column class="listColumn">
+                {{product.isSecurity}}
+                <svg ibmIcon="close" size="20" style="width: 90%;"></svg>
+              </ibm-list-column>
+            </ibm-list-row>
+          </ibm-structured-list>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+

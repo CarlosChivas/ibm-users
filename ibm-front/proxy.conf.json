@@ -1,0 +1,29 @@
+{
+    "/login": {
+        "target": "http://169.51.205.229:31605/login",
+        "secure": false,
+        "logLevel": "debug",
+        "pathRewrite": {
+            "^/login": ""
+        },
+        "changeOrigin": true
+    },
+    "/logout": {
+        "target": "http://169.51.205.229:31605/logout",
+        "secure": false,
+        "logLevel": "debug",
+        "pathRewrite": {
+            "^/logout": ""
+        },
+        "changeOrigin": true
+    },
+    "/isLogged": {
+        "target": "http://169.51.205.229:31605/isLogged",
+        "secure": false,
+        "logLevel": "debug",
+        "pathRewrite": {
+            "^/isLogged": ""
+        },
+        "changeOrigin": true
+    }
+}
