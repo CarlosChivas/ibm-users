@@ -112,6 +112,7 @@ jobs:
       run: |
         docker tag ibm-peripherals us.icr.io/loans2/ibm-peripherals:$GITHUB_SHA
         docker push us.icr.io/loans2/ibm-peripherals:$GITHUB_SHA
+        
 
     # Deploy the Docker image to the IKS cluster
     - name: Deploy to IKS
