@@ -1,6 +1,6 @@
 FROM node:16.14.2-slim as angular-built
 WORKDIR /usr/src/app
-COPY package*.json .
+COPY package*.json ./
 RUN npm install --silent
 COPY . .
 RUN npm run build 
