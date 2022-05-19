@@ -7,5 +7,5 @@ RUN npm run build
 
 FROM nginx:alpine
 LABEL author="Carlos"
-COPY --from=angular-built /usr/src/app/dist/ibm-front /usr/share/nginx/html
+COPY --from=angular-built /usr/src/app/dist/front /usr/share/nginx/html
 EXPOSE 80
