@@ -42,6 +42,11 @@ rolesCtrl.validateToken = async(req, res, next) => {
     });
 }
 
+rolesCtrl.searchUsers = async (req,res) => {
+    console.log(req.params)
+    res.send("Todo bien")
+}
+
 rolesCtrl.isAdmin = async(req,res,next) => {
     //console.log(req.cookies)
     console.log(req.user)

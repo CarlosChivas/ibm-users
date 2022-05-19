@@ -1,0 +1,99 @@
+<app-menu-bar></app-menu-bar>
+<section class="overview-page__banner" aria-label="overview page banner">
+
+  <div class="container">
+    <div class="Separate">
+      <h2 class="page-title">Loans</h2>
+      <div>
+        <a ibmButton="secondary" [routerLink]="['../../newloan']">Register Loan</a>
+      </div>
+    </div>
+    <div ibmGrid>
+      <div ibmRow>
+        <div ibmCol >
+          <div class="bx--search bx--search--lg" role="search" tabindex="0"  >
+            <label class="bx--label" for="search-20" style="width : 100%;" >Search</label>
+            <input class="bx--search-input" type="text" id="search-20" autocomplete="on" placeholder="Search"  style="width : 100%;" >
+            <svg class="bx--search-magnifier-icon" ibmIcon="search" size="16" xmlns="" focusable="false" preserveAspectRatio="xMidYMid meet" aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" ></svg>
+          </div>
+        </div>
+        <div ibmCol > <a ibmButton="secondary" [routerLink]="['../../newloan']" style="float: right;">Register Loan</a>
+        </div>
+      </div>
+      <div style="padding-top: 10px;"></div>
+    <div ibmRow>
+        <div ibmCol class="multi-selection">
+          <button ibmButton="primary" (click)="resetFilters()" class="reset-button">Reset Filters</button>
+          <fieldset class="bx--fieldset">
+            <legend class="bx--label">Device Status</legend>
+            <ibm-radio-group aria-label="radiogroup" orientation="vertical" labelPlacement="right">
+              <ibm-radio *ngFor="let radio of radios" [value]="radio.color">
+                {{radio.color}}
+              </ibm-radio>
+            </ibm-radio-group>
+          </fieldset>
+          <fieldset class="bx--fieldset">
+            <div ibmRow>
+              <div ibmCol>
+                <legend class="bx--label">Device Type</legend>
+              </div>
+              <div ibmCol>
+                <ibm-tag-filter *ngIf="deviceTypeFilters.length > 0">
+                  {{deviceTypeFilters.length}}
+                </ibm-tag-filter>
+              </div>
+            </div>
+            <ibm-checkbox *ngFor="let listItem of deviceType" [checked]="listItem.checked">
+              {{ listItem.value }}
+            </ibm-checkbox>
+          </fieldset>
+        </div>
+        <div ibmCol [columnNumbers]="{'lg': 10, 'md': 10, 'sm': 3}" class="data-table">
+          <ibm-structured-list>
+            <ibm-list-header>
+              <ibm-list-column *ngFor="let product of columns" class="listColumn--Header">
+                  {{product}}
+              </ibm-list-column>
+              <ibm-list-column></ibm-list-column>
+            </ibm-list-header>
+            <ibm-list-row *ngFor="let product of areaLoans">
+              <ibm-list-column class="listColumn">
+                {{product.employeeID}}
+              </ibm-list-column>
+              <ibm-list-column class="listColumn">
+                {{product.employeeName}}
+              </ibm-list-column>
+              <ibm-list-column class="listColumn">
+                {{product.deviceID}}
+              </ibm-list-column>
+              <ibm-list-column class="listColumn">
+                {{product.deviceType}}
+              </ibm-list-column>
+              <ibm-list-column class="listColumn">
+                {{product.deviceBrand}}
+              </ibm-list-column>
+              <ibm-list-column class="listColumn">
+                {{product.serialNumber}}
+              </ibm-list-column>
+              <ibm-list-column class="listColumn">
+                {{product.termsConditions}}
+                <svg ibmIcon="checkmark--filled" size="20" style="width: 50%;"></svg>
+              </ibm-list-column>
+              <ibm-list-column class="listColumn">
+                {{product.secAuth}}
+                <svg ibmIcon="close" size="20" style="width: 50%;"></svg>
+              </ibm-list-column>
+              <ibm-list-column class="listColumn">
+                {{product.returned}}
+                <svg ibmIcon="close" size="20" style="width: 90%;"></svg>
+              </ibm-list-column>
+              <ibm-list-column>
+                <button ibmButton="secondary">Submit</button>
+              </ibm-list-column>
+            </ibm-list-row>
+          </ibm-structured-list>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

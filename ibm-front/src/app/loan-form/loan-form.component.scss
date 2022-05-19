@@ -1,0 +1,57 @@
+@import '~carbon-components/scss/globals/scss/styles';
+
+.overview-page__banner {
+    min-height: 100vh;
+    padding: 24px;
+    /*$spacing-06;*/
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.container {
+    width: 100%;
+    z-index: 100;
+    padding: 40px;
+    display: grid;
+    grid-template-columns: repeat(1, 1fr);
+    gap: 24px;
+    grid-auto-rows: minmax(100px, auto);
+}
+
+.DeviceCard {
+    border: 1px solid black;
+    border-radius: 15px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 8px;
+    /*$spacing-03*/
+}
+
+.DeviceCard>img {
+    width: 120px;
+}
+
+.DeviceCard--Info {
+    width: 100%;
+}
+
+.CardParent {
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 24px;
+    /*$spacing-06*/
+    grid-auto-rows: minmax(100px, auto);
+}
+
+.Separate {
+    display: grid;
+    grid-template-columns: 8fr 1fr;
+}
+
+.IBM-Grid {
+    width: 100%;
+}
