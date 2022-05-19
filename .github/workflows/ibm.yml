@@ -24,8 +24,8 @@ env:
   IKS_CLUSTER: c9pg8q1f0laembi6n5qg
   DEPLOYMENT_NAME: ibm-users2
   PORT: 4000
-  PORT2: 4001
-  PORT3: 4200
+  PORT2: 4003
+  PORT3: 4001
 
 jobs:
   setup-build-publish-deploy:
