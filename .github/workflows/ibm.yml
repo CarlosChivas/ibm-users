@@ -56,7 +56,7 @@ jobs:
      # Build the Docker image FRONT
     - name: Build with Docker front service
       run: |
-        docker build -t ibm-front ./front-example
+        docker build -t ibm-front ./ibm-front
 
     # Push the image to IBM Container Registry
     - name: Push the image to ICR
