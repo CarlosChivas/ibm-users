@@ -4,13 +4,23 @@
     padding-bottom: 20px;
 }
 
+.container {
+    width: 80%;
+    z-index: 100;
+    padding: 40px;
+    display: grid;
+    grid-template-columns: repeat(1, 1fr);
+    gap: 24px;
+    grid-auto-rows: minmax(100px, auto);
+}
+
 .overview-page__banner {
     min-height: 100vh;
-    display: grid;
-    grid-template-columns: 5fr 1fr;
-    gap: $spacing-07;
-    padding: $spacing-11 $spacing-07;
-    box-sizing: border-box;
+    padding: 24px;
+    /*$spacing-06;*/
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 .DeviceCard{
     border: 1px solid black;
