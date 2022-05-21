@@ -112,7 +112,7 @@ usersCtrl.getAllUsers = async (req, res) => {
         if (err) {
             res.status(400).send(err)
         } else{
-            db.query(`SELECT users.id, users.first_name, users.last_name, 
+            db.query(`SELECT users.id, users.first_name, users.last_name, users.email,
             role.name as role_name, department.name as department_name 
             FROM users 
             INNER JOIN role ON users.role=role.id 
