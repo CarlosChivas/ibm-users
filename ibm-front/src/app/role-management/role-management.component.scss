@@ -8,15 +8,18 @@
     justify-content: center;
 }
 
-ibm-list-column.listColumn{
+ibm-list-column.listColumn {
     padding: 1rem 0.5rem;
     vertical-align: middle;
 }
-ibm-list-column.listColumn--Header{
+
+ibm-list-column.listColumn--Header {
     padding: 0.5rem;
     vertical-align: middle;
 }
-.container{
+
+.container {
+    width: 80%;
     z-index: 100;
     padding: $spacing-08;
     display: grid;
@@ -24,7 +27,21 @@ ibm-list-column.listColumn--Header{
     gap: $spacing-06;
     grid-auto-rows: minmax(100px, auto);
 }
-.Separate{
+
+.Separate {
     display: grid;
     grid-template-columns: 8fr 1fr;
-  }
+}
+
+.page-title {
+    padding-top: 30px;
+}
+
+.Table {
+    width: 100%;
+}
+
+.SearchBar-Row {
+    width: 50%;
+    padding-bottom: 4px;
+}
