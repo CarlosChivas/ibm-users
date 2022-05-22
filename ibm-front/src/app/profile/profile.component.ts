@@ -18,6 +18,56 @@ export class ProfileComponent implements OnInit {
       "role" : "Administrator"
     }],
   };
+
+  title = 'My Loans'
+
+  myLoans = {
+    "Current": [{
+      "device": "Keyboard",
+      "description": "DELL keyboard"
+    }, {
+      "device": "Keyboard",
+      "description": "DELL keyboard"
+    }, {
+      "device": "Keyboard",
+      "description": "DELL keyboard"
+    }, {
+      "device": "Keyboard",
+      "description": "DELL keyboard"
+    }],
+    "In process": [{
+      "device": "Mouse",
+      "description": "HP mouse"
+    }, {
+      "device": "Mouse",
+      "description": "HP mouse"
+    }],
+    "Past": [{
+      "device": "Monitor",
+      "description": "Acer monitor"
+    }, {
+      "device": "Monitor",
+      "description": "Acer monitor"
+    }, {
+      "device": "Monitor",
+      "description": "Acer monitor"
+    }, {
+      "device": "Monitor",
+      "description": "Acer monitor"
+    }, {
+      "device": "Mouse",
+      "description": "HP mouse"
+    }, {
+      "device": "Mouse",
+      "description": "HP mouse"
+    }, {
+      "device": "Mouse",
+      "description": "HP mouse"
+    }, {
+      "device": "Mouse",
+      "description": "HP mouse"
+    }],
+  };
   constructor(private router: Router) { }
 
   ngOnInit(): void {
