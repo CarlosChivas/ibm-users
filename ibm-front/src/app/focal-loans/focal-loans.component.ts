@@ -128,7 +128,7 @@ export class FocalLoansComponent implements OnInit {
       employeeID: 29,
       employeeName: "Name 10",
       deviceType: "ROUTER",
-      deviceBrand: "TP-LICK",
+      deviceBrand: "TP-LINK",
       serialNumber: "10103",
       termsConditions: true,
       secAuth: true,
