@@ -10,27 +10,24 @@ import axios from 'axios';
   styleUrls: ['./loan-form.component.scss']
 })
 export class LoanFormComponent implements OnInit {
-  
-  open: boolean = false
+
+  isOpen: boolean = false
   showCloseButton: boolean = true;
 
-  fields = [
-    {"name":"employeeEmail", "type":"email"},
-    {"name":"department", "type":"text"},
-    {"name":"focalEmail", "type":"email"},
-    {"name":"deviceID", "type":"text"}];
+  fields = { "name": "employeeEmail", "type": "email" };
+  device = {
+    BRAND: "No brand",
+    TYPE: "No Type",
+    SN: "N/A",
+    DESCRIPTION: "No Brand - No Type"
+  };
+  user = {
+    ROLE: "",
+    EMAIL: "",
+  };
 
   loanForm = this.formBuilder.group({
-    employeeID: '',
-    employeeEmail: '',
-    employeeName: '',
-    employeeLastName: '',
-    department: '',
-    focalID: '',
-    focalEmail: '',
-    focalName: '',
-    focalLastName: '',
-    deviceID: ''
+    employeeMail: ''
   });
 
   constructor(
@@ -39,84 +36,125 @@ export class LoanFormComponent implements OnInit {
   ) {
   }
 
+  openModal(index: number) {
+    console.log(index);
+    this.isOpen = true;
+    this.device = this.peripheralList[index];
+  }
+  closeModal() {
+    this.isOpen = false;
+  }
   sendForm() {
     console.log(this.loanForm.value)
+    console.log(this.user)
   }
   peripheralList = [{
-    "device": "Monitor",
-    "description": "Acer monitor"
+    BRAND: "ACER",
+    TYPE: "MONITOR",
+    SN: "10",
+    DESCRIPTION: "ACER - Monitor"
   }, {
-    "device": "Monitor",
-    "description": "Acer monitor"
+    BRAND: "DELL",
+    TYPE: "KEYBOARD",
+    SN: "20",
+    DESCRIPTION: "DELL - Keyboard"
   }, {
-    "device": "Monitor",
-    "description": "Acer monitor"
+    BRAND: "BOSE",
+    TYPE: "SPEAKER",
+    SN: "30",
+    DESCRIPTION: "BOSE - Speaker"
   }, {
-    "device": "Monitor",
-    "description": "Acer monitor"
+    BRAND: "SONY",
+    TYPE: "HEADPHONES",
+    SN: "40",
+    DESCRIPTION: "SONY - Headphones"
   }, {
-    "device": "Mouse",
-    "description": "HP mouse"
+    BRAND: "HP",
+    TYPE: "MOUSE",
+    SN: "50",
+    DESCRIPTION: "HP - Mouse"
   }, {
-    "device": "Mouse",
-    "description": "HP mouse"
+    BRAND: "BLUE YETI",
+    TYPE: "MICROPHONE",
+    SN: "60",
+    DESCRIPTION: "Blue Yeti - Microphone"
   }, {
-    "device": "Mouse",
-    "description": "HP mouse"
+    BRAND: "KINGSTONE",
+    TYPE: "HARD DRIVE",
+    SN: "70",
+    DESCRIPTION: "Kingstone - Hard Drive"
   }, {
-      "device": "Mouse",
-      "description": "HP mouse"
-    }];
+    BRAND: "LOGITECH",
+    TYPE: "WEB CAM",
+    SN: "80",
+    DESCRIPTION: "LOGITECH - Web Cam"
+  }, {
+    BRAND: "APPLE",
+    TYPE: "TRACK PAD",
+    SN: "90",
+    DESCRIPTION: "APPLE - TRACK PAD"
+  }, {
+    BRAND: "TP-LINK",
+    TYPE: "ROUTER",
+    SN: "100",
+    DESCRIPTION: "TP-LINK - ROUTER"
+  }];
 
-	deviceTypeFilters = [];
-	radioFilter = null;
+  deviceTypeFilters = [];
+  radioFilter = null;
 
-	deviceType = [
-		{ value: "Monitor", checked: false},
-		{ value: "Keyboard", checked: false},
-		{ value: "Mouse", checked: false}
-	];
+  deviceType = [
+    { value: "Monitor", checked: false },
+    { value: "Keyboard", checked: false },
+    { value: "Mouse", checked: false }
+  ];
 
   radios = [
-		{ color: "Accepted Conditions", checked: false },
-		{ color: "Security Authorization", checked: false },
-		{ color: "Returned", checked: false }
-	];
+    { color: "Accepted Conditions", checked: false },
+    { color: "Security Authorization", checked: false },
+    { color: "Returned", checked: false }
+  ];
 
-	onCheckboxChange() {
-	}
+  onCheckboxChange() {
+  }
 
-	onRadioChange() {
-	}
+  onRadioChange() {
+  }
 
-	resetFilters() {
-		this.resetCheckboxList();
-		this.resetRadios();
-	}
+  resetFilters() {
+    this.resetCheckboxList();
+    this.resetRadios();
+  }
 
-	resetCheckboxList() {
-		this.deviceTypeFilters = [];
-		this.deviceType = this.deviceType.map(obj => ({ value: obj.value, checked: false }));
-		this.applyFilters();
-	}
+  resetCheckboxList() {
+    this.deviceTypeFilters = [];
+    this.deviceType = this.deviceType.map(obj => ({ value: obj.value, checked: false }));
+    this.applyFilters();
+  }
 
-	resetRadios() {
-		this.radioFilter = null;
-		this.radios = this.radios.map(obj => ({ color: obj.color, checked: false }));
-		this.applyFilters();
-	}
+  resetRadios() {
+    this.radioFilter = null;
+    this.radios = this.radios.map(obj => ({ color: obj.color, checked: false }));
+    this.applyFilters();
+  }
 
-	applyFilters() {
-	}
+  applyFilters() {
+  }
 
-	ngOnInit() {
+  ngOnInit() {
     var api = "/isLogged";
     var rout = this.router;
-    axios.get(api, {withCredentials:true}).then(function (response) {
+    var esto = this;
+    axios.get(api, { withCredentials: true }).then(function (response) {
       if (response.status != 200)
         rout.navigate(['./']);
+        else{
+          console.log(response.data);
+          esto.user.EMAIL = response.data.EMAIL;
+          esto.user.ROLE = response.data.ROLE_NAME;
+        }
     })
-	}
-	ngOnDestroy() {
-	}
+  }
+  ngOnDestroy() {
+  }
 }
