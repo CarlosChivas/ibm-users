@@ -3,12 +3,7 @@
 <section class="overview-page__banner" aria-label="overview page banner">
 
   <div class="container">
-    <div class="Separate">
       <h2 class="page-title">Loans</h2>
-      <div>
-        <a ibmButton="secondary" [routerLink]="['../../newloan']">Register Loan</a>
-      </div>
-    </div>
     <div ibmGrid>
       <div ibmRow>
         <div ibmCol>
@@ -57,39 +52,39 @@
               </ibm-list-column>
               <ibm-list-column></ibm-list-column>
             </ibm-list-header>
-            <ibm-list-row *ngFor="let product of areaLoans">
+            <ibm-list-row *ngFor="let emp of areaLoans ;let i = index">
               <ibm-list-column class="listColumn">
-                {{product.employeeID}}
+                {{emp.employeeID}}
               </ibm-list-column>
               <ibm-list-column class="listColumn">
-                {{product.employeeName}}
+                {{emp.employeeName}}
               </ibm-list-column>
               <ibm-list-column class="listColumn">
-                {{product.deviceID}}
+                {{emp.deviceID}}
               </ibm-list-column>
               <ibm-list-column class="listColumn">
-                {{product.deviceType}}
+                {{emp.deviceType}}
               </ibm-list-column>
               <ibm-list-column class="listColumn">
-                {{product.deviceBrand}}
+                {{emp.deviceBrand}}
               </ibm-list-column>
               <ibm-list-column class="listColumn">
-                {{product.serialNumber}}
+                {{emp.serialNumber}}
               </ibm-list-column>
               <ibm-list-column class="listColumn">
-                {{product.termsConditions}}
+                {{emp.termsConditions}}
                 <svg ibmIcon="checkmark--filled" size="20" style="width: 50%;"></svg>
               </ibm-list-column>
               <ibm-list-column class="listColumn">
-                {{product.secAuth}}
+                {{emp.secAuth}}
                 <svg ibmIcon="close" size="20" style="width: 50%;"></svg>
               </ibm-list-column>
               <ibm-list-column class="listColumn">
-                {{product.returned}}
+                {{emp.returned}}
                 <svg ibmIcon="close" size="20" style="width: 90%;"></svg>
               </ibm-list-column>
               <ibm-list-column>
-                <button ibmButton="secondary">Submit</button>
+                <button ibmButton="secondary" (click)="openModal(i)">Modify</button>
               </ibm-list-column>
             </ibm-list-row>
           </ibm-structured-list>

@@ -160,7 +160,7 @@ export class RoleManagementComponent implements OnInit {
     var api = "/isLogged";
     var rout = this.router;
     var esto = this;
-    axios.get(api, { withCredentials: true }).then(function (response) {
+    axios.get(api, { withCredentials: true }).then((response) => {
       if (response.status != 200) rout.navigate(['./']);
       else {
         if (response.data.ROLE_NAME != "Administrator") rout.navigate(['./']);
@@ -171,6 +171,8 @@ export class RoleManagementComponent implements OnInit {
           esto.employees = response.data;
         });
       }
+    }).catch((error) => {
+      rout.navigate(['./']);
     });
   }
   ngOnDestroy() {
