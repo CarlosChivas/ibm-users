@@ -1,5 +1,5 @@
 <style>
-  
+
 </style>
 
 <app-menu-bar></app-menu-bar>
@@ -38,8 +38,6 @@
           </fieldset>
         </div>
 
-
-
         <div ibmCol [columnNumbers]="{'lg': 10, 'md': 10, 'sm': 3}" class="data-table">
           <ibm-structured-list>
             <ibm-list-header>
@@ -49,34 +47,31 @@
               <ibm-list-column></ibm-list-column>
             </ibm-list-header>
 
-            <ibm-list-row *ngFor="let product of employees ">
+            <ibm-list-row *ngFor="let emp of employees; let i = index ">
 
-              <ibm-list-column class="listColumn" [routerLink]="['../profile/'+product.emploeeID]">
-                {{product.emploeeID}}
+              <ibm-list-column class="listColumn" [routerLink]="['../profile/'+emp.ID]">
+                {{emp.ID}}
               </ibm-list-column>
-              <ibm-list-column class="listColumn" [routerLink]="['../profile/'+product.emploeeID]">
-                {{product.firstName}}
+              <ibm-list-column class="listColumn" [routerLink]="['../profile/'+emp.ID]">
+                {{emp.FIRST_NAME}}
               </ibm-list-column>
-              <ibm-list-column class="listColumn" [routerLink]="['../profile/'+product.emploeeID]">
-                {{product.lastName}}
+              <ibm-list-column class="listColumn" [routerLink]="['../profile/'+emp.ID]">
+                {{emp.LAST_NAME}}
               </ibm-list-column>
-              <ibm-list-column class="listColumn" [routerLink]="['../profile/'+product.emploeeID]">
-                {{product.email}}
-              </ibm-list-column>
-              <ibm-list-column class="listColumn">
-                {{product.Department}}
+              <ibm-list-column class="listColumn" [routerLink]="['../profile/'+emp.ID]">
+                {{emp.EMAIL}}
               </ibm-list-column>
               <ibm-list-column class="listColumn">
-                {{product.isAdmin}}
-                <svg ibmIcon="checkmark--filled" size="20" style="width: 80%;"></svg>
+                {{emp.DEPARTMENT_NAME}}
               </ibm-list-column>
               <ibm-list-column class="listColumn">
-                {{product.isFocalPoint}}
-                <svg ibmIcon="checkmark--filled" size="20" style="width: 90%;"></svg>
-              </ibm-list-column>
-              <ibm-list-column class="listColumn">
-                {{product.isSecurity}}
-                <svg ibmIcon="close" size="20" style="width: 90%;"></svg>
+
+                <ibm-dropdown
+                  placeholder="{{emp.ROLE_NAME}}"
+                  (selected)="updateRole($event, i)">
+                  <ibm-dropdown-list [items]="roles"></ibm-dropdown-list>
+                </ibm-dropdown>
+
               </ibm-list-column>
             </ibm-list-row>
           </ibm-structured-list>

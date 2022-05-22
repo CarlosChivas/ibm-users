@@ -151,6 +151,10 @@ export class FocalLoansComponent implements OnInit {
 		{ value: "Mouse", checked: false}
 	];
 
+  openModal(index: number){
+    console.log(index);
+  }
+
 	onCheckboxChange() {
 	}
 
@@ -181,8 +185,7 @@ export class FocalLoansComponent implements OnInit {
     var api = "/isLogged";
     var rout = this.router;
     axios.get(api, {withCredentials:true}).then(function (response) {
-      if (response.status != 200)
-        rout.navigate(['./home']);
+      if (response.status != 200) rout.navigate(['./home']);
     })
 	}
 	ngOnDestroy() {

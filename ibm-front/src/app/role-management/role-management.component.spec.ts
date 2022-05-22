@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { RoleManagementComponent } from './role-management.component';
-import { StructuredListModule, ButtonModule, CheckboxModule, RadioModule, GridModule, TagModule  } from 'carbon-components-angular';
+import { StructuredListModule, ButtonModule, CheckboxModule, RadioModule, GridModule, TagModule, DropdownModule   } from 'carbon-components-angular';
 
 describe('RoleManagementComponent', () => {
   let component: RoleManagementComponent;
