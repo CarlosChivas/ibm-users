@@ -55,7 +55,6 @@ usersCtrl.matchPassword = async (req, res, next) => {
             httpOnly: true,
             sameSite: 'none',
             secure: true,
-            domain: ""
         }
         res.cookie('jwt', token, cookieOptions);
         res.status(200).send("Inicio de sesion correcto")
