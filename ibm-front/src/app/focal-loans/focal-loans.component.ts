@@ -195,7 +195,8 @@ export class FocalLoansComponent implements OnInit {
 	}
 
 	ngOnInit() {
-    var api = "/isLogged";
+    // periferals:32370
+    var api = "http://169.51.205.229:30289/isLogged";
     var rout = this.router;
     axios.get(api, {withCredentials:true}).then(function (response) {
       if (response.status != 200) rout.navigate(['./home']);
