@@ -1,27 +1,55 @@
 <app-menu-bar></app-menu-bar>
 <style>
 </style>
+
 <section class="overview-page__banner" aria-label="overview page banner">
-    <div class="LoanInfo">
-        <h2 class="page-title"> {{ title }} </h2>
-        <ibm-tabs>
-            <ibm-tab *ngFor="let item of myLoans | keyvalue" heading="{{item.key}}" class="tab">
-                <div class="CardParent">
-                    <div *ngFor="let device of item.value" class="DeviceCard">
-                        <img src="../../assets/device.png" alt="">
-                        <div class="DeviceCard--Info">
-                           
-                            <p>{{device.description}}</p>
+    <div class="container">
+        <div class="LoanInfo">
+            <h2 class="page-title"> {{ title }} </h2>
+            <ibm-tabs>
+                <ibm-tab *ngFor="let item of myLoans | keyvalue" heading="{{item.key}}" class="tab">
+                    <div class="CardParent">
+                        <div *ngFor="let device of item.value" class="DeviceCard">
+
+                            
+                            
+                        
+
+                            <div class="DeviceCard--Info">
+                                <p>{{device.description}}</p>
+                            </div>
+                            <img #trigger src="../../assets/device.png" alt="" (click)="open = true">
+                            <ibm-modal [open]="open" [trigger]="trigger" (overlaySelected)="open = false">
+                                <ibm-modal-header (closeSelect)="open = false" [showCloseButton]="showCloseButton">
+                                    <p class="bx--modal-header__heading bx--type-beta">{{device.device}}</p>
+                                </ibm-modal-header>
+                                <div class="bx--modal-content">
+                                    <p _ngcontent-ows-c99="" class="bx--modal-header__label bx--type-delta">Descrpition: {{device.description}}</p>
+                                    <p _ngcontent-ows-c99="" class="bx--modal-header__label bx--type-delta">Loan Started: {{device.loanDate}}</p>
+                                     <!-- Falta un condicional cuando el loan finished este vacio-->
+                                    <p _ngcontent-ows-c99="" class="bx--modal-header__label bx--type-delta">Loan Finished: {{device.finishDate}}</p>
+                                </div>
+                                <ibm-modal-footer>
+                                    <ng-container>
+                                        <button
+                                            ibmButton="primary"
+                                            (click)="open = false"
+                                            [attr.modal-primary-focus]="true">
+                                            Okay
+                                        </button>
+                                    </ng-container>
+                                </ibm-modal-footer>
+                            </ibm-modal>
+
                         </div>
                     </div>
-                </div>
-            </ibm-tab>
-        </ibm-tabs>
-        <div></div>
-    </div>
-    <div class="LoanChart">
-        <img src="../../assets/chart.png" alt="">
-        <img src="../../assets/chart.png" alt="">
+                </ibm-tab>
+            </ibm-tabs>
+            <div></div>
+        </div>
+        <div class="LoanChart">
+        
+        </div>
     </div>
 </section>
   

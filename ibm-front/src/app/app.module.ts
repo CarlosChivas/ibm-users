@@ -21,7 +21,8 @@ import {
   RadioModule,
   GridModule,
   TagModule,
-  ModalModule
+  ModalModule,
+  DropdownModule 
 } from 'carbon-components-angular';
 
 import { LoginComponent } from './login/login.component';
@@ -65,7 +66,8 @@ import { PeripheralRegistrationComponent } from './peripheral-registration/perip
     RadioModule,
     GridModule,
     TagModule,
-    ModalModule
+    ModalModule,
+    DropdownModule 
   ],
   providers: [],
   bootstrap: [AppComponent]

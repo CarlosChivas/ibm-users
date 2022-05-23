@@ -1,27 +1,36 @@
+<style>
+  ibm-list-column>span {
+    text-align: center;
+    display: flex;
+    justify-content: center;
+  }
+
+</style>
+
 <app-menu-bar></app-menu-bar>
 <section class="overview-page__banner" aria-label="overview page banner">
 
   <div class="container">
-    <div class="Separate">
-      <h2 class="page-title">Loans</h2>
-      <div>
-        <a ibmButton="secondary" [routerLink]="['../../newloan']">Register Loan</a>
-      </div>
-    </div>
+    <h2 class="page-title">Loans</h2>
+
+
+
     <div ibmGrid>
       <div ibmRow>
-        <div ibmCol >
-          <div class="bx--search bx--search--lg" role="search" tabindex="0"  >
-            <label class="bx--label" for="search-20" style="width : 100%;" >Search</label>
-            <input class="bx--search-input" type="text" id="search-20" autocomplete="on" placeholder="Search"  style="width : 100%;" >
-            <svg class="bx--search-magnifier-icon" ibmIcon="search" size="16" xmlns="" focusable="false" preserveAspectRatio="xMidYMid meet" aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" ></svg>
+        <div ibmCol>
+          <div class="bx--search bx--search--lg" role="search" tabindex="0">
+            <label class="bx--label" for="search-20" style="width : 100%;">Search</label>
+            <input class="bx--search-input" type="text" id="search-20" autocomplete="on" placeholder="Search"
+              style="width : 100%;">
+            <svg class="bx--search-magnifier-icon" ibmIcon="search" size="16" xmlns="" focusable="false"
+              preserveAspectRatio="xMidYMid meet" aria-hidden="true" width="16" height="16" viewBox="0 0 16 16"></svg>
           </div>
         </div>
-        <div ibmCol > <a ibmButton="secondary" [routerLink]="['../../newloan']" style="float: right;">Register Loan</a>
+        <div ibmCol> <a ibmButton="secondary" [routerLink]="['../../newloan']" style="float: right;">Register Loan</a>
         </div>
       </div>
       <div style="padding-top: 10px;"></div>
-    <div ibmRow>
+      <div ibmRow>
         <div ibmCol class="multi-selection">
           <button ibmButton="primary" (click)="resetFilters()" class="reset-button">Reset Filters</button>
           <fieldset class="bx--fieldset">
@@ -52,43 +61,55 @@
           <ibm-structured-list>
             <ibm-list-header>
               <ibm-list-column *ngFor="let product of columns" class="listColumn--Header">
-                  {{product}}
+                <span>{{product}}</span>
               </ibm-list-column>
               <ibm-list-column></ibm-list-column>
             </ibm-list-header>
-            <ibm-list-row *ngFor="let product of areaLoans">
+            <ibm-list-row *ngFor="let emp of areaLoans ;let i = index">
               <ibm-list-column class="listColumn">
-                {{product.employeeID}}
+                {{emp.employeeID}}
               </ibm-list-column>
               <ibm-list-column class="listColumn">
-                {{product.employeeName}}
+                {{emp.employeeName}}
               </ibm-list-column>
               <ibm-list-column class="listColumn">
-                {{product.deviceID}}
+                {{emp.deviceType}}
               </ibm-list-column>
               <ibm-list-column class="listColumn">
-                {{product.deviceType}}
+                {{emp.deviceBrand}}
               </ibm-list-column>
               <ibm-list-column class="listColumn">
-                {{product.deviceBrand}}
+                {{emp.serialNumber}}
               </ibm-list-column>
               <ibm-list-column class="listColumn">
-                {{product.serialNumber}}
+                <span>
+                  <svg ibmIcon="checkmark--filled" size="20" style="width: 50%;"
+                    *ngIf="emp.termsConditions == true else CROSS"></svg>
+                  <ng-template #CROSS>
+                    <svg ibmIcon="close" size="20" style="width: 50%;"></svg>
+                  </ng-template>
+                </span>
               </ibm-list-column>
               <ibm-list-column class="listColumn">
-                {{product.termsConditions}}
-                <svg ibmIcon="checkmark--filled" size="20" style="width: 50%;"></svg>
+                <span>
+                  <svg ibmIcon="checkmark--filled" size="20" style="width: 50%;"
+                    *ngIf="emp.secAuth == true else CROSS"></svg>
+                  <ng-template #CROSS>
+                    <svg ibmIcon="close" size="20" style="width: 50%;"></svg>
+                  </ng-template>
+                </span>
               </ibm-list-column>
               <ibm-list-column class="listColumn">
-                {{product.secAuth}}
-                <svg ibmIcon="close" size="20" style="width: 50%;"></svg>
-              </ibm-list-column>
-              <ibm-list-column class="listColumn">
-                {{product.returned}}
-                <svg ibmIcon="close" size="20" style="width: 90%;"></svg>
+                <span>
+                  <svg ibmIcon="checkmark--filled" size="20" style="width: 50%;"
+                    *ngIf="emp.returned == true else CROSS"></svg>
+                  <ng-template #CROSS>
+                    <svg ibmIcon="close" size="20" style="width: 50%;"></svg>
+                  </ng-template>
+                </span>
               </ibm-list-column>
               <ibm-list-column>
-                <button ibmButton="secondary">Submit</button>
+                <button ibmButton="secondary" (click)="openModal(i)">Modify</button>
               </ibm-list-column>
             </ibm-list-row>
           </ibm-structured-list>
@@ -97,3 +118,18 @@
     </div>
   </div>
 </section>
+
+<ibm-modal [open]="isOpen" (overlaySelected)="closeModal()">
+  <ibm-modal-header (closeSelect)="closeModal()" [showCloseButton]="isOpen">
+    <h2 ibmModalHeaderLabel>aqui va el ID del loan</h2>
+    <h3 ibmModalHeaderHeading>{{specific.employeeName}}</h3>
+  </ibm-modal-header>
+  <section ibmModalContent>
+    <h1>{{specific.deviceBrand}} {{specific.deviceType}}</h1>
+    <p ibmModalContentText>{{specific.serialNumber}}</p>
+  </section>
+  <ibm-modal-footer>
+    <button class="bx--btn bx--btn--secondary" (click)="cancel()" *ngIf="specific.secAuth == false">Cancel Registration</button>
+    <button class="bx--btn bx--btn--primary" modal-primary-focus (click)="returnDevice()">Update Registration</button>
+  </ibm-modal-footer>
+</ibm-modal>

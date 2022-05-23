@@ -1,6 +1,6 @@
 {
     "/login": {
-        "target": "http://169.51.205.229:31605/login",
+        "target": "http://169.51.205.229:30289/login",
         "secure": false,
         "logLevel": "debug",
         "pathRewrite": {
@@ -9,7 +9,7 @@
         "changeOrigin": true
     },
     "/logout": {
-        "target": "http://169.51.205.229:31605/logout",
+        "target": "http://169.51.205.229:30289/logout",
         "secure": false,
         "logLevel": "debug",
         "pathRewrite": {
@@ -18,11 +18,20 @@
         "changeOrigin": true
     },
     "/isLogged": {
-        "target": "http://169.51.205.229:31605/isLogged",
+        "target": "http://169.51.205.229:30289/isLogged",
         "secure": false,
         "logLevel": "debug",
         "pathRewrite": {
             "^/isLogged": ""
+        },
+        "changeOrigin": true
+    },
+    "/Admin/getAllUsers": {
+        "target": "http://169.51.205.229:30289/Admin/getAllUsers",
+        "secure": false,
+        "logLevel": "debug",
+        "pathRewrite": {
+            "^/Admin/getAllUsers": ""
         },
         "changeOrigin": true
     }

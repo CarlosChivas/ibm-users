@@ -17,7 +17,8 @@ const routes: Routes = [
   { path: 'newloan', component: LoanFormComponent },
   { path: 'loan/:area', component: FocalLoansComponent },
   { path: 'home', component: MyLoansComponent },
-  { path: 'profile', component: ProfileComponent },
+  { path: 'profile/', component: ProfileComponent },
+  { path: 'profile/:id', component: ProfileComponent },
   { path: 'manage', component: RoleManagementComponent },
   { path: 'newperipheral', component: PeripheralRegistrationComponent }
 ];
