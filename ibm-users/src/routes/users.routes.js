@@ -22,4 +22,4 @@ router.get("/Focal/getPeripherals", rolesCtrl.validateToken, rolesCtrl.isAdmin, 
 */
 router.post("/login", usersCtrl.matchEmail,usersCtrl.matchPassword);
 router.post("/register", usersCtrl.register);
-module.exports = router;
+module.exports = router; 
