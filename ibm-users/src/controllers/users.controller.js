@@ -49,7 +49,6 @@ usersCtrl.matchPassword = async (req, res, next) => {
     if(await bcryptjs.compare(req.body.password,req.user.PASSWORD)){
         const id = req.user.ID;
         const token = jwt.sign({id:id}, process.env.JWT_SECRETKEY)
-        console.log(token)
         const cookieOptions = {
             expires: new Date(Date.now()+90*24*60*1000),
             // httpOnly: true,
