@@ -52,10 +52,10 @@ usersCtrl.matchPassword = async (req, res, next) => {
         console.log(token)
         const cookieOptions = {
             expires: new Date(Date.now()+90*24*60*1000),
-            httpOnly: true,
-            sameSite: 'none',
-            secure: true,
-            domain: ""
+            // httpOnly: true,
+            // sameSite: 'none',
+            // secure: true,
+            // domain: "http://169.51.205.229:31622"
         }
         res.cookie('jwt', token, cookieOptions);
         res.status(200).send("Inicio de sesion correcto")
@@ -112,7 +112,7 @@ usersCtrl.getAllUsers = async (req, res) => {
         if (err) {
             res.status(400).send(err)
         } else{
-            db.query(`SELECT users.id, users.first_name, users.last_name, 
+            db.query(`SELECT users.id, users.first_name, users.last_name, users.email,
             role.name as role_name, department.name as department_name 
             FROM users 
             INNER JOIN role ON users.role=role.id 

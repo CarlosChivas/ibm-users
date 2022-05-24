@@ -20,7 +20,7 @@ export class LoginComponent implements OnInit {
     private router: Router
   ) {
     console.log("Entro aqui");
-    var api = "/isLogged";
+    var api = "http://169.51.205.229:30289/isLogged";
     var rout = this.router;
     axios.get(api, { withCredentials: true }).then(function (response) {
       console.log("Respuesta -> ", response);
@@ -30,7 +30,7 @@ export class LoginComponent implements OnInit {
   }
 
   validateLogin() {
-    var api = "/login";
+    var api = "http://169.51.205.229:30289/login";
     var rout = this.router;
     var form = this.LoginForm;
     console.log(form.value);
@@ -50,7 +50,7 @@ export class LoginComponent implements OnInit {
 
   ngOnInit(): void {
     console.log("Entro aqui");
-    var api = "/isLogged";
+    var api = "http://169.51.205.229:30289/isLogged";
     var rout = this.router;
     axios.get(api, { withCredentials: true }).then(function (response) {
       console.log("Respuesta -> ", response);

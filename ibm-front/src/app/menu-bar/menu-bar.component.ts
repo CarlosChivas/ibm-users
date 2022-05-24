@@ -12,7 +12,7 @@ export class MenuBarComponent implements OnInit {
   constructor(private router: Router) { }
 
   logout() {
-    var api = "/logout";
+    var api = "http://169.51.205.229:30289/logout";
     console.log(api);
     var rout = this.router;
     axios.get(api, { withCredentials: true }).then(function (response) {
