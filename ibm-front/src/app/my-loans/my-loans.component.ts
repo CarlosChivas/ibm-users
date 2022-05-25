@@ -1,63 +1,107 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import axios from 'axios';
+import {Injectable} from '@angular/core';
+
 
 @Component({
   selector: 'app-my-loans',
   templateUrl: './my-loans.component.html',
   styleUrls: ['./my-loans.component.scss']
 })
+
+@Injectable()
 export class MyLoansComponent implements OnInit {
+  open: boolean = false
+  showCloseButton: boolean = true;
   title = 'My Loans'
+
+  numLoans: number = 0;
 
   myLoans = {
     "Current": [{
       "device": "Keyboard",
-      "description": "DELL keyboard"
+      "description": "DELL keyboard",
+      "loanDate": "10-11-2022",
+      "finishDate": ""
     }, {
       "device": "Keyboard",
-      "description": "DELL keyboard"
+      "description": "DELL keyboard",
+      "loanDate": "10-11-2022",
+      "finishDate": ""
+      
     }, {
       "device": "Keyboard",
-      "description": "DELL keyboard"
+      "description": "DELL keyboard",
+      "loanDate": "10-11-2022",
+      "finishDate": ""
     }, {
       "device": "Keyboard",
-      "description": "DELL keyboard"
+      "description": "DELL keyboard",
+      "loanDate": "10-11-2022",
+      "finishDate": ""
     }],
     "In process": [{
       "device": "Mouse",
-      "description": "HP mouse"
+      "description": "HP mouse",
+      "loanDate": "",
+      "finishDate": ""
     }, {
       "device": "Mouse",
-      "description": "HP mouse"
+      "description": "HP mouse",
+      "loanDate": "",
+      "finishDate": ""
     }],
     "Past": [{
       "device": "Monitor",
-      "description": "Acer monitor"
+      "description": "Acer monitor",
+      "loanDate": "",
+      "finishDate": "10-11-2022"
     }, {
       "device": "Monitor",
-      "description": "Acer monitor"
+      "description": "Acer monitor",
+      "loanDate": "",
+      "finishDate": "10-11-2022"
     }, {
       "device": "Monitor",
-      "description": "Acer monitor"
+      "description": "Acer monitor",
+      "loanDate": "",
+      "finishDate": "10-11-2022"
     }, {
       "device": "Monitor",
-      "description": "Acer monitor"
+      "description": "Acer monitor",
+      "loanDate": "",
+      "finishDate": "10-11-2022"
     }, {
       "device": "Mouse",
-      "description": "HP mouse"
+      "description": "HP mouse",
+      "loanDate": "",
+      "finishDate": "10-11-2022"
     }, {
       "device": "Mouse",
-      "description": "HP mouse"
+      "description": "HP mouse",
+      "loanDate": "",
+      "finishDate": "10-11-2022"
     }, {
       "device": "Mouse",
-      "description": "HP mouse"
+      "description": "HP mouse",
+      "loanDate": "",
+      "finishDate": "10-11-2022"
     }, {
       "device": "Mouse",
-      "description": "HP mouse"
+      "description": "HP mouse",
+      "loanDate": "",
+      "finishDate": "10-11-2022"
     }],
   };
-  constructor(private router: Router) { }
+
+  getNumLoans() {
+    return Object.keys(this.myLoans.Current).length;
+  }
+
+  constructor(private router: Router) {
+    // console.log(Object.keys(this.myLoans.Current).length);
+  }
 
   ngOnInit(): void {
     console.log("ei");

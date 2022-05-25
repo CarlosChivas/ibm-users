@@ -13,7 +13,8 @@ import {
   TagModule,
   RadioModule,
   TableModule,
-  GridModule} from 'carbon-components-angular';
+  GridModule,
+  DropdownModule } from 'carbon-components-angular';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 
 describe('AppComponent', () => {
@@ -31,7 +32,8 @@ describe('AppComponent', () => {
         CheckboxModule,
         RadioModule,
         GridModule,
-        TagModule
+        TagModule,
+        DropdownModule 
       ],
       declarations: [
         AppComponent,

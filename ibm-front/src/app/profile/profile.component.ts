@@ -1,12 +1,15 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import axios from 'axios';
+import { Injectable } from '@angular/core';
 
 @Component({
   selector: 'app-profile',
   templateUrl: './profile.component.html',
   styleUrls: ['./profile.component.scss']
 })
+
+@Injectable()
 export class ProfileComponent implements OnInit {
   Profile = {
     "1": [{
@@ -16,6 +19,56 @@ export class ProfileComponent implements OnInit {
       "slack": "erickin17",
       "department" : "Device Loans",
       "role" : "Administrator"
+    }],
+  };
+
+  title = 'My Loans'
+
+  myLoans = {
+    "Current": [{
+      "device": "Keyboard",
+      "description": "DELL keyboard"
+    }, {
+      "device": "Keyboard",
+      "description": "DELL keyboard"
+    }, {
+      "device": "Keyboard",
+      "description": "DELL keyboard"
+    }, {
+      "device": "Keyboard",
+      "description": "DELL keyboard"
+    }],
+    "In process": [{
+      "device": "Mouse",
+      "description": "HP mouse"
+    }, {
+      "device": "Mouse",
+      "description": "HP mouse"
+    }],
+    "Past": [{
+      "device": "Monitor",
+      "description": "Acer monitor"
+    }, {
+      "device": "Monitor",
+      "description": "Acer monitor"
+    }, {
+      "device": "Monitor",
+      "description": "Acer monitor"
+    }, {
+      "device": "Monitor",
+      "description": "Acer monitor"
+    }, {
+      "device": "Mouse",
+      "description": "HP mouse"
+    }, {
+      "device": "Mouse",
+      "description": "HP mouse"
+    }, {
+      "device": "Mouse",
+      "description": "HP mouse"
+    }, {
+      "device": "Mouse",
+      "description": "HP mouse"
     }],
   };
   constructor(private router: Router) { }
