@@ -9,8 +9,6 @@ import axios from 'axios';
   styleUrls: ['./role-management.component.scss']
 })
 
-
-
 export class RoleManagementComponent implements OnInit {
   searchText: any;
   nameSearch: string = ''
@@ -69,8 +67,8 @@ export class RoleManagementComponent implements OnInit {
     }, {
       "ID": 5,
       "FIRST_NAME": "Nicole",
-      "LAST_NAME": "Copedo",
-      "EMAIL": "NicoleCopedo@ibm.com",
+      "LAST_NAME": "Copado",
+      "EMAIL": "NicoleCopado@ibm.com",
       "DEPARTMENT_NAME": "IBM",
       "ROLE_NAME": "Focal"
     }, {

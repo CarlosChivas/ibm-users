@@ -1,17 +1,22 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import axios from 'axios';
+import {Injectable} from '@angular/core';
+
 
 @Component({
   selector: 'app-my-loans',
   templateUrl: './my-loans.component.html',
   styleUrls: ['./my-loans.component.scss']
 })
+
+@Injectable()
 export class MyLoansComponent implements OnInit {
   open: boolean = false
   showCloseButton: boolean = true;
   title = 'My Loans'
 
+  numLoans: number = 0;
 
   myLoans = {
     "Current": [{
@@ -89,7 +94,14 @@ export class MyLoansComponent implements OnInit {
       "finishDate": "10-11-2022"
     }],
   };
-  constructor(private router: Router) { }
+
+  getNumLoans() {
+    return Object.keys(this.myLoans.Current).length;
+  }
+
+  constructor(private router: Router) {
+    // console.log(Object.keys(this.myLoans.Current).length);
+  }
 
   ngOnInit(): void {
     console.log("ei");
