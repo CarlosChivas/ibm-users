@@ -63,6 +63,14 @@ rolesCtrl.isEmpoyee = async(req,res,next) => {
     }
 }
 
+rolesCtrl.isFocalORAdmin = async(req,res,next) => {
+    if(req.user.ROLE_NAME === "Administrator" || req.user.ROLE_NAME === "Focal"){
+        next();
+    } else{
+        res.status(401).send("You don't have access");
+    }
+}
+
 
 module.exports = rolesCtrl;
 

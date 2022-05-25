@@ -40,10 +40,6 @@ rolesCtrl.validateToken = async(req, res, next) => {
     });
 }
 
-rolesCtrl.searchUsers = async (req,res) => {
-    console.log(req.params)
-    res.send("Todo bien")
-}
 
 rolesCtrl.isAdmin = async(req,res,next) => {
     if(req.user.ROLE_NAME === "Administrator"){
@@ -61,6 +57,14 @@ rolesCtrl.isFocal = async(req,res,next) => {
 }
 rolesCtrl.isEmpoyee = async(req,res,next) => {
     if(req.user.ROLE_NAME === "Employee"){
+        next();
+    } else{
+        res.status(401).send("You don't have access");
+    }
+}
+
+rolesCtrl.isFocalORAdmin = async(req,res,next) => {
+    if(req.user.ROLE_NAME === "Administrator" || req.user.ROLE_NAME === "Focal"){
         next();
     } else{
         res.status(401).send("You don't have access");

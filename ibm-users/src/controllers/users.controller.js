@@ -21,8 +21,6 @@ usersCtrl.matchEmail = async (req, res, next) => {
                     if(err){
                       res.send(err);
                     } else{
-                        //const res = await checkPassword(req.body.password, data[0].PASSWORD)
-                        //console.log("Me regresa check password: ", res)
                       if(data.length == 0 /*|| await checkPassword(req.body.password, data[0].PASSWORD)/*!(await bcryptjs.compare(req.body.password, data[0].PASSWORD))*/){
                             res.status(401).send("Credenciales incorrectas");
                       } else{
@@ -130,12 +128,69 @@ usersCtrl.getAllUsers = async (req, res) => {
         }})
 }
 
-async function checkPassword(password1, password2){
-    //console.log(await bcryptjs.compare(password1, password2))
-    //console.log(!(await bcryptjs.compare(password1, password2)))
-    const  res = await bcryptjs.compare(password1, password2);
-    console.log(res);
-    return res;
+
+usersCtrl.searchUsers = async (req,res) => {
+    
+    pool.open(process.env.DATABASE_STRING, function (err, db) {
+        if (err) {
+            res.status(401).send(err);
+        } else{
+            console.log(typeof req.params.name)
+            db.query(`SELECT users.id, users.first_name, users.last_name, users.email,
+                role.name as role_name, department.name as department_name  
+                FROM users 
+                INNER JOIN role ON users.role=role.id 
+                INNER JOIN department ON users.department=department.id 
+                WHERE LOWER(users.first_name) LIKE LOWER(?)
+                OR LOWER(users.last_name) LIKE LOWER(?)
+                OR LOWER(users.email) LIKE LOWER(?);`,['%'+req.params.name+'%', '%'+req.params.name+'%', '%'+req.params.name+'%'], function(err, data){
+                        
+                if(err){
+                    res.status(401).send(err);
+                } else{
+                    if(data.length>0){
+                        res.status(401).send(data);
+                    } else{
+                        res.status(401).send("Users not found");
+                    }
+                }
+            })
+            db.close(function (error) { // RETURN CONNECTION TO POOL
+                if (error) {
+                    res.send("Error mientras se cerraba la conexion")
+                }
+            });
+        }})
+}
+
+usersCtrl.getUser = async (req,res) => {
+    pool.open(process.env.DATABASE_STRING, function (err, db) {
+        if (err) {
+            res.status(401).send(err);
+        } else{
+            
+            db.query(`SELECT users.id, users.first_name, users.last_name, users.email,
+                    role.name as role_name, department.name as department_name  
+                    FROM users 
+                    INNER JOIN role ON users.role=role.id 
+                    INNER JOIN department ON users.department=department.id 
+                    WHERE users.id = ?;`,[req.params.id], function(err, data){
+                if(err){
+                    res.status(401).send(err);
+                } else{
+                    if(data.length>0){
+                        res.status(401).send(data[0]);
+                    } else{
+                        res.status(401).send("User not found");
+                    }
+                }
+            })
+            db.close(function (error) { // RETURN CONNECTION TO POOL
+                if (error) {
+                    res.send("Error mientras se cerraba la conexion")
+                }
+            });
+        }})
 }
 
 module.exports = usersCtrl;
