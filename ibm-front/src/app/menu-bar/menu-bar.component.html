@@ -3,7 +3,7 @@
         <ibm-header-item [route]="['home']">My Loans</ibm-header-item>
         <ibm-header-item [route]="['loan/AreaID']">Area Loan</ibm-header-item>
         <ibm-header-item [route]="['newloan']">New Loan</ibm-header-item>
-        <ibm-header-item [route]="['profile']">My Profile</ibm-header-item>
+        <ibm-header-item [route]="['profile/1']">My Profile</ibm-header-item>
         <ibm-header-item [route]="['manage']">Manage User</ibm-header-item>
         <!-- <div *ngIf="profileComponent.Profile[1][1].role == 'Administrator'">
             <ibm-header-item [route]="['manage']">Manage User</ibm-header-item>
@@ -30,7 +30,7 @@
                     <p class="profile-bar-p" style="color: royalblue;">{{profile.role}}</p>
                     <p class="profile-bar-p">Active Loans: {{numLoan}}</p>
                     <br>
-                    <p class="profile-bar-p"><a id="profile-anchor" [routerLink]="['../profile']">View Profile</a></p>
+                    <p class="profile-bar-p"><a id="profile-anchor" [routerLink]="['../profile/1']">View Profile</a></p>
                 </div>
             </div>  
         </div>
