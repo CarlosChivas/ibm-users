@@ -105,7 +105,7 @@ export class MyLoansComponent implements OnInit {
 
   ngOnInit(): void {
     console.log("ei");
-    var api = "/isLogged";
+    var api = "http://169.51.205.229:30289/isLogged";
     var rout = this.router;
     axios.get(api, {withCredentials:true}).then(function (response) {
       console.log("wacha -> ",response);

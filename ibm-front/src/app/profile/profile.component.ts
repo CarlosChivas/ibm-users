@@ -74,7 +74,7 @@ export class ProfileComponent implements OnInit {
   constructor(private router: Router) { }
 
   ngOnInit(): void {
-    var api = "/isLogged";
+    var api = "http://169.51.205.229:30289/isLogged";
     var rout = this.router;
     axios.get(api, {withCredentials:true}).then(function (response) {
       if (response.status != 200)

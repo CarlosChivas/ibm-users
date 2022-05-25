@@ -155,7 +155,7 @@ export class RoleManagementComponent implements OnInit {
   }
 
   ngOnInit() {
-    var api = "/isLogged";
+    var api = "http://169.51.205.229:30289/isLogged";
     var rout = this.router;
     var esto = this;
     axios.get(api, { withCredentials: true }).then((response) => {
@@ -163,7 +163,7 @@ export class RoleManagementComponent implements OnInit {
       else {
         if (response.data.ROLE_NAME != "Administrator") rout.navigate(['./']);
         console.log(response.data);
-        api = "/Admin/getAllUsers";
+        api = "http://169.51.205.229:30289/Admin/getAllUsers";
         axios.get(api, { withCredentials: true }).then(function (response) {
           console.log(response.data);
           esto.employees = response.data;
