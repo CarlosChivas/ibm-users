@@ -13,7 +13,7 @@ endpoint body example:
     "description": "Mouse with new features",
     "brand": "Logitech",
     "model": "sge3424",
-    "peripheral_status": "On loan"
+    "peripheral_status": "Available"
 }
 */
 router.post("/Focal/createPeripheral", rolesCtrl.validateToken, 
@@ -23,12 +23,11 @@ router.post("/Focal/createPeripheral", rolesCtrl.validateToken,
                                        peripheralsCtrl.findPeripheralStatus,
                                        peripheralsCtrl.createPeripheral);
 
-router.get("/getAllPeripherals", rolesCtrl.validateToken, 
-                                 peripheralsCtrl.getAllPeripherals);
+router.get("/getAllPeripherals", rolesCtrl.validateToken, peripheralsCtrl.getAllPeripherals);
 
-router.get("/Focal/getAvailablePeripherals", rolesCtrl.validateToken,
-                                             rolesCtrl.isFocal,
-                                             peripheralsCtrl.getAvailablePeripherals);
+router.get("/Focal/getPeripherals", rolesCtrl.validateToken,
+                                    rolesCtrl.isFocal,
+                                    peripheralsCtrl.getPeripherals);
 
 
 /*
@@ -43,8 +42,8 @@ router.post("/Focal/createLoan", rolesCtrl.validateToken,
                                  rolesCtrl.isFocal,
                                  peripheralsCtrl.findLoanStatus,
                                  peripheralsCtrl.checkPeripheralStatus,
-                                 peripheralsCtrl.changePeripheralStatus,
-                                 peripheralsCtrl.createLoan);
+                                 peripheralsCtrl.createLoan,
+                                 peripheralsCtrl.changePeripheralStatus);
 
 router.get("/Focal/getLoans", rolesCtrl.validateToken,
                               rolesCtrl.isFocal,

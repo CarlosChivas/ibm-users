@@ -98,7 +98,7 @@ peripheralsCtrl.createPeripheral = async (req, res) => {
         if (err) {
             res.status(403).send(err)
         } else{
-            db.query("INSERT INTO peripheral(ptype,description,brand,model,peripheral_status) VALUES (?,?,?,?,?);",[req.ptype.ID,req.body.description,req.brand.ID,req.body.model,req.status.ID], function(err, data){
+            db.query("INSERT INTO peripheral(ptype,description,brand,model,peripheral_status,focal) VALUES (?,?,?,?,?,?);",[req.ptype.ID,req.body.description,req.brand.ID,req.body.model,req.status.ID,req.user.ID], function(err, data){
                 if(err){
                     res.status(400).send(err);
                 } else{
@@ -126,10 +126,12 @@ peripheralsCtrl.getAllPeripherals = async (req, res) => {
                              peripheral.description, 
                              brand.name as brand, 
                              peripheral.model, 
-                             peripheral_status.name as peripheral_status
+                             peripheral_status.name as peripheral_status,
+                             users.first_name || ' ' || users.last_name as focal_name
             FROM peripheral
             INNER JOIN ptype ON peripheral.ptype = ptype.id
             INNER JOIN brand ON peripheral.brand = brand.id
+            INNER JOIN users ON peripheral.focal = users.id
             INNER JOIN peripheral_status ON peripheral.peripheral_status = peripheral_status.id;`, function(err, data){
                 if(err){
                     res.status(400).send(err);
@@ -146,7 +148,7 @@ peripheralsCtrl.getAllPeripherals = async (req, res) => {
     })
 }
 
-peripheralsCtrl.getAvailablePeripherals = async (req, res) => {
+peripheralsCtrl.getPeripherals = async (req, res) => {
     
     pool.open(process.env.DATABASE_STRING, function (err, db) {
         
@@ -163,7 +165,7 @@ peripheralsCtrl.getAvailablePeripherals = async (req, res) => {
                     INNER JOIN ptype ON peripheral.ptype = ptype.id
                     INNER JOIN brand ON peripheral.brand = brand.id
                     INNER JOIN peripheral_status ON peripheral.peripheral_status = peripheral_status.id
-                    WHERE peripheral_status.name = 'Available';`, function(err, data){
+                    WHERE peripheral.focal = ?;`,[req.user.ID], function(err, data){
                 if(err){
                     res.status(400).send(err);
                 } else{
@@ -216,7 +218,7 @@ peripheralsCtrl.checkPeripheralStatus = async (req, res, next) => {
             db.query(`SELECT peripheral.serial
                       FROM peripheral
                       INNER JOIN peripheral_status ON peripheral.peripheral_status = peripheral_status.id
-                      WHERE peripheral.serial = ? and peripheral_status.name = ?;`,[req.body.peripheral_serial,"Available"], function(err, data){
+                      WHERE peripheral.serial = ? AND peripheral_status.name = ?;`,[req.body.peripheral_serial,"Available"], function(err, data){
                 if(err){
                     res.status(400).send(err);
                 } else{
@@ -236,14 +238,14 @@ peripheralsCtrl.checkPeripheralStatus = async (req, res, next) => {
     })
 }
 
-peripheralsCtrl.changePeripheralStatus = async (req, res, next) => {
+peripheralsCtrl.createLoan = async (req, res, next) => {
     
     pool.open(process.env.DATABASE_STRING, function (err, db) {
         
         if (err) {
             res.status(403).send(err)
         } else{
-            db.query("UPDATE peripheral SET peripheral_status = (SELECT id from peripheral_status WHERE name = 'On loan') where serial = ?;",[req.body.peripheral_serial], function(err, data){
+            db.query("INSERT INTO loan(employee,focal,peripheral_serial,creation,loan_status,condition_accepted,security_auth) VALUES (?,?,?,CURRENT_DATE,?,0,0);",[req.body.employee,req.user.ID,req.body.peripheral_serial,req.status.ID], function(err, data){
                 if(err){
                     res.status(400).send(err);
                 } else{
@@ -257,16 +259,17 @@ peripheralsCtrl.changePeripheralStatus = async (req, res, next) => {
             });
         }
     })
-} 
 
-peripheralsCtrl.createLoan = async (req, res) => {
+}
+
+peripheralsCtrl.changePeripheralStatus = async (req, res) => {
     
     pool.open(process.env.DATABASE_STRING, function (err, db) {
         
         if (err) {
             res.status(403).send(err)
         } else{
-            db.query("INSERT INTO loan(employee,focal,peripheral_serial,creation,loan_status,condition_accepted,security_auth) VALUES (?,?,?,CURRENT_DATE,?,0,0);",[req.body.employee,req.user.ID,req.body.peripheral_serial,req.status.ID], function(err, data){
+            db.query("UPDATE peripheral SET peripheral_status = (SELECT id from peripheral_status WHERE name = 'On loan') where serial = ?;",[req.body.peripheral_serial], function(err, data){
                 if(err){
                     res.status(400).send(err);
                 } else{
@@ -280,8 +283,7 @@ peripheralsCtrl.createLoan = async (req, res) => {
             });
         }
     })
-
-}
+} 
 
 peripheralsCtrl.getLoans = async (req, res) => {
     
