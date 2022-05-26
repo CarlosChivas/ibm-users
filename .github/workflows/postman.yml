@@ -41,3 +41,7 @@ jobs:
       - name: Run Microservice Users
         run: node ./ibm-users &
         
+      - name: Newman Action
+        uses: matt-ball/newman-action@v1.0.4
+        with: 
+          collection: https://github.com/CarlosChivas/ibm-users/edit/dev/.github/workflows/postman.yml
