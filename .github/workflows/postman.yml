@@ -25,4 +25,4 @@ jobs:
       - uses: actions/checkout@v3
 
       - name: What file is it?
-        run: cat ibm-users/ibm-peripherals/src/app.js
+        run: cat ibm-peripherals/src/app.js
