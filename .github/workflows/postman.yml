@@ -36,10 +36,10 @@ jobs:
         run: npm --prefix ./ibm-users install
         
       - name: Run Microservice Peripherals
-        run: node ./ibm-peripherals &
+        run: node ./ibm-peripherals;
         
       - name: Run Microservice Users
-        run: node ./ibm-users &
+        run: node ./ibm-users;
         
       - name: Newman Action
         uses: matt-ball/newman-action@v1.0.4
