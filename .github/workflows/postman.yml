@@ -41,12 +41,8 @@ jobs:
       - name: Run Microservice Users
         run: node ./ibm-users &
         
-      - name: Wait / Sleep
-        uses: jakejarvis/wait-action@v0.1.1
-        with:
-          time: 10
-        
       - name: Newman Action
         uses: matt-ball/newman-action@v1.0.4
         with: 
           collection: https://www.getpostman.com/collections/508f9ed32085ffc1f358
+          envVar: '[{ "key": "NO_PROXY ", "value": "localhost,127.0.0.1" }]'
