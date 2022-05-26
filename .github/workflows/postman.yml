@@ -36,7 +36,7 @@ jobs:
         run: npm --prefix ./ibm-users install
         
       - name: Gnome-terminal command add
-        run: apt-get install gnome-terminal
+        run: sudo apt-get install gnome-terminal
         
       - name: Run Microservice Peripherals
         run: gnome-terminal -- bash -c "node ./ibm-peripherals; exec bash"
