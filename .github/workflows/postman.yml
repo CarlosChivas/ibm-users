@@ -23,6 +23,17 @@ jobs:
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       - uses: actions/checkout@v3
-
-      - name: What file is it?
-        run: cat ibm-peripherals/src/app.js
+      
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v3.2.0
+        with: 
+          node-version: 16.15
+      
+      - name: Install Packages Microservice Peripherals
+        run: npm --prefix ./ibm-peripherals install
+        
+      - name: Install Packages Microservice Users
+        run: npm --prefix ./ibm-users install
+        
+      - name: Run Microservice Peripherals
+        run: gnome-terminal -- bash -c "node ./ibm-peripherals; exec bash"
