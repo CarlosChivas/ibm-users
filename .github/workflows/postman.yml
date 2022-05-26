@@ -35,28 +35,69 @@ jobs:
       - name: Install Packages Microservice Users
         run: npm --prefix ./ibm-users install
         
-      
-        
       - name: Create .env file ibm-users
-        run:  echo  ${{ secrets.ENV }}
-        
-      - name: Create .env file ibm-users
-        run: touch ./ibm-users/.env && echo  ${{ secrets.ENV }} > ./ibm-users/.env
-
+        run: |
+          touch ./ibm-users/.env
+          echo -n 'DATABASE_STRING="DATABASE=' >> ./ibm-users/.env
+          echo -n ${{ secrets.DATABASE }} >> ./ibm-users/.env 
+          echo -n ';HOSTNAME=' >> ./ibm-users/.env
+          echo -n ${{ secrets.HOSTNAME }} >> ./ibm-users/.env 
+          echo -n ';PORT=' >> ./ibm-users/.env
+          echo -n ${{ secrets.PORT }} >> ./ibm-users/.env 
+          echo -n ';PROTOCOL=' >> ./ibm-users/.env
+          echo -n ${{ secrets.PROTOCOL }} >> ./ibm-users/.env
+          echo -n ';UID=' >> ./ibm-users/.env
+          echo -n ${{ secrets.UID }} >> ./ibm-users/.env
+          echo -n ';PWD=' >> ./ibm-users/.env
+          echo -n ${{ secrets.PWD }} >> ./ibm-users/.env
+          echo -n ';SECURITY=' >> ./ibm-users/.env
+          echo -n ${{ secrets.SECURITY }} >> ./ibm-users/.env
+          echo  '"' >> ./ibm-users/.env
+          echo -n 'JWT_SECRETKEY="' >> ./ibm-users/.env
+          echo -n ${{ secrets.JWT_SECRETKEY }} >> ./ibm-users/.env
+          echo -n '"' >> ./ibm-users/.env
+          
       - name: Create .env file ibm-peripherals
-        run: touch ./ibm-peripherals/.env && echo  ${{ secrets.ENV }} > ./ibm-peripherals/.env
+        run: |
+          touch ./ibm-peripherals/.env
+          echo -n 'DATABASE_STRING="DATABASE=' >> ./ibm-peripherals/.env
+          echo -n ${{ secrets.DATABASE }} >> ./ibm-peripherals/.env 
+          echo -n ';HOSTNAME=' >> ./ibm-peripherals/.env
+          echo -n ${{ secrets.HOSTNAME }} >> ./ibm-peripherals/.env 
+          echo -n ';PORT=' >> ./ibm-peripherals/.env
+          echo -n ${{ secrets.PORT }} >> ./ibm-peripherals/.env 
+          echo -n ';PROTOCOL=' >> ./ibm-peripherals/.env
+          echo -n ${{ secrets.PROTOCOL }} >> ./ibm-peripherals/.env
+          echo -n ';UID=' >> ./ibm-peripherals/.env
+          echo -n ${{ secrets.UID }} >> ./ibm-peripherals/.env
+          echo -n ';PWD=' >> ./ibm-peripherals/.env
+          echo -n ${{ secrets.PWD }} >> ./ibm-peripherals/.env
+          echo -n ';SECURITY=' >> ./ibm-peripherals/.env
+          echo -n ${{ secrets.SECURITY }} >> ./ibm-peripherals/.env
+          echo '"' >> ./ibm-peripherals/.env
+          echo -n 'JWT_SECRETKEY="' >> ./ibm-peripherals/.env
+          echo -n ${{ secrets.JWT_SECRETKEY }} >> ./ibm-peripherals/.env
+          echo -n '"' >> ./ibm-peripherals/.env
       
       - name: Echo .env file ibm-users
-        run: cat ./ibm-users/.env
+        run: |
+          cat ./ibm-users/.env 
 
       - name: Echo .env file ibm-peripherals
-        run: cat ./ibm-peripherals/.env
-      
+        run: |
+          cat ./ibm-peripherals/.env 
+
       - name: Run Microservice Peripherals
-        run: node ./ibm-peripherals & 
+        run: |
+          cd ./ibm-peripherals
+          node . &
+        
+      - name: Run Microservice Users
+        run: |
+          cd ./ibm-users
+          node . &
         
       - name: Newman Action
         uses: matt-ball/newman-action@v1.0.4
         with: 
           collection: https://www.getpostman.com/collections/508f9ed32085ffc1f358
-
