@@ -9,19 +9,18 @@ router.get("/", peripheralsCtrl.getHome);
 /*
 endpoint body example:
 {
-    "ptype": "Mouse",
-    "description": "Mouse with new features",
-    "brand": "Logitech",
-    "model": "sge3424",
-    "peripheral_status": "Available"
+    "ptype": "Keyboard",
+    "description": "Compact mechanical keyboard",
+    "brand": "Steren",
+    "model": "str0291383"
 }
 */
-router.post("/Focal/createPeripheral", rolesCtrl.validateToken, 
-                                       rolesCtrl.isFocal, 
-                                       peripheralsCtrl.findPtype,
-                                       peripheralsCtrl.findBrand,
-                                       peripheralsCtrl.findPeripheralStatus,
-                                       peripheralsCtrl.createPeripheral);
+router.post("/AdminFocal/createPeripheral", rolesCtrl.validateToken, 
+                                            rolesCtrl.isFocalORAdmin, 
+                                            peripheralsCtrl.findPtype,
+                                            peripheralsCtrl.findBrand,
+                                            peripheralsCtrl.findPeripheralStatus,
+                                            peripheralsCtrl.createPeripheral);
 
 router.get("/getAllPeripherals", rolesCtrl.validateToken, peripheralsCtrl.getAllPeripherals);
 
@@ -29,21 +28,20 @@ router.get("/Focal/getPeripherals", rolesCtrl.validateToken,
                                     rolesCtrl.isFocal,
                                     peripheralsCtrl.getPeripherals);
 
-
 /*
 endpoint body example:
 {
-    "employee": "23",
-    "peripheral_serial": "6",
-    "loan_status": "In progress"
+    "employee_email": "miguel@gmail.com",
+    "peripheral_serial": "26"
 }
 */
-router.post("/Focal/createLoan", rolesCtrl.validateToken,
-                                 rolesCtrl.isFocal,
-                                 peripheralsCtrl.findLoanStatus,
-                                 peripheralsCtrl.checkPeripheralStatus,
-                                 peripheralsCtrl.createLoan,
-                                 peripheralsCtrl.changePeripheralStatus);
+router.post("/AdminFocal/createLoan", rolesCtrl.validateToken,
+                                      rolesCtrl.isFocalORAdmin,
+                                      peripheralsCtrl.findEmail,
+                                      peripheralsCtrl.findLoanStatus,
+                                      peripheralsCtrl.checkPeripheralStatus,
+                                      peripheralsCtrl.createLoan,
+                                      peripheralsCtrl.changePeripheralStatus);
 
 router.get("/Focal/getLoans", rolesCtrl.validateToken,
                               rolesCtrl.isFocal,

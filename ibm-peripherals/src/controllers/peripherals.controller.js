@@ -69,7 +69,7 @@ peripheralsCtrl.findPeripheralStatus = async (req, res, next) => {
         if (err) {
             res.status(403).send(err)
         } else{
-            db.query("SELECT id FROM peripheral_status WHERE name = ?;",[req.body.peripheral_status], function(err, data){
+            db.query("SELECT id FROM peripheral_status WHERE name = 'Available';", function(err, data){
                 if(err){
                     res.status(400).send(err);
                 } else{
@@ -181,20 +181,48 @@ peripheralsCtrl.getPeripherals = async (req, res) => {
     })
 }
 
+peripheralsCtrl.findEmail = async (req, res, next) => {
+
+    pool.open(process.env.DATABASE_STRING, function (err, db) {
+        if (err) {
+            res.status(403).send(err)
+        } else{
+            db.query("SELECT id FROM users WHERE email = ?;",[req.body.employee_email], function(err, data){
+                if(err){
+                    res.status(400).send(err);
+                } else{
+                    if(JSON.stringify(data) === '[]'){
+                        res.status(401).send("No se puede crear prestamo, email no valido");
+                  } else{
+                        req.employee_id = data[0];
+                        next();
+                  }
+                }
+            })
+            db.close(function (error) { // RETURN CONNECTION TO POOL
+                if (error) {
+                    res.send("Error mientras se cerraba la conexion");
+                }
+            });
+        }
+    })
+
+}
+
 peripheralsCtrl.findLoanStatus = async (req, res, next) => {
 
     pool.open(process.env.DATABASE_STRING, function (err, db) {
         if (err) {
             res.status(403).send(err)
         } else{
-            db.query("SELECT id FROM loan_status WHERE name = ?;",[req.body.loan_status], function(err, data){
+            db.query("SELECT id FROM loan_status WHERE name = ?;",["In progress"], function(err, data){
                 if(err){
                     res.status(400).send(err);
                 } else{
                     if(JSON.stringify(data) === '[]'){
                         res.status(401).send("No se puede crear prestamo, estatus de prestamo no valido");
                   } else{
-                        req.status = data[0];
+                        req.loan_status = data[0];
                         next();
                   }
                 }
@@ -218,12 +246,12 @@ peripheralsCtrl.checkPeripheralStatus = async (req, res, next) => {
             db.query(`SELECT peripheral.serial
                       FROM peripheral
                       INNER JOIN peripheral_status ON peripheral.peripheral_status = peripheral_status.id
-                      WHERE peripheral.serial = ? AND peripheral_status.name = ?;`,[req.body.peripheral_serial,"Available"], function(err, data){
+                      WHERE peripheral.serial = ? AND peripheral_status.name = ? AND peripheral.focal = ?;`,[req.body.peripheral_serial,"Available",req.user.ID], function(err, data){
                 if(err){
                     res.status(400).send(err);
                 } else{
                     if(JSON.stringify(data) === '[]'){
-                        res.status(401).send("No se puede crear prestamo, el dispositivo no esta disponible");
+                        res.status(401).send("No se puede crear prestamo, el dispositivo no esta disponible o esta a cargo de otro focal");
                   } else{
                         next();
                   }
@@ -245,7 +273,7 @@ peripheralsCtrl.createLoan = async (req, res, next) => {
         if (err) {
             res.status(403).send(err)
         } else{
-            db.query("INSERT INTO loan(employee,focal,peripheral_serial,creation,loan_status,condition_accepted,security_auth) VALUES (?,?,?,CURRENT_DATE,?,0,0);",[req.body.employee,req.user.ID,req.body.peripheral_serial,req.status.ID], function(err, data){
+            db.query("INSERT INTO loan(employee,focal,peripheral_serial,creation,loan_status,condition_accepted,security_auth) VALUES (?,?,?,CURRENT_DATE,?,0,0);",[req.employee_id.ID,req.user.ID,req.body.peripheral_serial,req.loan_status.ID], function(err, data){
                 if(err){
                     res.status(400).send(err);
                 } else{
