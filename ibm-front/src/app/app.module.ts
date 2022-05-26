@@ -22,7 +22,8 @@ import {
   GridModule,
   TagModule,
   ModalModule,
-  DropdownModule 
+  DropdownModule,
+  NotificationModule
 } from 'carbon-components-angular';
 
 import { LoginComponent } from './login/login.component';
@@ -32,6 +33,7 @@ import { LoanFormComponent } from './loan-form/loan-form.component';
 import { FocalLoansComponent } from './focal-loans/focal-loans.component';
 import { MyLoansComponent } from './my-loans/my-loans.component';
 import { ProfileComponent } from './profile/profile.component';
+import { LoanConfirmationComponent } from './loan-confirmation/loan-confirmation.component';
 import { RoleManagementComponent } from './role-management/role-management.component';
 import { Ng2SearchPipe } from 'ng2-search-filter';
 import { PeripheralRegistrationComponent } from './peripheral-registration/peripheral-registration.component';
@@ -48,7 +50,8 @@ import { PeripheralRegistrationComponent } from './peripheral-registration/perip
     MyLoansComponent,
     ProfileComponent,
     RoleManagementComponent,
-    PeripheralRegistrationComponent
+    PeripheralRegistrationComponent,
+    LoanConfirmationComponent
   ],
   imports: [
     BrowserModule,
@@ -67,7 +70,17 @@ import { PeripheralRegistrationComponent } from './peripheral-registration/perip
     GridModule,
     TagModule,
     ModalModule,
-    DropdownModule 
+    DropdownModule,
+    InputModule,
+    CheckboxModule,
+    ButtonModule,
+    TabsModule,
+    DropdownModule,
+    GridModule,
+    RadioModule,
+    SearchModule,
+    NotificationModule,
+    ModalModule,
   ],
   providers: [],
   bootstrap: [AppComponent]
