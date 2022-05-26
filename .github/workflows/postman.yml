@@ -35,19 +35,20 @@ jobs:
       - name: Install Packages Microservice Users
         run: npm --prefix ./ibm-users install
         
+      - name: Create .env file ibm-users
+        run: touch ./ibm-users/.env && echo  ${{ secrets.ENV }} > ./ibm-users/.env
+        
+      - name: Create .env file ibm-peripherals
+        run: touch ./ibm-peripherals/.env && echo  ${{ secrets.ENV }} > ./ibm-peripherals/.env
+      
       - name: Run Microservice Users
         run: node ./ibm-users &
       
       - name: Run Microservice Peripherals
         run: node ./ibm-peripherals & 
         
-      - name: Curl to localhost-4000
-        run: curl http://localhost:4000
-        
-      - name: Curl to localhost-4001
-        run: curl http://localhost:4001
-      #- name: Newman Action
-      #  uses: matt-ball/newman-action@v1.0.4
-      #  with: 
-      #    collection: https://www.getpostman.com/collections/508f9ed32085ffc1f358
+      - name: Newman Action
+        uses: matt-ball/newman-action@v1.0.4
+        with: 
+          collection: https://www.getpostman.com/collections/508f9ed32085ffc1f358
 
