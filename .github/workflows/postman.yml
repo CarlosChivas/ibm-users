@@ -41,8 +41,13 @@ jobs:
       - name: Run Microservice Peripherals
         run: node ./ibm-peripherals & 
         
-      - name: Newman Action
-        uses: matt-ball/newman-action@v1.0.4
-        with: 
-          collection: https://www.getpostman.com/collections/508f9ed32085ffc1f358
+      - name: Curl to localhost-4000
+        run: curl http://localhost:4000
+        
+      - name: Curl to localhost-4001
+        run: curl http://localhost:4001
+      #- name: Newman Action
+      #  uses: matt-ball/newman-action@v1.0.4
+      #  with: 
+      #    collection: https://www.getpostman.com/collections/508f9ed32085ffc1f358
 
