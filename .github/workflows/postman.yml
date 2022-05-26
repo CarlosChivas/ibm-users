@@ -30,27 +30,27 @@ jobs:
           node-version: 16.15
       
       #- name: Install Packages Microservice Peripherals
-      #  run: npm --prefix ./ibm-peripherals install
+        run: npm --prefix ./ibm-peripherals install
         
-      #- name: Install Packages Microservice Users
-      #  run: npm --prefix ./ibm-users install
+      - name: Install Packages Microservice Users
+        run: npm --prefix ./ibm-users install
         
       
         
       - name: Create .env file ibm-users
         run:  echo  ${{ secrets.ENV }}
         
+      - name: Create .env file ibm-users
+        run: touch ./ibm-users/.env && echo  ${{ secrets.ENV }} > ./ibm-users/.env
+
       - name: Create .env file ibm-peripherals
-        run: echo  ${{ secrets.ENV }}
+        run: touch ./ibm-peripherals/.env && echo  ${{ secrets.ENV }} > ./ibm-peripherals/.env
       
-      #- name: Run Microservice Users
-        #run: node ./ibm-users &
-      
-      #- name: Run Microservice Peripherals
-       # run: node ./ibm-peripherals & 
+      - name: Run Microservice Peripherals
+        run: node ./ibm-peripherals & 
         
-      #- name: Newman Action
-       # uses: matt-ball/newman-action@v1.0.4
-       # with: 
-       #   collection: https://www.getpostman.com/collections/508f9ed32085ffc1f358
+      - name: Newman Action
+        uses: matt-ball/newman-action@v1.0.4
+        with: 
+          collection: https://www.getpostman.com/collections/508f9ed32085ffc1f358
 
