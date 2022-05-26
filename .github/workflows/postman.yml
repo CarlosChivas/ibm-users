@@ -44,4 +44,4 @@ jobs:
       - name: Newman Action
         uses: matt-ball/newman-action@v1.0.4
         with: 
-          collection: https://github.com/CarlosChivas/ibm-users/edit/dev/.github/workflows/postman.yml
+          collection: https://www.getpostman.com/collections/508f9ed32085ffc1f358
