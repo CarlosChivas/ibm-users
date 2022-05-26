@@ -47,10 +47,10 @@ jobs:
         run: touch ./ibm-peripherals/.env && echo  ${{ secrets.ENV }} > ./ibm-peripherals/.env
       
       - name: Echo .env file ibm-users
-        run: echo ./ibm-users/.env
+        run: cat ./ibm-users/.env
 
       - name: Echo .env file ibm-peripherals
-        run: echo ./ibm-peripherals/.env
+        run: cat ./ibm-peripherals/.env
       
       - name: Run Microservice Peripherals
         run: node ./ibm-peripherals & 
