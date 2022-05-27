@@ -78,14 +78,6 @@ jobs:
           echo -n 'JWT_SECRETKEY="' >> ./ibm-peripherals/.env
           echo -n ${{ secrets.JWT_SECRETKEY }} >> ./ibm-peripherals/.env
           echo -n '"' >> ./ibm-peripherals/.env
-      
-      - name: Echo .env file ibm-users
-        run: |
-          cat ./ibm-users/.env 
-
-      - name: Echo .env file ibm-peripherals
-        run: |
-          cat ./ibm-peripherals/.env 
 
       - name: Run Microservice Peripherals
         run: |
