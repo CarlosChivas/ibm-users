@@ -143,6 +143,7 @@ export class LoanFormComponent implements OnInit {
 
   ngOnInit() {
     var api = "http://localhost:4000/isLogged";
+
     var rout = this.router;
     var esto = this;
     axios.get(api, { withCredentials: true }).then(function (response) {
