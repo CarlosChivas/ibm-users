@@ -195,12 +195,14 @@ export class FocalLoansComponent implements OnInit {
 	}
 
 	ngOnInit() {
-    // periferals:32370
-    var api = "http://169.51.205.229:30289/isLogged";
+    var api = "http://localhost:4000/isLogged";
     var rout = this.router;
     axios.get(api, {withCredentials:true}).then(function (response) {
       if (response.status != 200) rout.navigate(['./home']);
-    })
+    }).catch(err => {
+      console.log(err);
+      rout.navigate(['./']);
+    });
 	}
 	ngOnDestroy() {
 	}

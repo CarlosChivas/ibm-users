@@ -157,7 +157,7 @@ export class RoleManagementComponent implements OnInit {
   }
 
   ngOnInit() {
-    var api = "http://169.51.205.229:30289/isLogged";
+    var api = "http://localhost:4000/isLogged";
     var rout = this.router;
     var esto = this;
     axios.get(api, { withCredentials: true }).then((response) => {
@@ -165,13 +165,14 @@ export class RoleManagementComponent implements OnInit {
       else {
         if (response.data.ROLE_NAME != "Administrator") rout.navigate(['./']);
         console.log(response.data);
-        api = "http://169.51.205.229:30289/Admin/getAllUsers";
+        api = "http://localhost:4000/Admin/getAllUsers";
         axios.get(api, { withCredentials: true }).then(function (response) {
           console.log(response.data);
           esto.employees = response.data;
         });
       }
-    }).catch((error) => {
+    }).catch(err => {
+      console.log(err);
       rout.navigate(['./']);
     });
   }
