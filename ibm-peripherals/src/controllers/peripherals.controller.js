@@ -76,7 +76,7 @@ peripheralsCtrl.findPeripheralStatus = async (req, res, next) => {
                     if(JSON.stringify(data) === '[]'){
                         res.status(401).send("No se puede crear un dipositivo nuevo, estatus de periferico no valido");
                   } else{
-                        req.status = data[0];
+                        req.peripheral_status = data[0];
                         next();
                   }
                 }
@@ -98,7 +98,7 @@ peripheralsCtrl.createPeripheral = async (req, res) => {
         if (err) {
             res.status(403).send(err)
         } else{
-            db.query("INSERT INTO peripheral(ptype,description,brand,model,peripheral_status,focal) VALUES (?,?,?,?,?,?);",[req.ptype.ID,req.body.description,req.brand.ID,req.body.model,req.status.ID,req.user.ID], function(err, data){
+            db.query("INSERT INTO peripheral(ptype,description,brand,model,peripheral_status,focal) VALUES (?,?,?,?,?,?);",[req.ptype.ID,req.body.description,req.brand.ID,req.body.model,req.peripheral_status.ID,req.user.ID], function(err, data){
                 if(err){
                     res.status(400).send(err);
                 } else{
@@ -215,7 +215,7 @@ peripheralsCtrl.findLoanStatus = async (req, res, next) => {
         if (err) {
             res.status(403).send(err)
         } else{
-            db.query("SELECT id FROM loan_status WHERE name = ?;",["In progress"], function(err, data){
+            db.query("SELECT id FROM loan_status WHERE name = ?;",["In process"], function(err, data){
                 if(err){
                     res.status(400).send(err);
                 } else{
