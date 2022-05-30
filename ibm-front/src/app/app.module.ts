@@ -69,7 +69,7 @@ import { PeripheralRegistrationComponent } from './peripheral-registration/perip
     ModalModule,
     DropdownModule 
   ],
-  providers: [],
+  providers: [MyLoansComponent, ProfileComponent],
   bootstrap: [AppComponent]
 })
 export class AppModule {

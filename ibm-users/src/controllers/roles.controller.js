@@ -12,9 +12,9 @@ rolesCtrl.validateToken = async(req, res, next) => {
                 if (err) {
                     res.status(401).send(err);
                 } else{
-                    
+
                     db.query(`SELECT users.id, users.first_name, users.last_name, users.email,
-                            role.name as role_name, department.name as department_name  
+                            role.name as role_name, department.name as department_name 
                             FROM users 
                             INNER JOIN role ON users.role=role.id 
                             INNER JOIN department ON users.department=department.id 

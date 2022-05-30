@@ -10,8 +10,6 @@ import axios from 'axios';
   styleUrls: ['./role-management.component.scss']
 })
 
-
-
 export class RoleManagementComponent implements OnInit {
   searchText: any;
   nameSearch: string = ''
