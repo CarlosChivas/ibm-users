@@ -92,13 +92,13 @@ peripheralsCtrl.findPeripheralStatus = async (req, res, next) => {
 }    
 
 peripheralsCtrl.createPeripheral = async (req, res) => {
-    
+        
     pool.open(process.env.DATABASE_STRING, function (err, db) {
         
         if (err) {
             res.status(403).send(err)
         } else{
-            db.query("INSERT INTO peripheral(ptype,description,brand,model,peripheral_status,focal) VALUES (?,?,?,?,?,?);",[req.ptype.ID,req.body.description,req.brand.ID,req.body.model,req.peripheral_status.ID,req.user.ID], function(err, data){
+            db.query("INSERT INTO peripheral(ptype,description,brand,model,peripheral_status,focal,department) VALUES (?,?,?,?,?,?,(SELECT id from department where name = ?));",[req.ptype.ID,req.body.description,req.brand.ID,req.body.model,req.peripheral_status.ID,req.user.ID,req.user.DEPARTMENT_NAME], function(err, data){
                 if(err){
                     res.status(400).send(err);
                 } else{
@@ -127,12 +127,14 @@ peripheralsCtrl.getAllPeripherals = async (req, res) => {
                              brand.name as brand, 
                              peripheral.model, 
                              peripheral_status.name as peripheral_status,
-                             users.first_name || ' ' || users.last_name as focal_name
+                             users.first_name || ' ' || users.last_name as focal_name,
+                             department.name as department_name
             FROM peripheral
             INNER JOIN ptype ON peripheral.ptype = ptype.id
             INNER JOIN brand ON peripheral.brand = brand.id
             INNER JOIN users ON peripheral.focal = users.id
-            INNER JOIN peripheral_status ON peripheral.peripheral_status = peripheral_status.id;`, function(err, data){
+            INNER JOIN peripheral_status ON peripheral.peripheral_status = peripheral_status.id
+            INNER JOIN department ON peripheral.department = department.id;`, function(err, data){
                 if(err){
                     res.status(400).send(err);
                 } else{
