@@ -12,7 +12,7 @@
         <div ibmCol>
           <div class="bx--search bx--search--lg SearchBar-Row" role="search" tabindex="0">
             <input class="bx--search-input" type="text" id="search-20" autocomplete="on" placeholder="Search"
-              style="width : 100%;">
+              style="width : 100%;" (keyup)="checkPin($event)">
             <svg class="bx--search-magnifier-icon" ibmIcon="search" size="16" xmlns="" focusable="false"
               preserveAspectRatio="xMidYMid meet" aria-hidden="true" width="16" height="16" viewBox="0 0 16 16"></svg>
           </div>

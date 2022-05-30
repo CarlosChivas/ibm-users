@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import axios from 'axios';
 
 @Component({
@@ -8,18 +8,18 @@ import axios from 'axios';
   styleUrls: ['./profile.component.scss']
 })
 export class ProfileComponent implements OnInit {
-  Profile = {
-    "1": [{
-      "name": "Erick Calderon",
-      "email" : "ericksito@gmail.com",
-      "telephone" : "44732423948",
-      "slack": "erickin17",
-      "department" : "Device Loans",
-      "role" : "Administrator"
-    }],
-  };
+
+  profile = {
+    ID: 1,
+    FIRST_NAME: "FirstName",
+    LAST_NAME: "LastName",
+    EMAIL: "example@ibm.com",
+    DEPARTMENT_NAME: "IBM",
+    ROLE_NAME: "ROLE"
+  }
 
   title = 'My Loans'
+  showLoans = false;
 
   myLoans = {
     "Current": [{
@@ -68,17 +68,35 @@ export class ProfileComponent implements OnInit {
       "description": "HP mouse"
     }],
   };
-  constructor(private router: Router) { }
+  constructor(private router: Router, private route: ActivatedRoute) { }
 
   ngOnInit(): void {
     var api = "http://localhost:4000/isLogged";
-    var rout = this.router;
-    axios.get(api, {withCredentials:true}).then(function (response) {
-      if (response.status != 200)
-        rout.navigate(['./']);
+    var rout = this.route;
+    var router = this.router
+    var esto = this;
+    axios.get(api, { withCredentials: true }).then((response) => {
+      if (response.status == 200) {
+        var me = response.data;
+        var myParam = rout.snapshot.paramMap.get('id');
+        console.log(myParam);
+        console.log(me);
+        if (myParam != me.ID && (me.ROLE_NAME == "Administrator" || me.ROLE_NAME == "Focal")) {
+          var api = "http://localhost:4000/getUser/id=" + myParam;
+          axios.get(api, { withCredentials: true }).then(res => {
+            console.log(res);
+            esto.profile = me;
+            esto.showLoans = true;
+          });
+        }
+        else {
+          esto.profile = me;
+          esto.showLoans = false;
+        }
+      }
     }).catch(err => {
       console.log(err);
-      rout.navigate(['./']);
+      router.navigate(['./']);
     });
   }
 
