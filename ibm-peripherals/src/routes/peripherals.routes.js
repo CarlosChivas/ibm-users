@@ -47,4 +47,27 @@ router.get("/Focal/getLoans", rolesCtrl.validateToken,
                               rolesCtrl.isFocal,
                               peripheralsCtrl.getLoans);
 
+/*
+Res:
+{
+    "ptype": [{"Name":"Mouse"}, {"NAME": "Keyboard"}, ...],
+    "brand": [{"Name":"HP"}, {"NAME": "Steren"}, ...]
+}
+*/
+router.get("/AdminFocal/getPeripheralFields", rolesCtrl.validateToken,
+                                              rolesCtrl.isFocalORAdmin,
+                                              peripheralsCtrl.getPeripheralFields);
+
+/*
+Res:
+{
+    "in_process": [],
+    "borrowed": [],
+    "concluded": []
+}
+*/                                            
+router.get("/Employee/getOwnLoans", rolesCtrl.validateToken,
+                                    rolesCtrl.isEmployee,
+                                    peripheralsCtrl.getOwnLoans);
+
 module.exports = router;

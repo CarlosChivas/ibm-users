@@ -55,7 +55,7 @@ rolesCtrl.isFocal = async(req,res,next) => {
         res.status(401).send("You don't have access");
     }
 }
-rolesCtrl.isEmpoyee = async(req,res,next) => {
+rolesCtrl.isEmployee = async(req,res,next) => {
     if(req.user.ROLE_NAME === "Employee"){
         next();
     } else{

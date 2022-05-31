@@ -1,7 +1,5 @@
 const peripheralsCtrl = {};
 const pool = require("../database");
-const jwt = require("jsonwebtoken");
-const bcryptjs = require("bcryptjs");
 
 peripheralsCtrl.getHome = async (req, res) => {
     res.status(200).send("Working!");
@@ -248,7 +246,7 @@ peripheralsCtrl.checkPeripheralStatus = async (req, res, next) => {
             db.query(`SELECT peripheral.serial
                       FROM peripheral
                       INNER JOIN peripheral_status ON peripheral.peripheral_status = peripheral_status.id
-                      WHERE peripheral.serial = ? AND peripheral_status.name = ? AND peripheral.focal = ?;`,[req.body.peripheral_serial,"Available",req.user.ID], function(err, data){
+                      WHERE peripheral.serial = ? AND peripheral_status.name = ?;`,[req.body.peripheral_serial,"Available"], function(err, data){
                 if(err){
                     res.status(400).send(err);
                 } else{
@@ -338,6 +336,81 @@ peripheralsCtrl.getLoans = async (req, res) => {
                     res.status(400).send(err);
                 } else{
                     res.status(200).send(data);
+                }
+            })
+            db.close(function (error) { // RETURN CONNECTION TO POOL
+                if (error) {
+                    res.send("Error mientras se cerraba la conexion");
+                }
+            });
+        }
+    })
+
+}
+
+peripheralsCtrl.getPeripheralFields = async (req, res) => {
+    
+    pool.open(process.env.DATABASE_STRING, function (err, db) {
+        
+        if (err) {
+            res.status(403).send(err)
+        } else{
+            db.query(`SELECT name FROM ptype;`, function(err, data){
+                if(err){
+                    res.status(400).send(err);
+                } else{
+                    req.ptype = data;
+                }
+            })
+            db.query(`SELECT name FROM brand;`, function(err, data){
+                if(err){
+                    res.status(400).send(err);
+                } else{
+                    res.status(200).json({ptype: req.ptype, brand: data});
+                }
+            })
+            db.close(function (error) { // RETURN CONNECTION TO POOL
+                if (error) {
+                    res.send("Error mientras se cerraba la conexion");
+                }
+            });
+        }
+    })
+
+}
+
+peripheralsCtrl.getOwnLoans = async (req, res) => {
+        
+    pool.open(process.env.DATABASE_STRING, function (err, db) {
+        
+        if (err) {
+            res.status(403).send(err)
+        } else{
+            db.query(`SELECT *
+                    FROM loan
+                    WHERE loan.employee = ? AND loan.loan_status = (SELECT id FROM loan_status WHERE name = 'In process');`,[req.user.ID], function(err, data){
+                if(err){
+                    res.status(400).send(err);
+                } else{
+                    req.in_process = data;
+                }
+            })
+            db.query(`SELECT *
+                    FROM loan
+                    WHERE loan.employee = ? AND loan.loan_status = (SELECT id FROM loan_status WHERE name = 'Borrowed');`,[req.user.ID], function(err, data){
+                if(err){
+                    res.status(400).send(err);
+                } else{
+                    req.borrowed = data;
+                }
+            })
+            db.query(`SELECT *
+                    FROM loan
+                    WHERE loan.employee = ? AND loan.loan_status = (SELECT id FROM loan_status WHERE name = 'Concluded');`,[req.user.ID], function(err, data){
+                if(err){
+                    res.status(400).send(err);
+                } else{
+                    res.status(200).json({in_process: req.in_process, borrowed: req.borrowed, concluded: data});
                 }
             })
             db.close(function (error) { // RETURN CONNECTION TO POOL
