@@ -44,12 +44,15 @@ export class PeripheralRegistrationComponent implements OnInit {
     console.log(this.loanForm.value)
   }
   ngOnInit(): void {
-    var api = "/isLogged";
+    var api = "http://localhost:4000/isLogged";
     var rout = this.router;
     axios.get(api, {withCredentials:true}).then(function (response) {
       if (response.status != 200)
         rout.navigate(['./']);
-    })
+    }).catch(err => {
+      console.log(err);
+      rout.navigate(['./']);
+    });
   }
 
 }

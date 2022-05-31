@@ -195,11 +195,14 @@ export class FocalLoansComponent implements OnInit {
 	}
 
 	ngOnInit() {
-    var api = "/isLogged";
+    var api = "http://localhost:4000/isLogged";
     var rout = this.router;
     axios.get(api, {withCredentials:true}).then(function (response) {
       if (response.status != 200) rout.navigate(['./home']);
-    })
+    }).catch(err => {
+      console.log(err);
+      rout.navigate(['./']);
+    });
 	}
 	ngOnDestroy() {
 	}

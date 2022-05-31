@@ -21,8 +21,6 @@ usersCtrl.matchEmail = async (req, res, next) => {
                     if(err){
                       res.send(err);
                     } else{
-                        //const res = await checkPassword(req.body.password, data[0].PASSWORD)
-                        //console.log("Me regresa check password: ", res)
                       if(data.length == 0 /*|| await checkPassword(req.body.password, data[0].PASSWORD)/*!(await bcryptjs.compare(req.body.password, data[0].PASSWORD))*/){
                             res.status(401).send("Credenciales incorrectas");
                       } else{
@@ -49,13 +47,12 @@ usersCtrl.matchPassword = async (req, res, next) => {
     if(await bcryptjs.compare(req.body.password,req.user.PASSWORD)){
         const id = req.user.ID;
         const token = jwt.sign({id:id}, process.env.JWT_SECRETKEY)
-        console.log(token)
         const cookieOptions = {
             expires: new Date(Date.now()+90*24*60*1000),
-            httpOnly: true,
-            sameSite: 'none',
-            secure: true,
-            domain: ""
+            // httpOnly: true,
+            // sameSite: 'none',
+            // secure: true,
+            // domain: "http://169.51.205.229:31622"
         }
         res.cookie('jwt', token, cookieOptions);
         res.status(200).send("Inicio de sesion correcto")
@@ -112,7 +109,7 @@ usersCtrl.getAllUsers = async (req, res) => {
         if (err) {
             res.status(400).send(err)
         } else{
-            db.query(`SELECT users.id, users.first_name, users.last_name, 
+            db.query(`SELECT users.id, users.first_name, users.last_name, users.email,
             role.name as role_name, department.name as department_name 
             FROM users 
             INNER JOIN role ON users.role=role.id 
@@ -131,12 +128,144 @@ usersCtrl.getAllUsers = async (req, res) => {
         }})
 }
 
-async function checkPassword(password1, password2){
-    //console.log(await bcryptjs.compare(password1, password2))
-    //console.log(!(await bcryptjs.compare(password1, password2)))
-    const  res = await bcryptjs.compare(password1, password2);
-    console.log(res);
-    return res;
+
+usersCtrl.searchUsers = async (req,res) => {
+    
+    pool.open(process.env.DATABASE_STRING, function (err, db) {
+        if (err) {
+            res.status(401).send(err);
+        } else{
+            console.log(typeof req.params.name)
+            db.query(`SELECT users.id, users.first_name, users.last_name, users.email,
+                role.name as role_name, department.name as department_name  
+                FROM users 
+                INNER JOIN role ON users.role=role.id 
+                INNER JOIN department ON users.department=department.id 
+                WHERE LOWER(users.first_name) LIKE LOWER(?)
+                OR LOWER(users.last_name) LIKE LOWER(?)
+                OR LOWER(users.email) LIKE LOWER(?);`,['%'+req.params.name+'%', '%'+req.params.name+'%', '%'+req.params.name+'%'], function(err, data){
+                        
+                if(err){
+                    res.status(401).send(err);
+                } else{
+                    if(data.length>0){
+                        res.status(401).send(data);
+                    } else{
+                        res.status(401).send("Users not found");
+                    }
+                }
+            })
+            db.close(function (error) { // RETURN CONNECTION TO POOL
+                if (error) {
+                    res.send("Error mientras se cerraba la conexion")
+                }
+            });
+        }})
+}
+
+usersCtrl.getUser = async (req,res) => {
+    pool.open(process.env.DATABASE_STRING, function (err, db) {
+        if (err) {
+            res.status(401).send(err);
+        } else{
+            
+            db.query(`SELECT users.id, users.first_name, users.last_name, users.email,
+                    role.name as role_name, department.name as department_name  
+                    FROM users 
+                    INNER JOIN role ON users.role=role.id 
+                    INNER JOIN department ON users.department=department.id 
+                    WHERE users.id = ?;`,[req.params.id], function(err, data){
+                if(err){
+                    res.status(401).send(err);
+                } else{
+                    if(data.length>0){
+                        res.status(200).send(data[0]);
+                    } else{
+                        res.status(401).send("User not found");
+                    }
+                }
+            })
+            db.close(function (error) { // RETURN CONNECTION TO POOL
+                if (error) {
+                    res.send("Error mientras se cerraba la conexion")
+                }
+            });
+        }})
+}
+
+usersCtrl.findUsersAdmin = async(req,res) => {
+    let query = `SELECT users.id, users.first_name, users.last_name, users.email,
+    role.name as role_name, department.name as department_name  
+    FROM users 
+    INNER JOIN role ON users.role=role.id 
+    INNER JOIN department ON users.department=department.id`
+
+    if(req.query.user){
+        query+=` WHERE LOWER(users.first_name) LIKE LOWER('%${req.query.user}%')
+                OR LOWER(users.last_name) LIKE LOWER('%${req.query.user}%')
+                OR LOWER(users.email) LIKE LOWER('%${req.query.user}%')`
+        if(req.query.role){
+            query+=` AND users.role = ${req.query.nameRole.ID}`
+        }
+    } else{
+        if(req.query.role){
+            query+=` WHERE users.role = ${req.query.nameRole.ID}`
+        }
+    }
+    
+    query+=";"
+    pool.open(process.env.DATABASE_STRING, function (err, db) {
+        if (err) {
+            res.status(401).send(err);
+        } else{
+            
+            db.query(query, function(err, data){
+                if(err){
+                    res.status(401).send(err);
+                } else{
+                    if(data.length>0){
+                        res.status(200).send(data);
+                    } else{
+                        res.status(401).send("User not found");
+                    }
+                }
+            })
+            db.close(function (error) { // RETURN CONNECTION TO POOL
+                if (error) {
+                    res.send("Error mientras se cerraba la conexion")
+                }
+            });
+        }})
+}
+usersCtrl.findRole = async (req,res,next)=>{
+    if(req.query.role){
+        pool.open(process.env.DATABASE_STRING, function (err, db) {
+            if (err) {
+                res.status(401).send(err);
+            } else{
+                db.query(`SELECT role.id
+                        FROM role
+                        WHERE role.name = ?;`,[req.query.role], function(err, data){
+                    if(err){
+                        res.status(401).send(err);
+                    } else{
+                        if(data.length>0){
+                            req.query.nameRole = data[0];
+                            next();
+                        } else{
+                            res.status(401).send("Role not found");
+                        }
+                    }
+                })
+                db.close(function (error) { // RETURN CONNECTION TO POOL
+                    if (error) {
+                        res.send("Error mientras se cerraba la conexion")
+                    }
+                });
+            }})
+    } else {
+        next();
+    }
 }
 
 module.exports = usersCtrl;

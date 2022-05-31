@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { MyLoansComponent } from "../my-loans/my-loans.component";
+import { ProfileComponent } from "../profile/profile.component";
 import axios from 'axios';
 
 @Component({
@@ -7,12 +9,26 @@ import axios from 'axios';
   templateUrl: './menu-bar.component.html',
   styleUrls: ['./menu-bar.component.scss']
 })
+
 export class MenuBarComponent implements OnInit {
 
-  constructor(private router: Router) { }
+  numLoan: number = 0;
 
+  Profile = {
+    "1": [{
+      "name": "Erick Calderon",
+      "department" : "Device Loans",
+      "role" : "Administrator"
+    }],
+  };
+
+  constructor(private router: Router, private loansNum: MyLoansComponent, public profileComponent: ProfileComponent) {
+    this.numLoan = this.loansNum.getNumLoans();
+    // console.log(this.numLoan);
+  }
+  
   logout() {
-    var api = "/logout";
+    var api = "http://localhost:4000/logout";
     console.log(api);
     var rout = this.router;
     axios.get(api, { withCredentials: true }).then(function (response) {
@@ -20,7 +36,9 @@ export class MenuBarComponent implements OnInit {
       if (response.status == 200) {
         rout.navigate(['./']);
       }
-    })
+    }).catch((error) => {
+      console.log("Not able to Log Out")
+    });
   }
 
   ngOnInit(): void {

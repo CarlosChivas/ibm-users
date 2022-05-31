@@ -25,7 +25,7 @@ env:
   DEPLOYMENT_NAME: ibm-users2
   PORT: 4000
   PORT2: 4001
-  PORT3: 4200
+  PORT3: 8080
 
 jobs:
   setup-build-publish-deploy:
@@ -64,7 +64,7 @@ jobs:
         docker tag ibm-front us.icr.io/loans2/ibm-front:$GITHUB_SHA
         docker push us.icr.io/loans2/ibm-front:$GITHUB_SHA
 
-    # Deploy the Docker image to the IKS cluster
+     Deploy the Docker image to the IKS cluster
     - name: Deploy to IKS
       run: |
         ibmcloud ks cluster config --cluster $IKS_CLUSTER
