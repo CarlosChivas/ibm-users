@@ -21,6 +21,9 @@ jobs:
           - dockerfile: ./ibm-peripherals/Dockerfile
             image: ghcr.io/carloschivas/ibm-peripherals
             route: ./ibm-peripherals/
+          - dockerfile: ./ibm-front/Dockerfile
+            image: ghcr.io/carloschivas/ibm-front
+            route: ./ibm-front/
         
     permissions:
       contents: read
