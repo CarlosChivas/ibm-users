@@ -70,6 +70,15 @@
     gap: 24px; /*$spacing-06*/
     grid-auto-rows: minmax(100px, auto);
 }
+hr {
+    display: block;
+    width: 14rem;
+    height: 1px;
+    border: none;
+    margin: 0.5rem 1rem;
+    background: 	#ffffff;
+}
+
 .LoanChart img{
     width: 100%;
 }

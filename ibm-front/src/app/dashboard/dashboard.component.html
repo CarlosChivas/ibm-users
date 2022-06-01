@@ -43,6 +43,7 @@
                             <ng-container  *ngIf="device.num === 1; else Pending">
                                 <div class="DeviceCard--Info" >
                                     <p style="text-align: left; padding-left:10px;font-size: 24px; font-weight: bold;  letter-spacing:0.5px;" >{{device.description}}</p>
+                                    <hr>
                                     <p style="text-align: left; padding-left:10px;font-size: 20px; font-weight: bold;">{{cont1}}</p>
                                     <p style="text-align: left; padding-left:10px; padding-top:6px">loans</p>
                                 </div>
@@ -51,6 +52,7 @@
                                 <ng-container *ngIf="device.num === 2;else Request">
                                     <div class="DeviceCard--Info2" >
                                         <p style="text-align: left; padding-left:10px;font-size: 24px; font-weight: bold;  letter-spacing:0.5px;" >{{device.description}}</p>
+                                        <hr>
                                         <p style="text-align: left; padding-left:10px;font-size: 20px; font-weight: bold;">{{cont2}}</p>
                                         <p style="text-align: left; padding-left:10px; padding-top:6px">loans</p>
                                     </div>
@@ -60,6 +62,7 @@
                                 <ng-container *ngIf="device.num === 3;else NotInTime">
                                     <div class="DeviceCard--Info3">
                                         <p style="text-align: left; padding-left:10px;font-size: 24px; font-weight: bold;  letter-spacing:0.5px;" >{{device.description}}</p>
+                                        <hr>
                                         <p style="text-align: left; padding-left:10px;font-size: 20px; font-weight: bold;">{{cont3}}</p>
                                         <p style="text-align: left; padding-left:10px; padding-top:6px">loans</p>
                                     </div>
@@ -68,6 +71,7 @@
                             <ng-template #NotInTime>
                                 <div class="DeviceCard--Info4" >
                                     <p style="text-align: left; padding-left:10px;font-size: 24px; font-weight: bold;  letter-spacing:0.5px;" >{{device.description}}</p>
+                                    <hr>
                                     <p style="text-align: left; padding-left:10px;font-size: 20px; font-weight: bold;">{{cont4}}</p>
                                     <p style="text-align: left; padding-left:10px; padding-top:6px">loans</p>
                                 </div>
