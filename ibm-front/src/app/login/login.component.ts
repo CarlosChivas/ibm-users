@@ -18,45 +18,41 @@ export class LoginComponent implements OnInit {
   constructor(
     private formBuilder: FormBuilder,
     private router: Router
-  ) {
-    console.log("Entro aqui");
-    var api = "http://169.51.205.229:30289/isLogged";
-    var rout = this.router;
-    axios.get(api, { withCredentials: true }).then(function (response) {
-      console.log("Respuesta -> ", response);
-      if (response.status == 200)
-        rout.navigate(['./home']);
-    })
-  }
+  ) { }
 
-  validateLogin() {
-    var api = "http://169.51.205.229:30289/login";
+  validateLogin(): boolean | undefined {
+    var api = "http://localhost:4000/login";
     var rout = this.router;
     var form = this.LoginForm;
     console.log(form.value);
-    if (form.value.email.trim() == "") return;
-    if (form.value.password == "") return;
+    if (form.value.email.trim() == "") return false;
+    if (form.value.password == "") return false;
 
-    axios.post(api, {
+    var body = {
       email: form.value.email,
       password: form.value.password,
-    }, { withCredentials: true }).then(function (response) {
+    };
+
+    axios.post(api, body, { withCredentials: true }).then(function (response) {
       console.log(response);
       if (response.status == 200)
         rout.navigate(['./home']);
-    })
-
+    }).catch(err => {
+      console.log("Aver -> ", err);
+    });
+    return false;
   }
 
   ngOnInit(): void {
-    console.log("Entro aqui");
-    var api = "http://169.51.205.229:30289/isLogged";
+    var api = "http://localhost:4000/isLogged";
     var rout = this.router;
     axios.get(api, { withCredentials: true }).then(function (response) {
       console.log("Respuesta -> ", response);
       if (response.status == 200)
         rout.navigate(['./home']);
-    })
+    }).catch(err => {
+      console.log("Not Logged: ", err);
+    });
   }
 
 }

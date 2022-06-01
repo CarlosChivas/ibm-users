@@ -29,7 +29,7 @@ export class MyLoansComponent implements OnInit {
       "description": "DELL keyboard",
       "loanDate": "10-11-2022",
       "finishDate": ""
-      
+
     }, {
       "device": "Keyboard",
       "description": "DELL keyboard",
@@ -104,14 +104,14 @@ export class MyLoansComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    console.log("ei");
-    var api = "http://169.51.205.229:30289/isLogged";
+    var api = "http://localhost:4000/isLogged";
     var rout = this.router;
-    axios.get(api, {withCredentials:true}).then(function (response) {
-      console.log("wacha -> ",response);
-      if (response.status == 401)
-        rout.navigate(['./']);
-    })
+    axios.get(api, { withCredentials: true }).then(function (response) {
+      console.log("wacha -> ", response);
+    }).catch(err => {
+      console.log(err);
+      rout.navigate(['./']);
+    });
   }
 
 }

@@ -4,10 +4,8 @@ const jwt = require("jsonwebtoken");
 const bcryptjs = require("bcryptjs");
 
 rolesCtrl.validateToken = async(req, res, next) => {
-    //console.log(req.cookies)
     jwt.verify(req.cookies.jwt, process.env.JWT_SECRETKEY, function(err, decoded) {
         if(err){
-            //res.status(401).send("Inicio de sesion requerido");
             res.status(401).send(err)
         } else{
             pool.open(process.env.DATABASE_STRING, function (err, db) {
@@ -42,36 +40,32 @@ rolesCtrl.validateToken = async(req, res, next) => {
     });
 }
 
-rolesCtrl.searchUsers = async (req,res) => {
-    console.log(req.params)
-    res.send("Todo bien")
-}
 
 rolesCtrl.isAdmin = async(req,res,next) => {
-    //console.log(req.cookies)
-    console.log(req.user)
     if(req.user.ROLE_NAME === "Administrator"){
-        //next();
         next()
     } else{
         res.status(401).send("You don't have access");
     }
 }
 rolesCtrl.isFocal = async(req,res,next) => {
-    //console.log(req.cookies)
     if(req.user.ROLE_NAME === "Focal"){
-        //next();
-        res.status(200).send("Correct access 'Focal'")
+        next();
     } else{
         res.status(401).send("You don't have access");
     }
 }
-rolesCtrl.isEmpoyee = async(req,res,next) => {
-    //console.log(req.cookies)
+rolesCtrl.isEmployee = async(req,res,next) => {
     if(req.user.ROLE_NAME === "Employee"){
-        //next();
-        res.status(200).send("Correct access 'Employee'")
-        
+        next();
+    } else{
+        res.status(401).send("You don't have access");
+    }
+}
+
+rolesCtrl.isFocalORAdmin = async(req,res,next) => {
+    if(req.user.ROLE_NAME === "Administrator" || req.user.ROLE_NAME === "Focal"){
+        next();
     } else{
         res.status(401).send("You don't have access");
     }

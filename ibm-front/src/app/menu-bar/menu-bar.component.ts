@@ -28,7 +28,7 @@ export class MenuBarComponent implements OnInit {
   }
   
   logout() {
-    var api = "http://169.51.205.229:30289/logout";
+    var api = "http://localhost:4000/logout";
     console.log(api);
     var rout = this.router;
     axios.get(api, { withCredentials: true }).then(function (response) {
@@ -36,7 +36,9 @@ export class MenuBarComponent implements OnInit {
       if (response.status == 200) {
         rout.navigate(['./']);
       }
-    })
+    }).catch((error) => {
+      console.log("Not able to Log Out")
+    });
   }
 
   ngOnInit(): void {
