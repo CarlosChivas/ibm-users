@@ -37,7 +37,7 @@ import { LoanConfirmationComponent } from './loan-confirmation/loan-confirmation
 import { RoleManagementComponent } from './role-management/role-management.component';
 import { Ng2SearchPipe } from 'ng2-search-filter';
 import { PeripheralRegistrationComponent } from './peripheral-registration/peripheral-registration.component';
-
+import { DashboardComponent } from './dashboard/dashboard.component';
 
 @NgModule({
   declarations: [
@@ -51,7 +51,8 @@ import { PeripheralRegistrationComponent } from './peripheral-registration/perip
     ProfileComponent,
     RoleManagementComponent,
     PeripheralRegistrationComponent,
-    LoanConfirmationComponent
+    LoanConfirmationComponent,
+    DashboardComponent
   ],
   imports: [
     BrowserModule,

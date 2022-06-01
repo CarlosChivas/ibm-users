@@ -1,0 +1,83 @@
+@import '~carbon-components/scss/globals/scss/styles';
+
+.page-title {
+    padding-bottom: 20px;
+}
+
+.container {
+    width: 80%;
+    z-index: 100;
+    padding: 40px;
+    display: grid;
+    grid-template-columns: repeat(1, 1fr);
+    gap: 24px;
+    grid-auto-rows: minmax(100px, auto);
+}
+
+.overview-page__banner {
+    min-height: 100vh;
+    padding: 24px;
+    /*$spacing-06;*/
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.DeviceCard{
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 8px; /*$spacing-03*/
+    background-color: 	#f4f4f4;
+}
+.DeviceCard>img{
+    width: 120px;
+    
+}
+.DeviceCard--Info{
+    width: 100%;
+    background-color: 	#f4f4f4;
+    color:#161616;
+    font-size: 14px;
+    font-weight: bold;
+}
+.DeviceCard--Info2{
+    width: 100%;
+    background-color: 	#f4f4f4;
+    color: #161616;
+    font-size: 14px;
+    font-weight: bold;
+}
+.DeviceCard--Info3{
+    width: 100%;
+    background-color: 	#f4f4f4;
+    color:#161616;
+    font-size: 14px;
+    font-weight: bold;
+}
+.DeviceCard--Info4{
+    width: 100%;
+    background-color: 	#f4f4f4;
+    color: #161616;
+    font-size: 14px;
+    font-weight: bold;
+}
+.CardParent{
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 24px; /*$spacing-06*/
+    grid-auto-rows: minmax(100px, auto);
+}
+.LoanChart img{
+    width: 100%;
+}
+@media screen and (min-width: 1515px) {
+    .banner__title {
+       font-size: 50px;
+    }
+    .banner__subtitle {
+        font-size: 28px;
+    }
+}
