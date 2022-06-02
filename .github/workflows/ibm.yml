@@ -95,6 +95,9 @@ jobs:
         echo  '"' >> ./ibm-users/.env
         echo -n 'JWT_SECRETKEY="' >> ./ibm-users/.env
         echo -n ${{ secrets.JWT_SECRETKEY }} >> ./ibm-users/.env
+        echo  '"' >> ./ibm-users/.env
+        echo -n 'IP_FRONT="' >> ./ibm-users/.env
+        echo -n ${{ secrets.IP_FRONT }} >> ./ibm-users/.env
         echo -n '"' >> ./ibm-users/.env
 
     # Build the Docker image USERS
@@ -141,6 +144,9 @@ jobs:
         echo '"' >> ./ibm-peripherals/.env
         echo -n 'JWT_SECRETKEY="' >> ./ibm-peripherals/.env
         echo -n ${{ secrets.JWT_SECRETKEY }} >> ./ibm-peripherals/.env
+        echo  '"' >> ./ibm-peripherals/.env
+        echo -n 'IP_FRONT="' >> ./ibm-peripherals/.env
+        echo -n ${{ secrets.IP_FRONT }} >> ./ibm-peripherals/.env
         echo -n '"' >> ./ibm-peripherals/.env
 
     # Build the Docker image PERIPHERALS

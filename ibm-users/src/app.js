@@ -6,7 +6,7 @@ const cors = require('cors');
 require("dotenv").config();
 const app = express();
 app.use(cors({
-  origin: "http://169.51.205.229:31622",
+  origin: process.env.IP_FRONT,
   credentials: true
 }))
 //Procesar datos enviados desde forms
