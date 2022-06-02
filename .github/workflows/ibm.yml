@@ -63,7 +63,7 @@ jobs:
         docker tag ibm-front us.icr.io/ibm-app/ibm-front:$GITHUB_SHA
         docker push us.icr.io/ibm-app/ibm-front:$GITHUB_SHA
 
-     Deploy the Docker image to the IKS cluster
+    # Deploy the Docker image to the IKS cluster
     - name: Deploy to IKS
       run: |
         ibmcloud ks cluster config --cluster $IKS_CLUSTER
