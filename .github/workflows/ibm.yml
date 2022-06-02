@@ -75,7 +75,6 @@ jobs:
         kubectl apply -f service.yaml
         kubectl get services -o wide
 
-
     - name: Create .env file ibm-users
       run: |
         touch ./ibm-users/.env
