@@ -52,28 +52,30 @@ jobs:
         ibmcloud login --apikey "${IBM_CLOUD_API_KEY}" -r "${IBM_CLOUD_REGION}" -g Default
         ibmcloud cr login
         
-#      # Build the Docker image FRONT
-#     - name: Build with Docker front service
-#       run: |
-#         docker build -t ibm-front ./ibm-front
+     # Build the Docker image FRONT
+    - name: Build with Docker front service
+      run: |
+        docker build -t ibm-front ./ibm-front
 
-#     # Push the image to IBM Container Registry
-#     - name: Push the image to ICR
-#       run: |
-#         docker tag ibm-front us.icr.io/loans2/ibm-front:$GITHUB_SHA
-#         docker push us.icr.io/loans2/ibm-front:$GITHUB_SHA
+    # Push the image to IBM Container Registry
+    - name: Push the image to ICR
+      run: |
+        docker tag ibm-front us.icr.io/ibm-app/ibm-front:$GITHUB_SHA
+        docker push us.icr.io/ibm-app/ibm-front:$GITHUB_SHA
 
-#      Deploy the Docker image to the IKS cluster
-#     - name: Deploy to IKS
-#       run: |
-#         ibmcloud ks cluster config --cluster $IKS_CLUSTER
-#         kubectl config current-context
-#         kubectl create deployment d3 --image=us.icr.io/loans2/ibm-front:$GITHUB_SHA --dry-run -o yaml > deployment.yaml
-#         kubectl apply -f deployment.yaml
-#         kubectl rollout status deployment/d3
-#         kubectl create service loadbalancer d3 --tcp=80:$PORT3 --dry-run -o yaml > service.yaml
-#         kubectl apply -f service.yaml
-#         kubectl get services -o wide
+     Deploy the Docker image to the IKS cluster
+    - name: Deploy to IKS
+      run: |
+        ibmcloud ks cluster config --cluster $IKS_CLUSTER
+        kubectl config current-context
+        kubectl create deployment d3 --image=us.icr.io/ibm-app/ibm-front:$GITHUB_SHA --dry-run -o yaml > deployment.yaml
+        kubectl apply -f deployment.yaml
+        kubectl rollout status deployment/d3
+        kubectl create service loadbalancer d3 --tcp=80:$PORT3 --dry-run -o yaml > service.yaml
+        kubectl apply -f service.yaml
+        kubectl get services -o wide
+
+
     - name: Create .env file ibm-users
       run: |
         touch ./ibm-users/.env
@@ -150,8 +152,8 @@ jobs:
     # Push the image to IBM Container Registry
     - name: Push the image to ICR
       run: |
-        docker tag ibm-peripherals us.icr.io/loans2/ibm-peripherals:$GITHUB_SHA
-        docker push us.icr.io/loans2/ibm-peripherals:$GITHUB_SHA
+        docker tag ibm-peripherals us.icr.io/ibm-app/ibm-peripherals:$GITHUB_SHA
+        docker push us.icr.io/ibm-app/ibm-peripherals:$GITHUB_SHA
         
 
     # Deploy the Docker image to the IKS cluster
@@ -159,7 +161,7 @@ jobs:
       run: |
         ibmcloud ks cluster config --cluster $IKS_CLUSTER
         kubectl config current-context
-        kubectl create deployment d2 --image=us.icr.io/loans2/ibm-peripherals:$GITHUB_SHA --dry-run -o yaml > deployment.yaml
+        kubectl create deployment d2 --image=us.icr.io/ibm-app/ibm-peripherals:$GITHUB_SHA --dry-run -o yaml > deployment.yaml
         kubectl apply -f deployment.yaml
         kubectl rollout status deployment/d2
         kubectl create service loadbalancer d2 --tcp=80:$PORT2 --dry-run -o yaml > service.yaml
