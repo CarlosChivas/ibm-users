@@ -76,7 +76,7 @@ export class ProfileComponent implements OnInit {
   ngOnInit(): void {
     var api = "http://localhost:4000/isLogged";
     var rout = this.route;
-    var router = this.router
+    var router = this.router;
     var esto = this;
     axios.get(api, { withCredentials: true }).then((response) => {
       if (response.status == 200) {
@@ -85,12 +85,12 @@ export class ProfileComponent implements OnInit {
         console.log(myParam);
         console.log(me);
         if (myParam != me.ID && (me.ROLE_NAME == "Administrator" || me.ROLE_NAME == "Focal")) {
-          var api = "http://localhost:4000/getUser/id=" + myParam;
+          var api = "http://localhost:4000/AdminFocal/getUser/id=" + myParam;
           axios.get(api, { withCredentials: true }).then(res => {
-            console.log(res);
-            esto.profile = me;
+            console.log(res.data);
+            esto.profile = res.data;
             esto.showLoans = true;
-          });
+          }).catch(e=>console.log(e));
         }
         else {
           esto.profile = me;

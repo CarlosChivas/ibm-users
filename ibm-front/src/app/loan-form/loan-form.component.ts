@@ -16,15 +16,17 @@ export class LoanFormComponent implements OnInit {
 
   fields = { "name": "employeeEmail", "type": "email" };
   device = {
-    BRAND: "No brand",
-    TYPE: "No Type",
-    SN: "N/A",
-    DESCRIPTION: "No Brand - No Type"
+    SERIAL: 0,
+    BRAND: "",
+    PTYPE: "",
+    MODEL: "",
+    DESCRIPTION: "",
+    PERIPHERAL_STATUS: "",
+
+    DEPARTMENT_NAME: "",
+    FOCAL_NAME: ""
   };
-  user = {
-    ROLE: "",
-    EMAIL: "",
-  };
+  user = "";
 
   loanForm = this.formBuilder.group({
     employeeMail: ''
@@ -37,7 +39,6 @@ export class LoanFormComponent implements OnInit {
   }
 
   openModal(index: number) {
-    console.log(index);
     this.isOpen = true;
     this.device = this.peripheralList[index];
   }
@@ -45,75 +46,44 @@ export class LoanFormComponent implements OnInit {
     this.isOpen = false;
   }
   sendForm() {
-    console.log(this.loanForm.value)
-    console.log(this.user)
+    var esto = this;
+    var mail = esto.loanForm.value.employeeMail.trim().toLowerCase();
+    if(mail == "") mail = esto.user;
+    var body = {
+      employee_email: mail,
+      peripheral_serial: esto.device.SERIAL
+    };
+    /*
+    var api = "http://localhost:4000/AdminFocal/searchUsers/name="+body.employee_email.trim().toLowerCase();
+    axios.get(api, { withCredentials: true }).then(response => {
+      console.log(response);
+      /*/
+      var api = "http://localhost:4001/AdminFocal/createLoan";
+      axios.post(api, body, { withCredentials: true }).then(res => {
+        console.log(res);
+      }).catch(err => console.log(err));
+      /* // /
+    }).catch(err => console.log(err));
+    */
+
   }
   peripheralList = [{
-    BRAND: "ACER",
-    TYPE: "MONITOR",
-    SN: "10",
-    DESCRIPTION: "ACER - Monitor"
-  }, {
-    BRAND: "DELL",
-    TYPE: "KEYBOARD",
-    SN: "20",
-    DESCRIPTION: "DELL - Keyboard"
-  }, {
-    BRAND: "BOSE",
-    TYPE: "SPEAKER",
-    SN: "30",
-    DESCRIPTION: "BOSE - Speaker"
-  }, {
-    BRAND: "SONY",
-    TYPE: "HEADPHONES",
-    SN: "40",
-    DESCRIPTION: "SONY - Headphones"
-  }, {
-    BRAND: "HP",
-    TYPE: "MOUSE",
-    SN: "50",
-    DESCRIPTION: "HP - Mouse"
-  }, {
-    BRAND: "BLUE YETI",
-    TYPE: "MICROPHONE",
-    SN: "60",
-    DESCRIPTION: "Blue Yeti - Microphone"
-  }, {
-    BRAND: "KINGSTONE",
-    TYPE: "HARD DRIVE",
-    SN: "70",
-    DESCRIPTION: "Kingstone - Hard Drive"
-  }, {
-    BRAND: "LOGITECH",
-    TYPE: "WEB CAM",
-    SN: "80",
-    DESCRIPTION: "LOGITECH - Web Cam"
-  }, {
-    BRAND: "APPLE",
-    TYPE: "TRACK PAD",
-    SN: "90",
-    DESCRIPTION: "APPLE - TRACK PAD"
-  }, {
-    BRAND: "TP-LINK",
-    TYPE: "ROUTER",
-    SN: "100",
-    DESCRIPTION: "TP-LINK - ROUTER"
+    SERIAL: 0,
+    BRAND: "",
+    PTYPE: "keyboard",
+    MODEL: "",
+    DESCRIPTION: "",
+    PERIPHERAL_STATUS: "",
+
+    DEPARTMENT_NAME: "",
+    FOCAL_NAME: ""
   }];
 
   deviceTypeFilters = [];
-  radioFilter = null;
+  deviceBrandFilters = [];
 
-  deviceType = [
-    { value: "Monitor", checked: false },
-    { value: "Keyboard", checked: false },
-    { value: "Mouse", checked: false }
-  ];
-
-  radios = [
-    { color: "Accepted Conditions", checked: false },
-    { color: "Security Authorization", checked: false },
-    { color: "Returned", checked: false }
-  ];
+  deviceType: { value: any; checked: boolean }[] = [];
+  deviceBrands: { value: any; checked: boolean }[] = [];
 
   onCheckboxChange() {
   }
@@ -122,19 +92,18 @@ export class LoanFormComponent implements OnInit {
   }
 
   resetFilters() {
-    this.resetCheckboxList();
-    this.resetRadios();
+    this.resetTypes();
+    this.resetBrands();
   }
 
-  resetCheckboxList() {
+  resetTypes() {
     this.deviceTypeFilters = [];
     this.deviceType = this.deviceType.map(obj => ({ value: obj.value, checked: false }));
     this.applyFilters();
   }
-
-  resetRadios() {
-    this.radioFilter = null;
-    this.radios = this.radios.map(obj => ({ color: obj.color, checked: false }));
+  resetBrands() {
+    this.deviceBrandFilters = [];
+    this.deviceBrands = this.deviceBrands.map(obj => ({ value: obj.value, checked: false }));
     this.applyFilters();
   }
 
@@ -147,13 +116,37 @@ export class LoanFormComponent implements OnInit {
     var rout = this.router;
     var esto = this;
     axios.get(api, { withCredentials: true }).then(function (response) {
-      if (response.status != 200)
-        rout.navigate(['./']);
-        else{
-          console.log(response.data);
-          esto.user.EMAIL = response.data.EMAIL;
-          esto.user.ROLE = response.data.ROLE_NAME;
-        }
+      var me = response.data;
+      esto.user = me.EMAIL;
+
+      if (me.ROLE_NAME == "Focal") {
+        var api2 = "http://localhost:4001/Focal/getPeripherals";
+        axios.get(api2, { withCredentials: true }).then(res => {
+          esto.peripheralList = res.data;
+        }).catch(err => console.log(err));
+      }
+      else if (me.ROLE_NAME == "Administrator") {
+        var api2 = "http://localhost:4001/getAllPeripherals";
+        axios.get(api2, { withCredentials: true }).then(res => {
+          esto.peripheralList = res.data;
+        }).catch(err => console.log(err));
+      }
+      var api3 = "http://localhost:4001/AdminFocal/getPeripheralFields";
+      axios.get(api3, { withCredentials: true }).then(res => {
+        res.data.ptype.forEach((element: { NAME: any; }) => {
+          esto.deviceType.push({
+            value: element.NAME,
+            checked: false
+          });
+        });
+        res.data.brand.forEach((element: { NAME: any; }) => {
+          esto.deviceBrands.push({
+            value: element.NAME,
+            checked: false
+          });
+        });
+      }).catch(err => console.log(err));
+
     }).catch(err => {
       console.log(err);
       rout.navigate(['./']);

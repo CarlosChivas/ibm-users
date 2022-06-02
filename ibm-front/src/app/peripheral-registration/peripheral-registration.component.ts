@@ -11,27 +11,21 @@ import axios from 'axios';
 export class PeripheralRegistrationComponent implements OnInit {
 
   fields = [
-    {"name":"Emploee Email","id":"emploeeEmail", "type":"email"},
-    {"name":"Focal Email","id":"focalEmail", "type":"email"},
-    {"name":"Divice Type","id":"diviceType", "type":"text"},
-    {"name":"Divice Brand","id":"diviceBrand", "type":"text"},
-    {"name":"Divice Model","id":"diviceModel", "type":"text"},
-    {"name":"Device Serian Number","id":"deviceID", "type":"text"}];
+    { "name": "Divice Type", "id": "deviceType", "type": "text" },
+    { "name": "Divice Brand", "id": "deviceBrand", "type": "text" },
+    { "name": "Divice Model", "id": "deviceModel", "type": "text" },
+    { "name": "Divice Description", "id": "deviceDesc", "type": "text" },
+  ];
 
-    diviceTypes = ["Headphones","Keyboard","Monitor","Mouse"];
-    diviceBrands = [];
-    diviceModels = [];
-  loanForm = this.formBuilder.group({
-    emploeeID: '',
-    emploeeEmail: '',
-    emploeeName: '',
-    emploeeLastName: '',
-    detartment: '',
-    focalID: '',
-    focalEmail: '',
-    focalName: '',
-    focalLastName: '',
-    deviceID: ''
+  diviceTypes: any[] = [];
+  diviceBrands: any[] = [];
+  me: any = {};
+
+  deviceForm = this.formBuilder.group({
+    deviceType: '',
+    deviceBrand: '',
+    deviceModel: '',
+    deviceDesc: ''
   });
 
   constructor(
@@ -41,14 +35,38 @@ export class PeripheralRegistrationComponent implements OnInit {
   }
 
   sendForm() {
-    console.log(this.loanForm.value)
+    var api = "http://localhost:4001/AdminFocal/createPeripheral";
+    var rout = this.router;
+    var esto = this;
+    var form = esto.deviceForm.value;
+
+    var body = {
+      ptype: form.deviceType,
+      description: form.deviceDesc,
+      brand: form.deviceBrand,
+      model: form.deviceModel
+    };
+    axios.post(api, body, { withCredentials: true }).then(response => {
+      
+      console.log(response)
+
+    }).catch(err => {
+      console.log(err);
+    });
   }
+
   ngOnInit(): void {
     var api = "http://localhost:4000/isLogged";
     var rout = this.router;
-    axios.get(api, {withCredentials:true}).then(function (response) {
-      if (response.status != 200)
-        rout.navigate(['./']);
+    var esto = this;
+    axios.get(api, { withCredentials: true }).then(function (response) {
+      esto.me = response.data;
+      var api3 = "http://localhost:4001/AdminFocal/getPeripheralFields";
+      axios.get(api3, { withCredentials: true }).then(res => {
+        esto.diviceTypes = res.data.ptype;
+        esto.diviceBrands = res.data.brand;
+      }).catch(err => console.log(err));
+
     }).catch(err => {
       console.log(err);
       rout.navigate(['./']);

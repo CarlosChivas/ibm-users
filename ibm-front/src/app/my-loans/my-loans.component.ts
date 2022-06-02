@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import axios from 'axios';
-import {Injectable} from '@angular/core';
+import { Injectable } from '@angular/core';
 
 
 @Component({
@@ -106,8 +106,15 @@ export class MyLoansComponent implements OnInit {
   ngOnInit(): void {
     var api = "http://localhost:4000/isLogged";
     var rout = this.router;
-    axios.get(api, { withCredentials: true }).then(function (response) {
-      console.log("wacha -> ", response);
+    axios.get(api, { withCredentials: true }).then(response => {
+
+      api = "http://localhost:4001/Employee/getOwnLoans";
+      axios.get(api, { withCredentials: true }).then(res => {
+
+        console.log(res.data);
+        
+      }).catch(err => console.log(err));
+
     }).catch(err => {
       console.log(err);
       rout.navigate(['./']);

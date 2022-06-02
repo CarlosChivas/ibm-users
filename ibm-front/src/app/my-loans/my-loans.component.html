@@ -11,14 +11,10 @@
                     <div class="CardParent">
                         <div *ngFor="let device of item.value" class="DeviceCard">
 
-                            
-                            
-                        
-
                             <div class="DeviceCard--Info">
                                 <p>{{device.description}}</p>
                             </div>
-                            <img #trigger src="../../assets/device.png" alt="" (click)="open = true">
+                            <img #trigger src="../../assets/{{device.device.toLowerCase()}}.png" alt="" (click)="open = true">
                             <ibm-modal [open]="open" [trigger]="trigger" (overlaySelected)="open = false">
                                 <ibm-modal-header (closeSelect)="open = false" [showCloseButton]="showCloseButton">
                                     <p class="bx--modal-header__heading bx--type-beta">{{device.device}}</p>
@@ -46,9 +42,6 @@
                 </ibm-tab>
             </ibm-tabs>
             <div></div>
-        </div>
-        <div class="LoanChart">
-        
         </div>
     </div>
 </section>

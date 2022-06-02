@@ -3,7 +3,7 @@
      
     <div class="container">
       <h1>New Peripheral Registration</h1>
-      <form [formGroup]="loanForm" (ngSubmit)="sendForm()" class="form">
+      <form [formGroup]="deviceForm" (ngSubmit)="sendForm()" class="form">
         <div >
             <ibm-label *ngFor="let product of fields">
                 {{product.name}}

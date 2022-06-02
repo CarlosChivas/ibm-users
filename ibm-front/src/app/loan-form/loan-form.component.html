@@ -9,14 +9,6 @@
         <div ibmCol class="multi-selection">
           <button ibmButton="primary" (click)="resetFilters()" class="reset-button">Reset Filters</button>
           <fieldset class="bx--fieldset">
-            <legend class="bx--label">Device Status</legend>
-            <ibm-radio-group aria-label="radiogroup" orientation="vertical" labelPlacement="right">
-              <ibm-radio *ngFor="let radio of radios" [value]="radio.color">
-                {{radio.color}}
-              </ibm-radio>
-            </ibm-radio-group>
-          </fieldset>
-          <fieldset class="bx--fieldset">
             <div ibmRow>
               <div ibmCol>
                 <legend class="bx--label">Device Type</legend>
@@ -31,11 +23,27 @@
               {{ listItem.value }}
             </ibm-checkbox>
           </fieldset>
+
+          <fieldset class="bx--fieldset">
+            <div ibmRow>
+              <div ibmCol>
+                <legend class="bx--label">Device Brand</legend>
+              </div>
+              <div ibmCol>
+                <ibm-tag-filter *ngIf="deviceBrandFilters.length > 0">
+                  {{deviceBrandFilters.length}}
+                </ibm-tag-filter>
+              </div>
+            </div>
+            <ibm-checkbox *ngFor="let listItem of deviceBrands" [checked]="listItem.checked">
+              {{ listItem.value }}
+            </ibm-checkbox>
+          </fieldset>
         </div>
 
         <div ibmCol [columnNumbers]="{'lg': 10, 'md': 10, 'sm': 3}" class="CardParent">
           <div *ngFor="let device of peripheralList; let i=index" class="DeviceCard" (click)="openModal(i)">
-            <img src="../../assets/device.png" alt="">
+            <img src="../../assets/{{device.PTYPE.toLowerCase()}}.png" alt="">
             <div class="DeviceCard--Info">
 
               <p>{{device.DESCRIPTION}}</p>
@@ -72,22 +80,17 @@
       <h2>Device Brand</h2> <span>{{device.BRAND}}</span>
     </div>
     <div>
-      <h2>Device Type</h2> <span>{{device.TYPE}}</span>
+      <h2>Device Type</h2> <span>{{device.PTYPE}}</span>
     </div>
     <div>
-      <h2>Device Serial Number</h2> <span>{{device.SN}}</span>
+      <h2>Device Serial Number</h2> <span>{{device.SERIAL}}</span>
     </div>
-    <div *ngIf="user.ROLE == 'Employee' else POWERFULL">
-      <h2>Employee E-mail</h2> <span>{{user.EMAIL}}</span>
-    </div>
-    <ng-template #POWERFULL>
       <form [formGroup]="loanForm" (ngSubmit)="sendForm()" class="form">
         <ibm-label>
           Employee E-mail
-          <input ibmText placeholder="{{user.EMAIL}}" required formControlName="employeeMail" />
+          <input ibmText placeholder="{{user}}" required formControlName="employeeMail" />
         </ibm-label>
       </form>
-    </ng-template>
   </div>
   <ibm-modal-footer>
     <ng-container>
