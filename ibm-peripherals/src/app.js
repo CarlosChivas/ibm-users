@@ -6,7 +6,7 @@ const { SQL_MULT_RESULT_SETS } = require("ibm_db/lib/climacros");
 require("dotenv").config();
 const app = express();
 app.use(cors({
-  origin: "http://169.51.205.229:31622",
+  origin: process.env.IP_FRONT,
   credentials: true
 }))
 //Procesar datos enviados desde forms

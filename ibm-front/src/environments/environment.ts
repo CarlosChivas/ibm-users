@@ -3,7 +3,9 @@
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
-  production: false
+  production: false,
+  ibm_users: 'http://localhost:4000',
+  ibm_peripherals: 'http://localhost:4001'
 };
 
 /*
