@@ -50,7 +50,6 @@ jobs:
     - name: Authenticate with IBM Cloud CLI
       run: |
         ibmcloud login --apikey "${IBM_CLOUD_API_KEY}" -r "${IBM_CLOUD_REGION}" -g Default
-        
         ibmcloud cr login
         
 #      # Build the Docker image FRONT
@@ -75,27 +74,27 @@ jobs:
 #         kubectl create service loadbalancer d3 --tcp=80:$PORT3 --dry-run -o yaml > service.yaml
 #         kubectl apply -f service.yaml
 #         kubectl get services -o wide
-      - name: Create .env file ibm-users
-        run: |
-          touch ./ibm-users/.env
-          echo -n 'DATABASE_STRING="DATABASE=' >> ./ibm-users/.env
-          echo -n ${{ secrets.DATABASE }} >> ./ibm-users/.env 
-          echo -n ';HOSTNAME=' >> ./ibm-users/.env
-          echo -n ${{ secrets.HOSTNAME }} >> ./ibm-users/.env 
-          echo -n ';PORT=' >> ./ibm-users/.env
-          echo -n ${{ secrets.PORT }} >> ./ibm-users/.env 
-          echo -n ';PROTOCOL=' >> ./ibm-users/.env
-          echo -n ${{ secrets.PROTOCOL }} >> ./ibm-users/.env
-          echo -n ';UID=' >> ./ibm-users/.env
-          echo -n ${{ secrets.UID }} >> ./ibm-users/.env
-          echo -n ';PWD=' >> ./ibm-users/.env
-          echo -n ${{ secrets.PWD }} >> ./ibm-users/.env
-          echo -n ';SECURITY=' >> ./ibm-users/.env
-          echo -n ${{ secrets.SECURITY }} >> ./ibm-users/.env
-          echo  '"' >> ./ibm-users/.env
-          echo -n 'JWT_SECRETKEY="' >> ./ibm-users/.env
-          echo -n ${{ secrets.JWT_SECRETKEY }} >> ./ibm-users/.env
-          echo -n '"' >> ./ibm-users/.env
+    - name: Create .env file ibm-users
+      run: |
+        touch ./ibm-users/.env
+        echo -n 'DATABASE_STRING="DATABASE=' >> ./ibm-users/.env
+        echo -n ${{ secrets.DATABASE }} >> ./ibm-users/.env 
+        echo -n ';HOSTNAME=' >> ./ibm-users/.env
+        echo -n ${{ secrets.HOSTNAME }} >> ./ibm-users/.env 
+        echo -n ';PORT=' >> ./ibm-users/.env
+        echo -n ${{ secrets.PORT }} >> ./ibm-users/.env 
+        echo -n ';PROTOCOL=' >> ./ibm-users/.env
+        echo -n ${{ secrets.PROTOCOL }} >> ./ibm-users/.env
+        echo -n ';UID=' >> ./ibm-users/.env
+        echo -n ${{ secrets.UID }} >> ./ibm-users/.env
+        echo -n ';PWD=' >> ./ibm-users/.env
+        echo -n ${{ secrets.PWD }} >> ./ibm-users/.env
+        echo -n ';SECURITY=' >> ./ibm-users/.env
+        echo -n ${{ secrets.SECURITY }} >> ./ibm-users/.env
+        echo  '"' >> ./ibm-users/.env
+        echo -n 'JWT_SECRETKEY="' >> ./ibm-users/.env
+        echo -n ${{ secrets.JWT_SECRETKEY }} >> ./ibm-users/.env
+        echo -n '"' >> ./ibm-users/.env
 
     # Build the Docker image USERS
     - name: Build with Docker users service
