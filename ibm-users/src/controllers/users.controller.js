@@ -149,7 +149,7 @@ usersCtrl.searchUsers = async (req,res) => {
                     res.status(401).send(err);
                 } else{
                     if(data.length>0){
-                        res.status(401).send(data);
+                        res.status(200).send(data);
                     } else{
                         res.status(401).send("Users not found");
                     }
@@ -194,26 +194,23 @@ usersCtrl.getUser = async (req,res) => {
 }
 
 usersCtrl.findUsersAdmin = async(req,res) => {
+    
+    if(!req.query.user){
+        req.query.user = ""
+    }
+    if(!req.query.rolesID){
+        req.query.rolesID="true"
+    }
     let query = `SELECT users.id, users.first_name, users.last_name, users.email,
     role.name as role_name, department.name as department_name  
     FROM users 
     INNER JOIN role ON users.role=role.id 
-    INNER JOIN department ON users.department=department.id`
-
-    if(req.query.user){
-        query+=` WHERE LOWER(users.first_name) LIKE LOWER('%${req.query.user}%')
-                OR LOWER(users.last_name) LIKE LOWER('%${req.query.user}%')
-                OR LOWER(users.email) LIKE LOWER('%${req.query.user}%')`
-        if(req.query.role){
-            query+=` AND users.role = ${req.query.nameRole.ID}`
-        }
-    } else{
-        if(req.query.role){
-            query+=` WHERE users.role = ${req.query.nameRole.ID}`
-        }
-    }
+    INNER JOIN department ON users.department=department.id
+    WHERE (LOWER(users.first_name) LIKE LOWER('%${req.query.user}%')
+    OR LOWER(users.last_name) LIKE LOWER('%${req.query.user}%')
+    OR LOWER(users.email) LIKE LOWER('%${req.query.user}%'))
+    AND users.role IN (${req.query.rolesID});`
     
-    query+=";"
     pool.open(process.env.DATABASE_STRING, function (err, db) {
         if (err) {
             res.status(401).send(err);
@@ -237,20 +234,30 @@ usersCtrl.findUsersAdmin = async(req,res) => {
             });
         }})
 }
+
 usersCtrl.findRole = async (req,res,next)=>{
+    
     if(req.query.role){
+        let roles = req.query.role.split(',');
+        roles = roles.join("','");
+        roles="'"+roles+"'"
         pool.open(process.env.DATABASE_STRING, function (err, db) {
             if (err) {
                 res.status(401).send(err);
             } else{
                 db.query(`SELECT role.id
                         FROM role
-                        WHERE role.name = ?;`,[req.query.role], function(err, data){
+                        WHERE role.name IN (${roles});`, function(err, data){
                     if(err){
                         res.status(401).send(err);
                     } else{
                         if(data.length>0){
-                            req.query.nameRole = data[0];
+                            let ids=[]
+                            data.forEach(element => {
+                                ids.push(element.ID)
+                            });
+                            ids = ids.join(",");
+                            req.query.rolesID = ids;
                             next();
                         } else{
                             res.status(401).send("Role not found");

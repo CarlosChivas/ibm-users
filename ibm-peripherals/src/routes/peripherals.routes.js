@@ -7,7 +7,7 @@ const router = Router();
 router.get("/", peripheralsCtrl.getHome);
 
 /*
-endpoint body example:
+Body:
 {
     "ptype": "Keyboard",
     "description": "Compact mechanical keyboard",
@@ -22,14 +22,30 @@ router.post("/AdminFocal/createPeripheral", rolesCtrl.validateToken,
                                             peripheralsCtrl.findPeripheralStatus,
                                             peripheralsCtrl.createPeripheral);
 
-router.get("/getAllPeripherals", rolesCtrl.validateToken, peripheralsCtrl.getAllPeripherals);
+/*
+Returns only the available peripherals of the current user in session
 
-router.get("/Focal/getPeripherals", rolesCtrl.validateToken,
-                                    rolesCtrl.isFocal,
-                                    peripheralsCtrl.getPeripherals);
+Res:
+[
+    {
+        "SERIAL": 51,
+        "PTYPE": "Keyboard",
+        "DESCRIPTION": "Compact mechanical keyboard",
+        "BRAND": "Steren",
+        "MODEL": "str0291383",
+        "PERIPHERAL_STATUS": "Available",
+        "USER_NAME": "Samuel Diaz",
+        "DEPARTMENT_NAME": "Validation"
+    },
+    {...}
+]
+*/
+router.get("/AdminFocal/getAvailablePeripherals", rolesCtrl.validateToken,
+                                                  rolesCtrl.isFocalORAdmin,
+                                                  peripheralsCtrl.getAvailablePeripherals);
 
 /*
-endpoint body example:
+Body:
 {
     "employee_email": "miguel@gmail.com",
     "peripheral_serial": "26"
@@ -66,8 +82,8 @@ Res:
     "concluded": []
 }
 */                                            
-router.get("/Employee/getOwnLoans", rolesCtrl.validateToken,
-                                    rolesCtrl.isEmployee,
-                                    peripheralsCtrl.getOwnLoans);
+router.get("/getOwnLoans", rolesCtrl.validateToken,
+                           rolesCtrl.notSecurity,
+                           peripheralsCtrl.getOwnLoans);
 
 module.exports = router;
