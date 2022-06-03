@@ -1,18 +1,35 @@
 <app-menu-bar></app-menu-bar>
 <section class="overview-page__banner" aria-label="overview page banner">
-     
-    <div class="container">
-      <h1>New Peripheral Registration</h1>
-      <form [formGroup]="deviceForm" (ngSubmit)="sendForm()" class="form">
-        <div >
-            <ibm-label *ngFor="let product of fields">
-                {{product.name}}
-                <input ibmText type="{{product.type}}" [autocomplete]="false" required formControlName="{{product.id}}">
-            </ibm-label>
-        </div>
-        <button ibmButton="secondary">Cancel Registration</button>
-        <button ibmButton="primary">Confirm Registration</button>
-      </form>
+
+  <div class="container">
+    <h1>New Peripheral Registration</h1>
+    <div class="">
+          <form [formGroup]="deviceForm" (ngSubmit)="sendForm()" class="form">
+            <div class="">
+              <ibm-label class="Goku">
+                Divice Type
+                <ibm-dropdown formControlName="deviceType" class="GoWide">
+                  <ibm-dropdown-list [items]="diviceTypes"></ibm-dropdown-list>
+                </ibm-dropdown>
+              </ibm-label>
+              <ibm-label>
+                Divice Brand
+                <ibm-dropdown formControlName="deviceBrand" class="GoWide">
+                  <ibm-dropdown-list [items]="diviceBrands"></ibm-dropdown-list>
+                </ibm-dropdown>
+              </ibm-label>
+              <ibm-label>
+                Divice Model
+                <input ibmText type="text" [autocomplete]="false" required formControlName="deviceModel">
+              </ibm-label>
+              <ibm-label>
+                Divice Description
+                <input ibmText type="text" [autocomplete]="false" required formControlName="deviceDesc">
+              </ibm-label>
+            </div>
+            <button ibmButton="secondary">Cancel Registration</button>
+            <button ibmButton="primary">Confirm Registration</button>
+          </form>
     </div>
-  </section>
-  
+  </div>
+</section>

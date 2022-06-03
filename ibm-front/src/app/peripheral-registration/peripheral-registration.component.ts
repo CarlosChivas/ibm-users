@@ -10,12 +10,7 @@ import axios from 'axios';
 })
 export class PeripheralRegistrationComponent implements OnInit {
 
-  fields = [
-    { "name": "Divice Type", "id": "deviceType", "type": "text" },
-    { "name": "Divice Brand", "id": "deviceBrand", "type": "text" },
-    { "name": "Divice Model", "id": "deviceModel", "type": "text" },
-    { "name": "Divice Description", "id": "deviceDesc", "type": "text" },
-  ];
+  
 
   diviceTypes: any[] = [];
   diviceBrands: any[] = [];
@@ -34,6 +29,13 @@ export class PeripheralRegistrationComponent implements OnInit {
   ) {
   }
 
+  updateType(changes: Object) {
+    console.log("jajas");
+  }
+  updateBrand(changes: Object) {
+    console.log("jujus");
+  }
+
   sendForm() {
     var api = "http://localhost:4001/AdminFocal/createPeripheral";
     var rout = this.router;
@@ -41,11 +43,12 @@ export class PeripheralRegistrationComponent implements OnInit {
     var form = esto.deviceForm.value;
 
     var body = {
-      ptype: form.deviceType,
-      description: form.deviceDesc,
+      ptype: form.deviceType.content,
+      description: form.deviceDesc.content,
       brand: form.deviceBrand,
       model: form.deviceModel
     };
+    console.log(body);
     axios.post(api, body, { withCredentials: true }).then(response => {
       
       console.log(response)
@@ -60,11 +63,17 @@ export class PeripheralRegistrationComponent implements OnInit {
     var rout = this.router;
     var esto = this;
     axios.get(api, { withCredentials: true }).then(function (response) {
+
       esto.me = response.data;
       var api3 = "http://localhost:4001/AdminFocal/getPeripheralFields";
       axios.get(api3, { withCredentials: true }).then(res => {
-        esto.diviceTypes = res.data.ptype;
-        esto.diviceBrands = res.data.brand;
+
+        esto.diviceTypes = res.data.ptype.map((element: any) => Object({content: element.NAME, selected: false}));
+        esto.diviceBrands = res.data.brand.map((element: any) => Object({content: element.NAME, selected: false}));
+
+        console.log(esto.diviceTypes);
+        console.log(esto.diviceBrands);
+
       }).catch(err => console.log(err));
 
     }).catch(err => {
