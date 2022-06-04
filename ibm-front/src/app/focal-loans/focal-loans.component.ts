@@ -119,3 +119,24 @@ export class FocalLoansComponent implements OnInit {
 	}
 
 }
+
+//*
+
+//Para getLoans
+    var LOAN = {
+      LOAN_ID: "",
+      EMPLOYEE_NAME: "",
+
+      PERIPHERAL_SERIAL: "",
+      TYPE: "",
+      BRAND: "",
+      MODEL: "",
+      DESCRIPTION: "",
+
+      CREATION: "",
+      CONCLUDED: "",
+      CONDITION_ACCEPTED: "",
+      SECURITY_AUTH: "",
+    };
+
+//*/

@@ -44,11 +44,11 @@ export class PeripheralRegistrationComponent implements OnInit {
 
     var body = {
       ptype: form.deviceType.content,
-      description: form.deviceDesc.content,
-      brand: form.deviceBrand,
+      description: form.deviceDesc,
+      brand: form.deviceBrand.content,
       model: form.deviceModel
     };
-    console.log(body);
+    console.log(form);
     axios.post(api, body, { withCredentials: true }).then(response => {
       
       console.log(response)
