@@ -48,7 +48,7 @@ export class LoanFormComponent implements OnInit {
   sendForm() {
     var esto = this;
     var mail = esto.loanForm.value.employeeMail.trim().toLowerCase();
-    if(mail == "") mail = esto.user;
+    if (mail == "") mail = esto.user;
     var body = {
       employee_email: mail,
       peripheral_serial: esto.device.SERIAL
@@ -58,13 +58,13 @@ export class LoanFormComponent implements OnInit {
     axios.get(api, { withCredentials: true }).then(response => {
       console.log(response);
       /*/
-      var api = "http://localhost:4001/AdminFocal/createLoan";
-      axios.post(api, body, { withCredentials: true }).then(res => {
-        console.log(res);
-      }).catch(err => console.log(err));
-      /* // /
+    var api = "http://localhost:4001/AdminFocal/createLoan";
+    axios.post(api, body, { withCredentials: true }).then(res => {
+      console.log(res);
     }).catch(err => console.log(err));
-    */
+    /* // /
+  }).catch(err => console.log(err));
+  */
 
   }
   peripheralList = [{
@@ -119,18 +119,11 @@ export class LoanFormComponent implements OnInit {
       var me = response.data;
       esto.user = me.EMAIL;
 
-      if (me.ROLE_NAME == "Focal") {
-        var api2 = "http://localhost:4001/Focal/getPeripherals";
-        axios.get(api2, { withCredentials: true }).then(res => {
-          esto.peripheralList = res.data;
-        }).catch(err => console.log(err));
-      }
-      else if (me.ROLE_NAME == "Administrator") {
-        var api2 = "http://localhost:4001/getAllPeripherals";
-        axios.get(api2, { withCredentials: true }).then(res => {
-          esto.peripheralList = res.data;
-        }).catch(err => console.log(err));
-      }
+      var api2 = "http://localhost:4001/AdminFocal/getAvailablePeripherals";
+      axios.get(api2, { withCredentials: true }).then(res => {
+        esto.peripheralList = res.data;
+      }).catch(err => console.log(err));
+      
       var api3 = "http://localhost:4001/AdminFocal/getPeripheralFields";
       axios.get(api3, { withCredentials: true }).then(res => {
         res.data.ptype.forEach((element: { NAME: any; }) => {

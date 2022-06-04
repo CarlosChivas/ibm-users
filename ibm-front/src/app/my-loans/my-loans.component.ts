@@ -99,16 +99,14 @@ export class MyLoansComponent implements OnInit {
     return Object.keys(this.myLoans.Current).length;
   }
 
-  constructor(private router: Router) {
-    // console.log(Object.keys(this.myLoans.Current).length);
-  }
+  constructor(private router: Router) { }
 
   ngOnInit(): void {
     var api = "http://localhost:4000/isLogged";
     var rout = this.router;
     axios.get(api, { withCredentials: true }).then(response => {
 
-      api = "http://localhost:4001/Employee/getOwnLoans";
+      api = "http://localhost:4001/getOwnLoans";
       axios.get(api, { withCredentials: true }).then(res => {
 
         console.log(res.data);

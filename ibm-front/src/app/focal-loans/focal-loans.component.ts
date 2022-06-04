@@ -101,11 +101,13 @@ export class FocalLoansComponent implements OnInit {
 	ngOnInit() {
     var api = "http://localhost:4000/isLogged";
     var rout = this.router;
+    var esto = this;
     axios.get(api, {withCredentials:true}).then(function (response) {
 
       api = "http://localhost:4001/Focal/getLoans";
       axios.get(api, { withCredentials: true }).then(res => {
         console.log(res.data[0]);
+        esto.areaLoans = res.data;
       }).catch(err => console.log(err));
 
     }).catch(err => {
