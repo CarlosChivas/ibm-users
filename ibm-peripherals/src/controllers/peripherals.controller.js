@@ -114,6 +114,12 @@ peripheralsCtrl.createPeripheral = async (req, res) => {
 
 peripheralsCtrl.getAvailablePeripherals = async (req, res) => {
     
+    let focalRole = '';
+    
+    if(req.user.ROLE_NAME === 'Focal'){
+        focalRole = 'AND peripheral.focal = ' + req.user.ID;
+    }
+    
     pool.open(process.env.DATABASE_STRING, function (err, db) {
         
         if (err) {
@@ -133,7 +139,7 @@ peripheralsCtrl.getAvailablePeripherals = async (req, res) => {
             INNER JOIN users ON peripheral.focal = users.id
             INNER JOIN peripheral_status ON peripheral.peripheral_status = peripheral_status.id
             INNER JOIN department ON peripheral.department = department.id
-            WHERE peripheral_status.name = 'Available' AND peripheral.focal = ${req.user.ID};`, function(err, data){
+            WHERE peripheral_status.name = 'Available' ${focalRole};`, function(err, data){
                 if(err){
                     res.status(400).send(err);
                 } else{
@@ -283,23 +289,37 @@ peripheralsCtrl.changePeripheralStatus = async (req, res) => {
 
 peripheralsCtrl.getLoans = async (req, res) => {
     
+    let focalRole = '';
+    
+    if(req.user.ROLE_NAME === 'Focal'){
+        focalRole = 'WHERE loan.focal = ' + req.user.ID;
+    }
+    
     pool.open(process.env.DATABASE_STRING, function (err, db) {
         
         if (err) {
             res.status(403).send(err)
         } else{
-            db.query(`SELECT loan.id,
-                             users.first_name || ' ' || users.last_name as employee_name,
-                             peripheral.serial,
-                             loan.creation,
-                             loan_status.name as loan_status,
-                             loan.condition_accepted,
-                             loan.security_auth
+            db.query(`SELECT
+                        loan.id as loan_id,  
+                        users.first_name || ' ' || users.last_name as employee_name,
+                        loan.peripheral_serial,
+                        ptype.name as type,
+                        brand.name as brand,
+                        peripheral.model,
+                        peripheral.description,
+                        loan.creation,
+                        loan.concluded,
+                        loan.condition_accepted,
+                        loan.security_auth,
+                        loan_status.name as loan_status
                     FROM loan
                     INNER JOIN users ON loan.employee = users.id
                     INNER JOIN loan_status ON loan.loan_status = loan_status.id
                     INNER JOIN peripheral ON loan.peripheral_serial = peripheral.serial
-                    WHERE loan.focal = ?;`,[req.user.ID], function(err, data){
+                    INNER JOIN ptype ON peripheral.ptype = ptype.id
+                    INNER JOIN brand ON peripheral.brand = brand.id
+                    ${focalRole};`, function(err, data){
                 if(err){
                     res.status(400).send(err);
                 } else{
@@ -358,32 +378,43 @@ peripheralsCtrl.getOwnLoans = async (req, res) => {
         role = "employee";
     }
 
+    let query = `SELECT
+                    loan.peripheral_serial,
+                    ptype.name as type,
+                    brand.name as brand,
+                    peripheral.model,
+                    peripheral.description,
+                    loan.creation,
+                    loan.concluded,
+                    loan.condition_accepted,
+                    loan.security_auth
+                FROM loan
+                INNER JOIN loan_status ON loan.loan_status = loan_status.id
+                INNER JOIN peripheral ON loan.peripheral_serial = peripheral.serial
+                INNER JOIN ptype ON peripheral.ptype = ptype.id
+                INNER JOIN brand ON peripheral.brand = brand.id
+                WHERE loan.${role} = ${req.user.ID}`;
+
     pool.open(process.env.DATABASE_STRING, function (err, db) {
         
         if (err) {
             res.status(403).send(err)
         } else{
-            db.query(`SELECT *
-                    FROM loan
-                    WHERE loan.${role} = ? AND loan.loan_status = (SELECT id FROM loan_status WHERE name = 'In process');`,[req.user.ID], function(err, data){
+            db.query(`${query} AND loan.loan_status = (SELECT id FROM loan_status WHERE name = 'In process') ORDER BY creation;`, function(err, data){
                 if(err){
                     res.status(400).send(err);
                 } else{
                     req.in_process = data;
                 }
             })
-            db.query(`SELECT *
-                    FROM loan
-                    WHERE loan.${role} = ? AND loan.loan_status = (SELECT id FROM loan_status WHERE name = 'Borrowed');`,[req.user.ID], function(err, data){
+            db.query(`${query} AND loan.loan_status = (SELECT id FROM loan_status WHERE name = 'Borrowed') ORDER BY creation;`,[req.user.ID], function(err, data){
                 if(err){
                     res.status(400).send(err);
                 } else{
                     req.borrowed = data;
                 }
             })
-            db.query(`SELECT *
-                    FROM loan
-                    WHERE loan.${role} = ? AND loan.loan_status = (SELECT id FROM loan_status WHERE name = 'Concluded');`,[req.user.ID], function(err, data){
+            db.query(`${query} AND loan.loan_status = (SELECT id FROM loan_status WHERE name = 'Concluded') ORDER BY creation;`,[req.user.ID], function(err, data){
                 if(err){
                     res.status(400).send(err);
                 } else{

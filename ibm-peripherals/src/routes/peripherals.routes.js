@@ -59,9 +59,9 @@ router.post("/AdminFocal/createLoan", rolesCtrl.validateToken,
                                       peripheralsCtrl.createLoan,
                                       peripheralsCtrl.changePeripheralStatus);
 
-router.get("/Focal/getLoans", rolesCtrl.validateToken,
-                              rolesCtrl.isFocal,
-                              peripheralsCtrl.getLoans);
+router.get("/AdminFocal/getLoans", rolesCtrl.validateToken,
+                                   rolesCtrl.isFocalORAdmin,
+                                   peripheralsCtrl.getLoans);
 
 /*
 Res:
