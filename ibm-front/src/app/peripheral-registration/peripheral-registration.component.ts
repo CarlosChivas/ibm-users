@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import axios from 'axios';
+import { environment } from '../../environments/environment';
 
 @Component({
   selector: 'app-peripheral-registration',
@@ -15,6 +16,7 @@ export class PeripheralRegistrationComponent implements OnInit {
   diviceTypes: any[] = [];
   diviceBrands: any[] = [];
   me: any = {};
+  userType: string = "";
 
   deviceForm = this.formBuilder.group({
     deviceType: '',
@@ -37,7 +39,7 @@ export class PeripheralRegistrationComponent implements OnInit {
   }
 
   sendForm() {
-    var api = "http://localhost:4001/AdminFocal/createPeripheral";
+    var api = environment.ibm_peripherals+"/AdminFocal/createPeripheral";
     var rout = this.router;
     var esto = this;
     var form = esto.deviceForm.value;
@@ -59,13 +61,13 @@ export class PeripheralRegistrationComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    var api = "http://localhost:4000/isLogged";
+    var api = environment.ibm_users+"/isLogged";
     var rout = this.router;
     var esto = this;
     axios.get(api, { withCredentials: true }).then(function (response) {
-
+      esto.userType = response.data.ROLE_NAME;
       esto.me = response.data;
-      var api3 = "http://localhost:4001/AdminFocal/getPeripheralFields";
+      var api3 = environment.ibm_peripherals+"/AdminFocal/getPeripheralFields";
       axios.get(api3, { withCredentials: true }).then(res => {
 
         esto.diviceTypes = res.data.ptype.map((element: any) => Object({content: element.NAME, selected: false}));

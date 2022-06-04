@@ -3,6 +3,7 @@ import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { ButtonModule, CheckboxModule, ModalModule } from 'carbon-components-angular';
 import { Router } from '@angular/router';
 import axios from 'axios';
+import { environment } from '../../environments/environment';
 
 @Component({
   selector: 'app-loan-form',
@@ -13,6 +14,7 @@ export class LoanFormComponent implements OnInit {
 
   isOpen: boolean = false
   showCloseButton: boolean = true;
+  userType: string = "";
 
   fields = { "name": "employeeEmail", "type": "email" };
   device = {
@@ -54,11 +56,11 @@ export class LoanFormComponent implements OnInit {
       peripheral_serial: esto.device.SERIAL
     };
     /*
-    var api = "http://localhost:4000/AdminFocal/searchUsers/name="+body.employee_email.trim().toLowerCase();
+    var api = environment.ibm_users+"/AdminFocal/searchUsers/name="+body.employee_email.trim().toLowerCase();
     axios.get(api, { withCredentials: true }).then(response => {
       console.log(response);
       /*/
-    var api = "http://localhost:4001/AdminFocal/createLoan";
+    var api = environment.ibm_peripherals+"/AdminFocal/createLoan";
     axios.post(api, body, { withCredentials: true }).then(res => {
       console.log(res);
     }).catch(err => console.log(err));
@@ -116,6 +118,7 @@ export class LoanFormComponent implements OnInit {
     var rout = this.router;
     var esto = this;
     axios.get(api, { withCredentials: true }).then(function (response) {
+      esto.userType = response.data.ROLE_NAME;
       var me = response.data;
       esto.user = me.EMAIL;
 
