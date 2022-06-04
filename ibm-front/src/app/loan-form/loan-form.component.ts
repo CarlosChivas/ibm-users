@@ -67,14 +67,12 @@ export class LoanFormComponent implements OnInit {
 
     var api = environment.ibm_peripherals + "/AdminFocal/createLoan";
     axios.post(api, body, { withCredentials: true }).then(res => {
-
-      console.log(res);
+      
       esto.confModal.title = "Success";
       esto.confModal.body = "The loan was successfully processed.";
       esto.openConfirmation = true;
 
     }).catch(err => {
-      console.error(err);
       esto.confModal.title = "Failed";
       esto.confModal.body = "The loan was not able to process correctly, please check that the employee's email is correct or try again later.";
       esto.openConfirmation = true;

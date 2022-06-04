@@ -11,7 +11,11 @@ import { environment } from '../../environments/environment';
 })
 export class PeripheralRegistrationComponent implements OnInit {
 
-  
+  openConfirmation: boolean = false;
+  confModal = {
+    title: "",
+    body: ""
+  }
 
   diviceTypes: any[] = [];
   diviceBrands: any[] = [];
@@ -36,6 +40,9 @@ export class PeripheralRegistrationComponent implements OnInit {
   updateBrand(changes: Object) {
   }
 
+  CloseAll() {
+    this.openConfirmation = false;
+  }
   sendForm() {
     var api = environment.ibm_peripherals+"/AdminFocal/createPeripheral";
     var rout = this.router;
@@ -50,8 +57,14 @@ export class PeripheralRegistrationComponent implements OnInit {
     };
     axios.post(api, body, { withCredentials: true }).then(response => {
 
+      esto.confModal.title = "Success";
+      esto.confModal.body = "The device was successfully processed.";
+      esto.openConfirmation = true;
+
     }).catch(err => {
-      console.error(err);
+      esto.confModal.title = "Failed";
+    esto.confModal.body = "The device was not able to process correctly, please check that the information is correct or try again later.";
+    esto.openConfirmation = true;
     });
   }
 
