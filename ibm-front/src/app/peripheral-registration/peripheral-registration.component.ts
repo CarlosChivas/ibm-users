@@ -32,10 +32,8 @@ export class PeripheralRegistrationComponent implements OnInit {
   }
 
   updateType(changes: Object) {
-    console.log("jajas");
   }
   updateBrand(changes: Object) {
-    console.log("jujus");
   }
 
   sendForm() {
@@ -50,13 +48,10 @@ export class PeripheralRegistrationComponent implements OnInit {
       brand: form.deviceBrand.content,
       model: form.deviceModel
     };
-    console.log(form);
     axios.post(api, body, { withCredentials: true }).then(response => {
-      
-      console.log(response)
 
     }).catch(err => {
-      console.log(err);
+      console.error(err);
     });
   }
 
@@ -73,13 +68,10 @@ export class PeripheralRegistrationComponent implements OnInit {
         esto.diviceTypes = res.data.ptype.map((element: any) => Object({content: element.NAME, selected: false}));
         esto.diviceBrands = res.data.brand.map((element: any) => Object({content: element.NAME, selected: false}));
 
-        console.log(esto.diviceTypes);
-        console.log(esto.diviceBrands);
-
-      }).catch(err => console.log(err));
+      }).catch(err => console.error(err));
 
     }).catch(err => {
-      console.log(err);
+      console.error(err);
       rout.navigate(['./']);
     });
   }

@@ -54,7 +54,6 @@ export class MyLoansComponent implements OnInit {
   }
 
   constructor(private router: Router) {
-    console.log(this.headers);
   }
 
   ngOnInit(): void {
@@ -65,14 +64,13 @@ export class MyLoansComponent implements OnInit {
       esto.userType = response.data.ROLE_NAME;
       api = environment.ibm_peripherals+"/getOwnLoans";
       axios.get(api, { withCredentials: true }).then(res => {
-
-        console.log(res.data.in_process[0]);
+        
         esto.myLoans = res.data;
 
-      }).catch(err => console.log(err));
+      }).catch(err => console.error(err));
 
     }).catch(err => {
-      console.log(err);
+      console.error(err);
       rout.navigate(['./']);
     });
   }

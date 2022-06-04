@@ -27,12 +27,10 @@ export class MenuBarComponent implements OnInit {
   
   constructor(private router: Router, private loansNum: MyLoansComponent, public profileComponent: ProfileComponent) {
     this.numLoan = this.loansNum.getNumLoans();
-    // console.log(this.numLoan);
   }
   
   logout() {
     var api = environment.ibm_users+"/logout";
-    console.log(api);
     var rout = this.router;
     axios.get(api, { withCredentials: true }).then(function (response) {
       console.error(response);
@@ -40,7 +38,7 @@ export class MenuBarComponent implements OnInit {
         rout.navigate(['./']);
       }
     }).catch((error) => {
-      console.log("Not able to Log Out")
+      console.error("Not able to Log Out")
     });
   }
 

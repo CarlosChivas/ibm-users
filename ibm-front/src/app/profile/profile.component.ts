@@ -65,25 +65,25 @@ export class ProfileComponent implements OnInit {
         esto.userType = response.data.ROLE_NAME;
         var me = response.data;
         var myParam = rout.snapshot.paramMap.get('id');
-        console.log(myParam);
-        console.log(me);
         if (myParam != me.ID && (me.ROLE_NAME == "Administrator" || me.ROLE_NAME == "Focal")) {
 
           var api = environment.ibm_users+"/AdminFocal/getUser/id=" + myParam;
           axios.get(api, { withCredentials: true }).then(res => {
-            console.log(res.data);
+            
             esto.profile = res.data;
             esto.showLoans = true;
-          }).catch(e=>console.log(e));
+
+          }).catch(e=>console.error(e));
 
           api = environment.ibm_peripherals+"/AdminFocal/getPeripheralsById";
           var body={
             employee_id: myParam
           };
           axios.post(api,body, { withCredentials: true }).then(res => {
-            console.log(res.data);
+            
             esto.myLoans = res.data
-          }).catch(e=>console.log(e));
+
+          }).catch(e=>console.error(e));
 
         }
         else {
@@ -92,7 +92,7 @@ export class ProfileComponent implements OnInit {
         }
       }
     }).catch(err => {
-      console.log(err);
+      console.error(err);
       router.navigate(['./']);
     });
   }

@@ -13,8 +13,13 @@ import { environment } from '../../environments/environment';
 export class LoanFormComponent implements OnInit {
 
   isOpen: boolean = false
+  openConfirmation: boolean = false;
   showCloseButton: boolean = true;
   userType: string = "";
+  confModal = {
+    title: "",
+    body: ""
+  }
 
   fields = { "name": "employeeEmail", "type": "email" };
   device = {
@@ -47,6 +52,10 @@ export class LoanFormComponent implements OnInit {
   closeModal() {
     this.isOpen = false;
   }
+  CloseAll() {
+    this.isOpen = false;
+    this.openConfirmation = false;
+  }
   sendForm() {
     var esto = this;
     var mail = esto.loanForm.value.employeeMail.trim().toLowerCase();
@@ -55,18 +64,21 @@ export class LoanFormComponent implements OnInit {
       employee_email: mail,
       peripheral_serial: esto.device.SERIAL
     };
-    /*
-    var api = environment.ibm_users+"/AdminFocal/searchUsers/name="+body.employee_email.trim().toLowerCase();
-    axios.get(api, { withCredentials: true }).then(response => {
-      console.log(response);
-      /*/
-    var api = environment.ibm_peripherals+"/AdminFocal/createLoan";
+
+    var api = environment.ibm_peripherals + "/AdminFocal/createLoan";
     axios.post(api, body, { withCredentials: true }).then(res => {
+
       console.log(res);
-    }).catch(err => console.log(err));
-    /* // /
-  }).catch(err => console.log(err));
-  */
+      esto.confModal.title = "Success";
+      esto.confModal.body = "The loan was successfully processed.";
+      esto.openConfirmation = true;
+
+    }).catch(err => {
+      console.error(err);
+      esto.confModal.title = "Failed";
+      esto.confModal.body = "The loan was not able to process correctly, please check that the employee's email is correct or try again later.";
+      esto.openConfirmation = true;
+    });
 
   }
   peripheralList = [{
@@ -113,7 +125,7 @@ export class LoanFormComponent implements OnInit {
   }
 
   ngOnInit() {
-    var api = "http://localhost:4000/isLogged";
+    var api = environment.ibm_users + "/isLogged";
 
     var rout = this.router;
     var esto = this;
@@ -122,13 +134,14 @@ export class LoanFormComponent implements OnInit {
       var me = response.data;
       esto.user = me.EMAIL;
 
-      var api2 = "http://localhost:4001/AdminFocal/getAvailablePeripherals";
+      var api2 = environment.ibm_peripherals + "/AdminFocal/getAvailablePeripherals";
       axios.get(api2, { withCredentials: true }).then(res => {
         esto.peripheralList = res.data;
-      }).catch(err => console.log(err));
-      
-      var api3 = "http://localhost:4001/AdminFocal/getPeripheralFields";
+      }).catch(err => console.error(err));
+
+      var api3 = environment.ibm_peripherals + "/AdminFocal/getPeripheralFields";
       axios.get(api3, { withCredentials: true }).then(res => {
+
         res.data.ptype.forEach((element: { NAME: any; }) => {
           esto.deviceType.push({
             value: element.NAME,
@@ -141,6 +154,7 @@ export class LoanFormComponent implements OnInit {
             checked: false
           });
         });
+
       }).catch(err => console.log(err));
 
     }).catch(err => {

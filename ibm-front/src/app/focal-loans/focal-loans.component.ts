@@ -60,7 +60,6 @@ export class FocalLoansComponent implements OnInit {
 	];
 
   openModal(index: number){
-    console.log(index);
     this.isOpen = true;
     this.specific = this.areaLoans[index];
   }
@@ -108,12 +107,11 @@ export class FocalLoansComponent implements OnInit {
       esto.userType = response.data.ROLE_NAME;
       api = environment.ibm_peripherals+"/Focal/getLoans";
       axios.get(api, { withCredentials: true }).then(res => {
-        console.log(res.data[0]);
         esto.areaLoans = res.data;
-      }).catch(err => console.log(err));
+      }).catch(err => console.error(err));
 
     }).catch(err => {
-      console.log(err);
+      console.error(err);
       rout.navigate(['./']);
     });
 	}
@@ -121,24 +119,3 @@ export class FocalLoansComponent implements OnInit {
 	}
 
 }
-
-//*
-
-//Para getLoans
-    var LOAN = {
-      LOAN_ID: "",
-      EMPLOYEE_NAME: "",
-
-      PERIPHERAL_SERIAL: "",
-      TYPE: "",
-      BRAND: "",
-      MODEL: "",
-      DESCRIPTION: "",
-
-      CREATION: "",
-      CONCLUDED: "",
-      CONDITION_ACCEPTED: "",
-      SECURITY_AUTH: "",
-    };
-
-//*/

@@ -100,3 +100,20 @@
     </ng-container>
   </ibm-modal-footer>
 </ibm-modal>
+
+
+<ibm-modal [open]="openConfirmation" (overlaySelected)="CloseAll()">
+  <ibm-modal-header (closeSelect)="closeModal()" [showCloseButton]="false">
+    <p class="bx--modal-header__label bx--type-delta">{{confModal.title}}</p>
+  </ibm-modal-header>
+  <div class="bx--modal-content">
+      <h2>{{confModal.body}}</h2>
+  </div>
+  <ibm-modal-footer>
+    <ng-container>
+      <button ibmButton="primary" (click)="CloseAll()" [attr.modal-primary-focus]="true">
+        Close
+      </button>
+    </ng-container>
+  </ibm-modal-footer>
+</ibm-modal>
