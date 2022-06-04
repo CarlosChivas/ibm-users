@@ -46,7 +46,7 @@ export class LoginComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    var api = "http://localhost:4000/isLogged";
+    var api = environment.ibm_users+"/isLogged";
     var rout = this.router;
     axios.get(api, { withCredentials: true }).then(function (response) {
       console.log("Respuesta -> ", response);

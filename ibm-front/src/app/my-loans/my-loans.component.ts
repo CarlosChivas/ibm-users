@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import axios from 'axios';
 import { Injectable } from '@angular/core';
+import { environment } from '../../environments/environment';
 
 interface Device {
   PERIOHERAL_SERIAL: number,
@@ -16,12 +17,12 @@ interface Device {
   SECURITY_AUTH: boolean;
 };
 
-interface MyClass {
+interface MyDevices {
   "borrowed": Device[];
   "in_process": Device[];
   "concluded": Device[];
 }
-type OnlyKeys = keyof MyClass;
+type OnlyKeys = keyof MyDevices;
 
 @Component({
   selector: 'app-my-loans',
@@ -34,6 +35,7 @@ export class MyLoansComponent implements OnInit {
   open: boolean = false
   showCloseButton: boolean = true;
   title = 'My Loans'
+  userType: string = "";
 
   numLoans: number = 0;
 
@@ -41,7 +43,7 @@ export class MyLoansComponent implements OnInit {
     { title: "Borrowed", val: "borrowed" },
     { title: "In Process", val: "in_process" },
     { title: "Concluded", val: "concluded" }];
-  myLoans: MyClass = {
+  myLoans: MyDevices = {
     borrowed: [],
     in_process: [],
     concluded: []
@@ -56,17 +58,16 @@ export class MyLoansComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    var api = "http://localhost:4000/isLogged";
+    var api = environment.ibm_users+"/isLogged";
     var rout = this.router;
     var esto = this;
     axios.get(api, { withCredentials: true }).then(response => {
-
-      api = "http://localhost:4001/getOwnLoans";
+      esto.userType = response.data.ROLE_NAME;
+      api = environment.ibm_peripherals+"/getOwnLoans";
       axios.get(api, { withCredentials: true }).then(res => {
 
         console.log(res.data.in_process[0]);
-        //esto.myLoans = res.data;
-        // Delete comment when API returns correct structure
+        esto.myLoans = res.data;
 
       }).catch(err => console.log(err));
 

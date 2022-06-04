@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import axios from 'axios';
 import { ButtonModule, CheckboxModule  } from 'carbon-components-angular';
+import { environment } from '../../environments/environment';
 
 @Component({
   selector: 'app-focal-loans',
@@ -12,6 +13,7 @@ export class FocalLoansComponent implements OnInit {
 
   isOpen: boolean = false
   showCloseButton: boolean = true;
+  userType: string = "";
   specific = {
     ID: 0,
       EMPLOYEE_NAME: "Name 1",
@@ -99,12 +101,12 @@ export class FocalLoansComponent implements OnInit {
 	}
 
 	ngOnInit() {
-    var api = "http://localhost:4000/isLogged";
+    var api = environment.ibm_users+"/isLogged";
     var rout = this.router;
     var esto = this;
     axios.get(api, {withCredentials:true}).then(function (response) {
-
-      api = "http://localhost:4001/Focal/getLoans";
+      esto.userType = response.data.ROLE_NAME;
+      api = environment.ibm_peripherals+"/Focal/getLoans";
       axios.get(api, { withCredentials: true }).then(res => {
         console.log(res.data[0]);
         esto.areaLoans = res.data;
