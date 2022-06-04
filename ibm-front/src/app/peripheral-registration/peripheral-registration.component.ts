@@ -10,28 +10,17 @@ import axios from 'axios';
 })
 export class PeripheralRegistrationComponent implements OnInit {
 
-  fields = [
-    {"name":"Emploee Email","id":"emploeeEmail", "type":"email"},
-    {"name":"Focal Email","id":"focalEmail", "type":"email"},
-    {"name":"Divice Type","id":"diviceType", "type":"text"},
-    {"name":"Divice Brand","id":"diviceBrand", "type":"text"},
-    {"name":"Divice Model","id":"diviceModel", "type":"text"},
-    {"name":"Device Serian Number","id":"deviceID", "type":"text"}];
+  
 
-    diviceTypes = ["Headphones","Keyboard","Monitor","Mouse"];
-    diviceBrands = [];
-    diviceModels = [];
-  loanForm = this.formBuilder.group({
-    emploeeID: '',
-    emploeeEmail: '',
-    emploeeName: '',
-    emploeeLastName: '',
-    detartment: '',
-    focalID: '',
-    focalEmail: '',
-    focalName: '',
-    focalLastName: '',
-    deviceID: ''
+  diviceTypes: any[] = [];
+  diviceBrands: any[] = [];
+  me: any = {};
+
+  deviceForm = this.formBuilder.group({
+    deviceType: '',
+    deviceBrand: '',
+    deviceModel: '',
+    deviceDesc: ''
   });
 
   constructor(
@@ -40,15 +29,53 @@ export class PeripheralRegistrationComponent implements OnInit {
   ) {
   }
 
-  sendForm() {
-    console.log(this.loanForm.value)
+  updateType(changes: Object) {
+    console.log("jajas");
   }
+  updateBrand(changes: Object) {
+    console.log("jujus");
+  }
+
+  sendForm() {
+    var api = "http://localhost:4001/AdminFocal/createPeripheral";
+    var rout = this.router;
+    var esto = this;
+    var form = esto.deviceForm.value;
+
+    var body = {
+      ptype: form.deviceType.content,
+      description: form.deviceDesc,
+      brand: form.deviceBrand.content,
+      model: form.deviceModel
+    };
+    console.log(form);
+    axios.post(api, body, { withCredentials: true }).then(response => {
+      
+      console.log(response)
+
+    }).catch(err => {
+      console.log(err);
+    });
+  }
+
   ngOnInit(): void {
     var api = "http://localhost:4000/isLogged";
     var rout = this.router;
-    axios.get(api, {withCredentials:true}).then(function (response) {
-      if (response.status != 200)
-        rout.navigate(['./']);
+    var esto = this;
+    axios.get(api, { withCredentials: true }).then(function (response) {
+
+      esto.me = response.data;
+      var api3 = "http://localhost:4001/AdminFocal/getPeripheralFields";
+      axios.get(api3, { withCredentials: true }).then(res => {
+
+        esto.diviceTypes = res.data.ptype.map((element: any) => Object({content: element.NAME, selected: false}));
+        esto.diviceBrands = res.data.brand.map((element: any) => Object({content: element.NAME, selected: false}));
+
+        console.log(esto.diviceTypes);
+        console.log(esto.diviceBrands);
+
+      }).catch(err => console.log(err));
+
     }).catch(err => {
       console.log(err);
       rout.navigate(['./']);

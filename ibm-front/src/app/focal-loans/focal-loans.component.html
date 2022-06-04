@@ -67,24 +67,18 @@
             </ibm-list-header>
             <ibm-list-row *ngFor="let emp of areaLoans ;let i = index">
               <ibm-list-column class="listColumn">
-                {{emp.employeeID}}
+                {{emp.EMPLOYEE_NAME}}
               </ibm-list-column>
               <ibm-list-column class="listColumn">
-                {{emp.employeeName}}
+                {{emp.SERIAL}}
               </ibm-list-column>
               <ibm-list-column class="listColumn">
-                {{emp.deviceType}}
-              </ibm-list-column>
-              <ibm-list-column class="listColumn">
-                {{emp.deviceBrand}}
-              </ibm-list-column>
-              <ibm-list-column class="listColumn">
-                {{emp.serialNumber}}
+                {{emp.CREATION}}
               </ibm-list-column>
               <ibm-list-column class="listColumn">
                 <span>
                   <svg ibmIcon="checkmark--filled" size="20" style="width: 50%;"
-                    *ngIf="emp.termsConditions == true else CROSS"></svg>
+                    *ngIf="emp.CONDITION_ACCEPTED == true else CROSS"></svg>
                   <ng-template #CROSS>
                     <svg ibmIcon="close" size="20" style="width: 50%;"></svg>
                   </ng-template>
@@ -93,16 +87,7 @@
               <ibm-list-column class="listColumn">
                 <span>
                   <svg ibmIcon="checkmark--filled" size="20" style="width: 50%;"
-                    *ngIf="emp.secAuth == true else CROSS"></svg>
-                  <ng-template #CROSS>
-                    <svg ibmIcon="close" size="20" style="width: 50%;"></svg>
-                  </ng-template>
-                </span>
-              </ibm-list-column>
-              <ibm-list-column class="listColumn">
-                <span>
-                  <svg ibmIcon="checkmark--filled" size="20" style="width: 50%;"
-                    *ngIf="emp.returned == true else CROSS"></svg>
+                    *ngIf="emp.SECURITY_AUTH == true else CROSS"></svg>
                   <ng-template #CROSS>
                     <svg ibmIcon="close" size="20" style="width: 50%;"></svg>
                   </ng-template>
@@ -121,15 +106,16 @@
 
 <ibm-modal [open]="isOpen" (overlaySelected)="closeModal()">
   <ibm-modal-header (closeSelect)="closeModal()" [showCloseButton]="isOpen">
-    <h2 ibmModalHeaderLabel>aqui va el ID del loan</h2>
-    <h3 ibmModalHeaderHeading>{{specific.employeeName}}</h3>
+    <h2 ibmModalHeaderLabel>{{specific.ID}}</h2>
+    <h3 ibmModalHeaderHeading>{{specific.EMPLOYEE_NAME}}</h3>
   </ibm-modal-header>
   <section ibmModalContent>
-    <h1>{{specific.deviceBrand}} {{specific.deviceType}}</h1>
-    <p ibmModalContentText>{{specific.serialNumber}}</p>
+    <!--h1>{{specific.deviceBrand}} {{specific.deviceType}}</h1 -->
+    <h1>Device Brand & Device Type</h1>
+    <p ibmModalContentText>{{specific.SERIAL}}</p>
   </section>
   <ibm-modal-footer>
-    <button class="bx--btn bx--btn--secondary" (click)="cancel()" *ngIf="specific.secAuth == false">Cancel Registration</button>
+    <button class="bx--btn bx--btn--secondary" (click)="cancel()" *ngIf="specific.SECURITY_AUTH == false">Cancel Registration</button>
     <button class="bx--btn bx--btn--primary" modal-primary-focus (click)="returnDevice()">Update Registration</button>
   </ibm-modal-footer>
 </ibm-modal>

@@ -13,126 +13,30 @@ export class FocalLoansComponent implements OnInit {
   isOpen: boolean = false
   showCloseButton: boolean = true;
   specific = {
-    employeeID: 0,
-    employeeName: 'No employee asigned',
-    deviceType: "No type",
-    deviceBrand: "No brand",
-    serialNumber: "N/A",
-    termsConditions: false,
-    secAuth: false,
-    returned: false
+    ID: 0,
+      EMPLOYEE_NAME: "Name 1",
+      SERIAL: "10007",
+      CREATION: "DATE",
+      CONDITION_ACCEPTED: false,
+      SECURITY_AUTH: false
   };
 
-  columns = ["Employee ID",
+  columns = [
     "Employee Name",
-    "Device Type",
-    "Brand",
     "Serial Number",
+    "Date",
     "Accepted Conditions",
-    "Security Authorization",
-    "Returned"
+    "Security Authorization"
   ];
 
   areaLoans = [
     {
-      employeeID: 2,
-      employeeName: "Name 1",
-      deviceType: "Monitor",
-      deviceBrand: "ACER",
-      serialNumber: "10007",
-      termsConditions: false,
-      secAuth: false,
-      returned: false
-    },
-    {
-      employeeID: 3,
-      employeeName: "Name 2",
-      deviceType: "Headphones",
-      deviceBrand: "SONY",
-      serialNumber: "10009",
-      termsConditions: false,
-      secAuth: false,
-      returned: false
-    },
-    {
-      employeeID: 5,
-      employeeName: "Name 3",
-      deviceType: "MOUSE",
-      deviceBrand: "HP",
-      serialNumber: "10037",
-      termsConditions: true,
-      secAuth: false,
-      returned: false
-    },
-    {
-      employeeID: 7,
-      employeeName: "Name 4",
-      deviceType: "KEY BOARD",
-      deviceBrand: "DELL",
-      serialNumber: "10039",
-      termsConditions: true,
-      secAuth: false,
-      returned: false
-    },
-    {
-      employeeID: 11,
-      employeeName: "Name 5",
-      deviceType: "SPEAKERS",
-      deviceBrand: "BOSE",
-      serialNumber: "10061",
-      termsConditions: true,
-      secAuth: true,
-      returned: false
-    },
-    {
-      employeeID: 13,
-      employeeName: "Name 6",
-      deviceType: "MICROPHONE",
-      deviceBrand: "BLUE YETI",
-      serialNumber: "10069",
-      termsConditions: true,
-      secAuth: true,
-      returned: false
-    },
-    {
-      employeeID: 17,
-      employeeName: "Name 7",
-      deviceType: "HARD DRIVE",
-      deviceBrand: "KINGSTONE",
-      serialNumber: "10079",
-      termsConditions: true,
-      secAuth: true,
-      returned: false
-    },
-    {
-      employeeID: 19,
-      employeeName: "Name 8",
-      deviceType: "WEB CAM",
-      deviceBrand: "LOGITECH",
-      serialNumber: "10091",
-      termsConditions: true,
-      secAuth: true,
-      returned: true
-    },
-    {
-      employeeID: 23,
-      employeeName: "Name 9",
-      deviceType: "TRACK PAD",
-      deviceBrand: "APPLE",
-      serialNumber: "10099",
-      termsConditions: true,
-      secAuth: true,
-      returned: true
-    },
-    {
-      employeeID: 29,
-      employeeName: "Name 10",
-      deviceType: "ROUTER",
-      deviceBrand: "TP-LINK",
-      serialNumber: "10103",
-      termsConditions: true,
-      secAuth: true,
-      returned: true
+      ID: 0,
+      EMPLOYEE_NAME: "Name 1",
+      SERIAL: "10007",
+      CREATION: "DATE",
+      CONDITION_ACCEPTED: false,
+      SECURITY_AUTH: false
     }
   ];
 
@@ -197,8 +101,15 @@ export class FocalLoansComponent implements OnInit {
 	ngOnInit() {
     var api = "http://localhost:4000/isLogged";
     var rout = this.router;
+    var esto = this;
     axios.get(api, {withCredentials:true}).then(function (response) {
-      if (response.status != 200) rout.navigate(['./home']);
+
+      api = "http://localhost:4001/Focal/getLoans";
+      axios.get(api, { withCredentials: true }).then(res => {
+        console.log(res.data[0]);
+        esto.areaLoans = res.data;
+      }).catch(err => console.log(err));
+
     }).catch(err => {
       console.log(err);
       rout.navigate(['./']);
@@ -208,3 +119,24 @@ export class FocalLoansComponent implements OnInit {
 	}
 
 }
+
+//*
+
+//Para getLoans
+    var LOAN = {
+      LOAN_ID: "",
+      EMPLOYEE_NAME: "",
+
+      PERIPHERAL_SERIAL: "",
+      TYPE: "",
+      BRAND: "",
+      MODEL: "",
+      DESCRIPTION: "",
+
+      CREATION: "",
+      CONCLUDED: "",
+      CONDITION_ACCEPTED: "",
+      SECURITY_AUTH: "",
+    };
+
+//*/
