@@ -23,8 +23,7 @@ router.post("/AdminFocal/createPeripheral", rolesCtrl.validateToken,
                                             peripheralsCtrl.createPeripheral);
 
 /*
-Returns only the available peripherals of the current user in session
-
+Returns only the available peripherals
 Res:
 [
     {
@@ -85,5 +84,22 @@ Res:
 router.get("/getOwnLoans", rolesCtrl.validateToken,
                            rolesCtrl.notSecurity,
                            peripheralsCtrl.getOwnLoans);
+
+/*
+Returns a list of peripheral information of a chosen employee
+Body:
+{
+    "employee_id": 23
+}
+Res:
+{
+    "in_process": [],
+    "borrowed": [],
+    "concluded": []
+}
+*/ 
+router.post("/AdminFocal/getPeripheralsById", rolesCtrl.validateToken,
+                                              rolesCtrl.isFocalORAdmin,
+                                              peripheralsCtrl.getPeripheralsById)
 
 module.exports = router;
