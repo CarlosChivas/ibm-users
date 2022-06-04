@@ -364,6 +364,7 @@ peripheralsCtrl.getOwnLoans = async (req, res) => {
             res.status(403).send(err)
         } else{
             db.query(`SELECT *
+                    FROM loan
                     WHERE loan.${role} = ? AND loan.loan_status = (SELECT id FROM loan_status WHERE name = 'In process');`,[req.user.ID], function(err, data){
                 if(err){
                     res.status(400).send(err);
