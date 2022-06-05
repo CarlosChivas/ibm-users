@@ -67,7 +67,7 @@ export class LoanFormComponent implements OnInit {
 
     var api = environment.ibm_peripherals + "/AdminFocal/createLoan";
     axios.post(api, body, { withCredentials: true }).then(res => {
-      
+
       esto.confModal.title = "Success";
       esto.confModal.body = "The loan was successfully processed.";
       esto.openConfirmation = true;
@@ -91,17 +91,51 @@ export class LoanFormComponent implements OnInit {
     FOCAL_NAME: ""
   }];
 
-  deviceTypeFilters = [];
-  deviceBrandFilters = [];
+  typeFilter: string = "";
+  brandFilter: string = "";
+
+  deviceTypeFilters: number = 0;
+  deviceBrandFilters: number = 0;
 
   deviceType: { value: any; checked: boolean }[] = [];
   deviceBrands: { value: any; checked: boolean }[] = [];
 
-  onCheckboxChange() {
+  onTypeChange(index: number) {
+
+    var rout = this.router;
+    this.typeFilter = "";
+    this.deviceType[index].checked = !this.deviceType[index].checked;
+    if (this.deviceType[index].checked) this.deviceTypeFilters++;
+    else this.deviceTypeFilters--;
+
+    var esto = this;
+    this.deviceType.forEach(field => {
+      if (field.checked) {
+        if (esto.typeFilter != "") esto.typeFilter = esto.typeFilter + "," + field.value;
+        else esto.typeFilter = field.value;
+      }
+    });
+
+    this.applyFilters();
   }
 
-  onRadioChange() {
+  onBrandChange(index: number) {
+
+    var esto = this;
+    esto.typeFilter = "";
+    esto.deviceBrands[index].checked = !esto.deviceBrands[index].checked;
+    if (esto.deviceBrands[index].checked) esto.deviceBrandFilters++;
+    else esto.deviceBrandFilters--;
+    esto.deviceBrands.forEach(field => {
+      if (field.checked) {
+        if (esto.brandFilter != "") esto.brandFilter = esto.brandFilter + "," + field.value;
+        else esto.brandFilter = field.value;
+      }
+    });
+
+    this.applyFilters();
   }
+
 
   resetFilters() {
     this.resetTypes();
@@ -109,17 +143,20 @@ export class LoanFormComponent implements OnInit {
   }
 
   resetTypes() {
-    this.deviceTypeFilters = [];
+    this.typeFilter = "";
+    this.deviceTypeFilters = 0;
     this.deviceType = this.deviceType.map(obj => ({ value: obj.value, checked: false }));
     this.applyFilters();
   }
   resetBrands() {
-    this.deviceBrandFilters = [];
+    this.brandFilter = "";
+    this.deviceBrandFilters = 0;
     this.deviceBrands = this.deviceBrands.map(obj => ({ value: obj.value, checked: false }));
     this.applyFilters();
   }
 
   applyFilters() {
+    
   }
 
   ngOnInit() {
