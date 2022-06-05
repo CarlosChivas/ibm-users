@@ -1,0 +1,92 @@
+<app-menu-bar></app-menu-bar>
+<style>
+</style>
+
+<section class="overview-page__banner" aria-label="overview page banner">
+    <div class="container">
+        <div class="LoanInfo">
+            <h2 class="page-title"> {{ title }} </h2>
+            <ibm-tabs>
+                
+                    <div *ngFor="let loans of Devices" >
+                        <ng-container  *ngIf="loans.description === 'Active'; else Cont2">
+                            {{add1()}}
+                        </ng-container>
+
+                        <ng-template #Cont2>
+                            <ng-container *ngIf="loans.description === 'Pending';else Cont3">
+                                {{add2()}}
+                            </ng-container>
+                        </ng-template>
+
+                        <ng-template #Cont3>
+                            <ng-container *ngIf="loans.description === 'Request';else Cont4">
+                                {{add3()}}
+                            </ng-container>
+                        </ng-template>
+
+                        <ng-template #Cont4 >
+                            <ng-container *ngIf="loans.description === 'Not in time'; ">
+                                {{add3()}}
+                            </ng-container>
+                            {{add4()}}
+                        </ng-template>
+                    </div>
+
+
+                    <div class="CardParent" >
+                        
+                        <div *ngFor="let device of Loans" class="DeviceCard">
+                            
+                          
+
+                            <ng-container  *ngIf="device.num === 1; else Pending">
+                                <div class="DeviceCard--Info" >
+                                    <p style="text-align: left; padding-left:10px;font-size: 24px; font-weight: bold;  letter-spacing:0.5px;" >{{device.description}}</p>
+                                    <p style="text-align: left; padding-left:10px;font-size: 20px; font-weight: bold;">{{cont1}}</p>
+                                    <p style="text-align: left; padding-left:10px; padding-top:6px">loans</p>
+                                </div>
+                            </ng-container>
+                            <ng-template #Pending>
+                                <ng-container *ngIf="device.num === 2;else Request">
+                                    <div class="DeviceCard--Info2" >
+                                        <p style="text-align: left; padding-left:10px;font-size: 24px; font-weight: bold;  letter-spacing:0.5px;" >{{device.description}}</p>
+                                        <p style="text-align: left; padding-left:10px;font-size: 20px; font-weight: bold;">{{cont2}}</p>
+                                        <p style="text-align: left; padding-left:10px; padding-top:6px">loans</p>
+                                    </div>
+                                </ng-container>
+                            </ng-template>
+                            <ng-template #Request>
+                                <ng-container *ngIf="device.num === 3;else NotInTime">
+                                    <div class="DeviceCard--Info3">
+                                        <p style="text-align: left; padding-left:10px;font-size: 24px; font-weight: bold;  letter-spacing:0.5px;" >{{device.description}}</p>
+                                        <p style="text-align: left; padding-left:10px;font-size: 20px; font-weight: bold;">{{cont3}}</p>
+                                        <p style="text-align: left; padding-left:10px; padding-top:6px">loans</p>
+                                    </div>
+                                </ng-container>
+                            </ng-template>
+                            <ng-template #NotInTime>
+                                <div class="DeviceCard--Info4" >
+                                    <p style="text-align: left; padding-left:10px;font-size: 24px; font-weight: bold;  letter-spacing:0.5px;" >{{device.description}}</p>
+                                    <p style="text-align: left; padding-left:10px;font-size: 20px; font-weight: bold;">{{cont4}}</p>
+                                    <p style="text-align: left; padding-left:10px; padding-top:6px">loans</p>
+                                </div>
+                            </ng-template> 
+                            
+                                    
+
+                    
+                        </div>
+                       
+                        
+                    </div>
+               
+            </ibm-tabs>
+            <div></div>
+        </div>
+        <div class="LoanChart">
+        
+        </div>
+    </div>
+</section>
+  

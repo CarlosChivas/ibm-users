@@ -8,7 +8,9 @@ import { MyLoansComponent } from './my-loans/my-loans.component';
 import { PeripheralRegistrationComponent } from './peripheral-registration/peripheral-registration.component';
 import { ProfileComponent } from './profile/profile.component';
 import { RecoverComponent } from './recover/recover.component';
+import { LoanConfirmationComponent } from './loan-confirmation/loan-confirmation.component';
 import { RoleManagementComponent } from './role-management/role-management.component';
+import { DashboardComponent } from './dashboard/dashboard.component';
 
 
 const routes: Routes = [
@@ -17,10 +19,12 @@ const routes: Routes = [
   { path: 'newloan', component: LoanFormComponent },
   { path: 'loan/:area', component: FocalLoansComponent },
   { path: 'home', component: MyLoansComponent },
+  { path: 'lconfirmation', component: LoanConfirmationComponent },
   { path: 'profile/', component: ProfileComponent },
   { path: 'profile/:id', component: ProfileComponent },
   { path: 'manage', component: RoleManagementComponent },
-  { path: 'newperipheral', component: PeripheralRegistrationComponent }
+  { path: 'newperipheral', component: PeripheralRegistrationComponent },
+  { path: 'dashboard', component: DashboardComponent }
 ];
 
 @NgModule({
