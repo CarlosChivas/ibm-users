@@ -11,7 +11,11 @@ import { environment } from '../../environments/environment';
 })
 export class PeripheralRegistrationComponent implements OnInit {
 
-  
+  openConfirmation: boolean = false;
+  confModal = {
+    title: "",
+    body: ""
+  }
 
   diviceTypes: any[] = [];
   diviceBrands: any[] = [];
@@ -32,12 +36,13 @@ export class PeripheralRegistrationComponent implements OnInit {
   }
 
   updateType(changes: Object) {
-    console.log("jajas");
   }
   updateBrand(changes: Object) {
-    console.log("jujus");
   }
 
+  CloseAll() {
+    this.openConfirmation = false;
+  }
   sendForm() {
     var api = environment.ibm_peripherals+"/AdminFocal/createPeripheral";
     var rout = this.router;
@@ -50,13 +55,16 @@ export class PeripheralRegistrationComponent implements OnInit {
       brand: form.deviceBrand.content,
       model: form.deviceModel
     };
-    console.log(form);
     axios.post(api, body, { withCredentials: true }).then(response => {
-      
-      console.log(response)
+
+      esto.confModal.title = "Success";
+      esto.confModal.body = "The device was successfully processed.";
+      esto.openConfirmation = true;
 
     }).catch(err => {
-      console.log(err);
+      esto.confModal.title = "Failed";
+    esto.confModal.body = "The device was not able to process correctly, please check that the information is correct or try again later.";
+    esto.openConfirmation = true;
     });
   }
 
@@ -73,13 +81,10 @@ export class PeripheralRegistrationComponent implements OnInit {
         esto.diviceTypes = res.data.ptype.map((element: any) => Object({content: element.NAME, selected: false}));
         esto.diviceBrands = res.data.brand.map((element: any) => Object({content: element.NAME, selected: false}));
 
-        console.log(esto.diviceTypes);
-        console.log(esto.diviceBrands);
-
-      }).catch(err => console.log(err));
+      }).catch(err => console.error(err));
 
     }).catch(err => {
-      console.log(err);
+      console.error(err);
       rout.navigate(['./']);
     });
   }

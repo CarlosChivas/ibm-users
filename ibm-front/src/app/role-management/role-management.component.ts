@@ -62,8 +62,6 @@ export class RoleManagementComponent implements OnInit {
 
   updateRole(changes: Object, index: number) {
     // @ts-ignore
-    console.log(index, changes.item);
-    // @ts-ignore
     this.employees[index].ROLE_NAME = changes.item.content;
     // TODO: Actualizar con la API
   }
@@ -84,10 +82,9 @@ export class RoleManagementComponent implements OnInit {
 
     axios.get(api, { withCredentials: true }).then(res => {
 
-      console.log(res.data)
       esto.employees = res.data;
 
-    }).catch(err => console.log(err));
+    }).catch(err => console.error(err));
 
     //*/
   }
@@ -140,14 +137,14 @@ export class RoleManagementComponent implements OnInit {
     axios.get(api, { withCredentials: true }).then((response) => {
       esto.userType = response.data.ROLE_NAME;
       if (response.data.ROLE_NAME != "Administrator") rout.navigate(['./']);
-      console.log(response.data);
       api = environment.ibm_users + "/Admin/getAllUsers";
       axios.get(api, { withCredentials: true }).then(function (response) {
-        console.log(response.data);
+        
         esto.employees = response.data;
+
       });
     }).catch(err => {
-      console.log(err);
+      console.error(err);
       rout.navigate(['./']);
     });
   }
