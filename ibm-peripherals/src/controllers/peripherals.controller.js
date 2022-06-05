@@ -319,7 +319,8 @@ peripheralsCtrl.getLoans = async (req, res) => {
                     INNER JOIN peripheral ON loan.peripheral_serial = peripheral.serial
                     INNER JOIN ptype ON peripheral.ptype = ptype.id
                     INNER JOIN brand ON peripheral.brand = brand.id
-                    ${focalRole};`, function(err, data){
+                    ${focalRole}
+                    ORDER BY loan.creation, loan.loan_status;`, function(err, data){
                 if(err){
                     res.status(400).send(err);
                 } else{
@@ -471,6 +472,86 @@ peripheralsCtrl.getPeripheralsById = async (req, res) => {
                     res.status(400).send(err);
                 } else{
                     res.status(200).json({in_process: req.in_process, borrowed: req.borrowed, concluded: data});
+                }
+            })
+            db.close(function (error) { // RETURN CONNECTION TO POOL
+                if (error) {
+                    res.send("Error mientras se cerraba la conexion");
+                }
+            });
+        }
+    })
+
+}
+
+function prepareForInQuery(s) {
+    let res = s.toLowerCase();
+    res = res.split(',');
+    res = res.join("','");
+    res = "'"+res+"'";
+    return res;
+}
+
+peripheralsCtrl.searchLoan = async (req, res) => {
+
+    if(req.user.ROLE_NAME === 'Administrator'){
+        req.user.ID = 'true';
+    }
+    if(!req.query.search){
+        req.query.search = "";
+    }
+    
+    let typeQuery = '';
+    if(req.query.type){
+        typeQuery = `AND LOWER(ptype.name) IN (${prepareForInQuery(req.query.type)})`;
+    }
+
+    let brandQuery = '';
+    if(req.query.brand){
+        brandQuery = `AND LOWER(brand.name) IN (${prepareForInQuery(req.query.brand)})`;
+    }
+
+    let statusQuery = '';
+    if(req.query.status){
+        statusQuery = `AND LOWER(loan_status.name) IN (${prepareForInQuery(req.query.status)})`;
+    }
+    
+    pool.open(process.env.DATABASE_STRING, function (err, db) {
+        
+        if (err) {
+            res.status(403).send(err)
+        } else{
+            db.query(`SELECT
+                        loan.id as loan_id,  
+                        users.first_name || ' ' || users.last_name as employee_name,
+                        loan.peripheral_serial,
+                        ptype.name as type,
+                        brand.name as brand,
+                        peripheral.model,
+                        peripheral.description,
+                        loan.creation,
+                        loan.concluded,
+                        loan.condition_accepted,
+                        loan.security_auth,
+                        loan_status.name as loan_status
+                    FROM loan
+                    INNER JOIN users ON loan.employee = users.id
+                    INNER JOIN loan_status ON loan.loan_status = loan_status.id
+                    INNER JOIN peripheral ON loan.peripheral_serial = peripheral.serial
+                    INNER JOIN ptype ON peripheral.ptype = ptype.id
+                    INNER JOIN brand ON peripheral.brand = brand.id
+                    WHERE loan.focal = ${req.user.ID}
+                    AND
+                    (LOWER(users.first_name) LIKE LOWER('%${req.query.search}%')
+                    OR LOWER(users.last_name) LIKE LOWER('%${req.query.search}%')
+                    OR LOWER(peripheral.model) LIKE LOWER('%${req.query.search}%')
+                    OR LOWER(users.first_name || ' ' || users.last_name) LIKE LOWER('%${req.query.search}%'))
+                    ${typeQuery} ${brandQuery} ${statusQuery}
+                    ORDER BY loan.creation, loan.loan_status;`, function(err, data){
+                if(err){
+                    res.status(400).send(err);
+                } else{
+                    res.status(200).send(data);
                 }
             })
             db.close(function (error) { // RETURN CONNECTION TO POOL
