@@ -1,6 +1,4 @@
-
-
-<app-menu-bar></app-menu-bar>
+<app-menu-bar [userType]="userType"></app-menu-bar>
 <section class="overview-page__banner" aria-label="overview page banner">
     <div class="container">
         <div class="LoanInfo">
@@ -27,23 +25,27 @@
                         </div>
                 </div>
             </ibm-tabs>
-            <div class="LoanInfo2" *ngIF="showLoans == true">
-                <h2 class="page-title"> {{ title }} </h2>
-                <ibm-tabs>
-                    <ibm-tab *ngFor="let item of myLoans | keyvalue" heading="{{item.key}}" class="tab">
-                        <div class="CardParent2">
-                            <div *ngFor="let device of item.value" class="DeviceCard">
-                                <img src="../../assets/device.png" alt="">
-                                <div class="DeviceCard--Info2">
-                                   
-                                    <p>{{device.description}}</p>
+            <ng-template [ngIf]="showLoans">
+                <div class="LoanInfo2">
+                    <h2 class="page-title"> {{ title }} </h2>
+                    <ibm-tabs>
+                        <ibm-tab *ngFor="let item of myLoans | keyvalue" heading="{{item.key}}" class="tab">
+                            <div class="CardParent">
+                                <div *ngFor="let device of item.value" class="DeviceCard">
+        
+                                    <div class="DeviceCard--Info">
+                                        <p>{{device.DESCRIPTION}}</p>
+                                    </div>
+                                    <img #trigger src="../../assets/{{device.TYPE.toLowerCase()}}.png" alt="" (click)="open = true">
+                                    
+        
                                 </div>
                             </div>
-                        </div>
-                    </ibm-tab>
-                </ibm-tabs>
-                <div></div>
-            </div>
+                        </ibm-tab>
+                    </ibm-tabs>
+                    <div></div>
+                </div>
+            </ng-template>
         </div>
     </div>
 </section>

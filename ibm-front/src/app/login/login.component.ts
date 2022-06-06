@@ -26,7 +26,6 @@ export class LoginComponent implements OnInit {
     var api = environment.ibm_users+"/login";
     var rout = this.router;
     var form = this.LoginForm;
-    console.log(form.value);
     if (form.value.email.trim() == "") return false;
     if (form.value.password == "") return false;
 
@@ -36,24 +35,22 @@ export class LoginComponent implements OnInit {
     };
 
     axios.post(api, body, { withCredentials: true }).then(function (response) {
-      console.log(response);
       if (response.status == 200)
         rout.navigate(['./home']);
     }).catch(err => {
-      console.log("Aver -> ", err);
+      console.error("Aver -> ", err);
     });
     return false;
   }
 
   ngOnInit(): void {
-    var api = "http://localhost:4000/isLogged";
+    var api = environment.ibm_users+"/isLogged";
     var rout = this.router;
     axios.get(api, { withCredentials: true }).then(function (response) {
-      console.log("Respuesta -> ", response);
       if (response.status == 200)
         rout.navigate(['./home']);
     }).catch(err => {
-      console.log("Not Logged: ", err);
+      console.error("Not Logged: ", err);
     });
   }
 

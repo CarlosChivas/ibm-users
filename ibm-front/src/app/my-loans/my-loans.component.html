@@ -1,7 +1,4 @@
-<app-menu-bar></app-menu-bar>
-<style>
-</style>
-
+<app-menu-bar [userType]="userType"></app-menu-bar>
 <section class="overview-page__banner" aria-label="overview page banner">
     <div class="container">
         <div class="LoanInfo">
@@ -11,23 +8,19 @@
                     <div class="CardParent">
                         <div *ngFor="let device of item.value" class="DeviceCard">
 
-                            
-                            
-                        
-
                             <div class="DeviceCard--Info">
-                                <p>{{device.description}}</p>
+                                <p>{{device.DESCRIPTION}}</p>
                             </div>
-                            <img #trigger src="../../assets/device.png" alt="" (click)="open = true">
+                            <img #trigger src="../../assets/{{device.TYPE.toLowerCase()}}.png" alt="" (click)="open = true">
                             <ibm-modal [open]="open" [trigger]="trigger" (overlaySelected)="open = false">
                                 <ibm-modal-header (closeSelect)="open = false" [showCloseButton]="showCloseButton">
-                                    <p class="bx--modal-header__heading bx--type-beta">{{device.device}}</p>
+                                    <p class="bx--modal-header__heading bx--type-beta">{{device.TYPE}}</p>
                                 </ibm-modal-header>
                                 <div class="bx--modal-content">
-                                    <p _ngcontent-ows-c99="" class="bx--modal-header__label bx--type-delta">Descrpition: {{device.description}}</p>
-                                    <p _ngcontent-ows-c99="" class="bx--modal-header__label bx--type-delta">Loan Started: {{device.loanDate}}</p>
+                                    <p _ngcontent-ows-c99="" class="bx--modal-header__label bx--type-delta">Descrpition: {{device.DESCRIPTION}}</p>
+                                    <p _ngcontent-ows-c99="" class="bx--modal-header__label bx--type-delta">Loan Started: {{device.CREATION}}</p>
                                      <!-- Falta un condicional cuando el loan finished este vacio-->
-                                    <p _ngcontent-ows-c99="" class="bx--modal-header__label bx--type-delta">Loan Finished: {{device.finishDate}}</p>
+                                    <p _ngcontent-ows-c99="" class="bx--modal-header__label bx--type-delta">Loan Finished: {{device.CONCLUDED}}</p>
                                 </div>
                                 <ibm-modal-footer>
                                     <ng-container>
@@ -46,9 +39,6 @@
                 </ibm-tab>
             </ibm-tabs>
             <div></div>
-        </div>
-        <div class="LoanChart">
-        
         </div>
     </div>
 </section>

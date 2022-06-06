@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import axios from 'axios';
+import { environment } from '../../environments/environment';
 
 @Component({
   selector: 'app-peripheral-registration',
@@ -10,28 +11,22 @@ import axios from 'axios';
 })
 export class PeripheralRegistrationComponent implements OnInit {
 
-  fields = [
-    {"name":"Emploee Email","id":"emploeeEmail", "type":"email"},
-    {"name":"Focal Email","id":"focalEmail", "type":"email"},
-    {"name":"Divice Type","id":"diviceType", "type":"text"},
-    {"name":"Divice Brand","id":"diviceBrand", "type":"text"},
-    {"name":"Divice Model","id":"diviceModel", "type":"text"},
-    {"name":"Device Serian Number","id":"deviceID", "type":"text"}];
+  openConfirmation: boolean = false;
+  confModal = {
+    title: "",
+    body: ""
+  }
 
-    diviceTypes = ["Headphones","Keyboard","Monitor","Mouse"];
-    diviceBrands = [];
-    diviceModels = [];
-  loanForm = this.formBuilder.group({
-    emploeeID: '',
-    emploeeEmail: '',
-    emploeeName: '',
-    emploeeLastName: '',
-    detartment: '',
-    focalID: '',
-    focalEmail: '',
-    focalName: '',
-    focalLastName: '',
-    deviceID: ''
+  diviceTypes: any[] = [];
+  diviceBrands: any[] = [];
+  me: any = {};
+  userType: string = "";
+
+  deviceForm = this.formBuilder.group({
+    deviceType: '',
+    deviceBrand: '',
+    deviceModel: '',
+    deviceDesc: ''
   });
 
   constructor(
@@ -40,17 +35,56 @@ export class PeripheralRegistrationComponent implements OnInit {
   ) {
   }
 
-  sendForm() {
-    console.log(this.loanForm.value)
+  updateType(changes: Object) {
   }
-  ngOnInit(): void {
-    var api = "http://localhost:4000/isLogged";
+  updateBrand(changes: Object) {
+  }
+
+  CloseAll() {
+    this.openConfirmation = false;
+  }
+  sendForm() {
+    var api = environment.ibm_peripherals+"/AdminFocal/createPeripheral";
     var rout = this.router;
-    axios.get(api, {withCredentials:true}).then(function (response) {
-      if (response.status != 200)
-        rout.navigate(['./']);
+    var esto = this;
+    var form = esto.deviceForm.value;
+
+    var body = {
+      ptype: form.deviceType.content,
+      description: form.deviceDesc,
+      brand: form.deviceBrand.content,
+      model: form.deviceModel
+    };
+    axios.post(api, body, { withCredentials: true }).then(response => {
+
+      esto.confModal.title = "Success";
+      esto.confModal.body = "The device was successfully processed.";
+      esto.openConfirmation = true;
+
     }).catch(err => {
-      console.log(err);
+      esto.confModal.title = "Failed";
+    esto.confModal.body = "The device was not able to process correctly, please check that the information is correct or try again later.";
+    esto.openConfirmation = true;
+    });
+  }
+
+  ngOnInit(): void {
+    var api = environment.ibm_users+"/isLogged";
+    var rout = this.router;
+    var esto = this;
+    axios.get(api, { withCredentials: true }).then(function (response) {
+      esto.userType = response.data.ROLE_NAME;
+      esto.me = response.data;
+      var api3 = environment.ibm_peripherals+"/AdminFocal/getPeripheralFields";
+      axios.get(api3, { withCredentials: true }).then(res => {
+
+        esto.diviceTypes = res.data.ptype.map((element: any) => Object({content: element.NAME, selected: false}));
+        esto.diviceBrands = res.data.brand.map((element: any) => Object({content: element.NAME, selected: false}));
+
+      }).catch(err => console.error(err));
+
+    }).catch(err => {
+      console.error(err);
       rout.navigate(['./']);
     });
   }

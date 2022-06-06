@@ -1,8 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { MyLoansComponent } from "../my-loans/my-loans.component";
 import { ProfileComponent } from "../profile/profile.component";
 import axios from 'axios';
+import { environment } from '../../environments/environment';
 
 @Component({
   selector: 'app-menu-bar',
@@ -22,14 +23,14 @@ export class MenuBarComponent implements OnInit {
     }],
   };
 
+  @Input() userType: string = "";
+  
   constructor(private router: Router, private loansNum: MyLoansComponent, public profileComponent: ProfileComponent) {
     this.numLoan = this.loansNum.getNumLoans();
-    // console.log(this.numLoan);
   }
   
   logout() {
-    var api = "http://localhost:4000/logout";
-    console.log(api);
+    var api = environment.ibm_users+"/logout";
     var rout = this.router;
     axios.get(api, { withCredentials: true }).then(function (response) {
       console.error(response);
@@ -37,7 +38,7 @@ export class MenuBarComponent implements OnInit {
         rout.navigate(['./']);
       }
     }).catch((error) => {
-      console.log("Not able to Log Out")
+      console.error("Not able to Log Out")
     });
   }
 

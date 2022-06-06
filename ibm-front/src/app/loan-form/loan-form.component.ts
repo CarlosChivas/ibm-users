@@ -3,6 +3,7 @@ import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { ButtonModule, CheckboxModule, ModalModule } from 'carbon-components-angular';
 import { Router } from '@angular/router';
 import axios from 'axios';
+import { environment } from '../../environments/environment';
 
 @Component({
   selector: 'app-loan-form',
@@ -12,19 +13,27 @@ import axios from 'axios';
 export class LoanFormComponent implements OnInit {
 
   isOpen: boolean = false
+  openConfirmation: boolean = false;
   showCloseButton: boolean = true;
+  userType: string = "";
+  confModal = {
+    title: "",
+    body: ""
+  }
 
   fields = { "name": "employeeEmail", "type": "email" };
   device = {
-    BRAND: "No brand",
-    TYPE: "No Type",
-    SN: "N/A",
-    DESCRIPTION: "No Brand - No Type"
+    SERIAL: 0,
+    BRAND: "",
+    PTYPE: "",
+    MODEL: "",
+    DESCRIPTION: "",
+    PERIPHERAL_STATUS: "",
+
+    DEPARTMENT_NAME: "",
+    FOCAL_NAME: ""
   };
-  user = {
-    ROLE: "",
-    EMAIL: "",
-  };
+  user = "";
 
   loanForm = this.formBuilder.group({
     employeeMail: ''
@@ -37,123 +46,152 @@ export class LoanFormComponent implements OnInit {
   }
 
   openModal(index: number) {
-    console.log(index);
     this.isOpen = true;
     this.device = this.peripheralList[index];
   }
   closeModal() {
     this.isOpen = false;
   }
+  CloseAll() {
+    this.isOpen = false;
+    this.openConfirmation = false;
+  }
   sendForm() {
-    console.log(this.loanForm.value)
-    console.log(this.user)
+    var esto = this;
+    var mail = esto.loanForm.value.employeeMail.trim().toLowerCase();
+    if (mail == "") mail = esto.user;
+    var body = {
+      employee_email: mail,
+      peripheral_serial: esto.device.SERIAL
+    };
+
+    var api = environment.ibm_peripherals + "/AdminFocal/createLoan";
+    axios.post(api, body, { withCredentials: true }).then(res => {
+
+      esto.confModal.title = "Success";
+      esto.confModal.body = "The loan was successfully processed.";
+      esto.openConfirmation = true;
+
+    }).catch(err => {
+      esto.confModal.title = "Failed";
+      esto.confModal.body = "The loan was not able to process correctly, please check that the employee's email is correct or try again later.";
+      esto.openConfirmation = true;
+    });
+
   }
   peripheralList = [{
-    BRAND: "ACER",
-    TYPE: "MONITOR",
-    SN: "10",
-    DESCRIPTION: "ACER - Monitor"
-  }, {
-    BRAND: "DELL",
-    TYPE: "KEYBOARD",
-    SN: "20",
-    DESCRIPTION: "DELL - Keyboard"
-  }, {
-    BRAND: "BOSE",
-    TYPE: "SPEAKER",
-    SN: "30",
-    DESCRIPTION: "BOSE - Speaker"
-  }, {
-    BRAND: "SONY",
-    TYPE: "HEADPHONES",
-    SN: "40",
-    DESCRIPTION: "SONY - Headphones"
-  }, {
-    BRAND: "HP",
-    TYPE: "MOUSE",
-    SN: "50",
-    DESCRIPTION: "HP - Mouse"
-  }, {
-    BRAND: "BLUE YETI",
-    TYPE: "MICROPHONE",
-    SN: "60",
-    DESCRIPTION: "Blue Yeti - Microphone"
-  }, {
-    BRAND: "KINGSTONE",
-    TYPE: "HARD DRIVE",
-    SN: "70",
-    DESCRIPTION: "Kingstone - Hard Drive"
-  }, {
-    BRAND: "LOGITECH",
-    TYPE: "WEB CAM",
-    SN: "80",
-    DESCRIPTION: "LOGITECH - Web Cam"
-  }, {
-    BRAND: "APPLE",
-    TYPE: "TRACK PAD",
-    SN: "90",
-    DESCRIPTION: "APPLE - TRACK PAD"
-  }, {
-    BRAND: "TP-LINK",
-    TYPE: "ROUTER",
-    SN: "100",
-    DESCRIPTION: "TP-LINK - ROUTER"
+    SERIAL: 0,
+    BRAND: "",
+    PTYPE: "keyboard",
+    MODEL: "",
+    DESCRIPTION: "",
+    PERIPHERAL_STATUS: "",
+
+    DEPARTMENT_NAME: "",
+    FOCAL_NAME: ""
   }];
 
-  deviceTypeFilters = [];
-  radioFilter = null;
+  typeFilter: string = "";
+  brandFilter: string = "";
 
-  deviceType = [
-    { value: "Monitor", checked: false },
-    { value: "Keyboard", checked: false },
-    { value: "Mouse", checked: false }
-  ];
+  deviceTypeFilters: number = 0;
+  deviceBrandFilters: number = 0;
 
-  radios = [
-    { color: "Accepted Conditions", checked: false },
-    { color: "Security Authorization", checked: false },
-    { color: "Returned", checked: false }
-  ];
+  deviceType: { value: any; checked: boolean }[] = [];
+  deviceBrands: { value: any; checked: boolean }[] = [];
 
-  onCheckboxChange() {
-  }
+  onTypeChange(index: number) {
 
-  onRadioChange() {
-  }
+    var rout = this.router;
+    this.typeFilter = "";
+    this.deviceType[index].checked = !this.deviceType[index].checked;
+    if (this.deviceType[index].checked) this.deviceTypeFilters++;
+    else this.deviceTypeFilters--;
 
-  resetFilters() {
-    this.resetCheckboxList();
-    this.resetRadios();
-  }
+    var esto = this;
+    this.deviceType.forEach(field => {
+      if (field.checked) {
+        if (esto.typeFilter != "") esto.typeFilter = esto.typeFilter + "," + field.value;
+        else esto.typeFilter = field.value;
+      }
+    });
 
-  resetCheckboxList() {
-    this.deviceTypeFilters = [];
-    this.deviceType = this.deviceType.map(obj => ({ value: obj.value, checked: false }));
     this.applyFilters();
   }
 
-  resetRadios() {
-    this.radioFilter = null;
-    this.radios = this.radios.map(obj => ({ color: obj.color, checked: false }));
+  onBrandChange(index: number) {
+
+    var esto = this;
+    esto.typeFilter = "";
+    esto.deviceBrands[index].checked = !esto.deviceBrands[index].checked;
+    if (esto.deviceBrands[index].checked) esto.deviceBrandFilters++;
+    else esto.deviceBrandFilters--;
+    esto.deviceBrands.forEach(field => {
+      if (field.checked) {
+        if (esto.brandFilter != "") esto.brandFilter = esto.brandFilter + "," + field.value;
+        else esto.brandFilter = field.value;
+      }
+    });
+
+    this.applyFilters();
+  }
+
+
+  resetFilters() {
+    this.resetTypes();
+    this.resetBrands();
+  }
+
+  resetTypes() {
+    this.typeFilter = "";
+    this.deviceTypeFilters = 0;
+    this.deviceType = this.deviceType.map(obj => ({ value: obj.value, checked: false }));
+    this.applyFilters();
+  }
+  resetBrands() {
+    this.brandFilter = "";
+    this.deviceBrandFilters = 0;
+    this.deviceBrands = this.deviceBrands.map(obj => ({ value: obj.value, checked: false }));
     this.applyFilters();
   }
 
   applyFilters() {
+    
   }
 
   ngOnInit() {
-    var api = "http://localhost:4000/isLogged";
+    var api = environment.ibm_users + "/isLogged";
 
     var rout = this.router;
     var esto = this;
     axios.get(api, { withCredentials: true }).then(function (response) {
-      if (response.status != 200)
-        rout.navigate(['./']);
-        else{
-          console.log(response.data);
-          esto.user.EMAIL = response.data.EMAIL;
-          esto.user.ROLE = response.data.ROLE_NAME;
-        }
+      esto.userType = response.data.ROLE_NAME;
+      var me = response.data;
+      esto.user = me.EMAIL;
+
+      var api2 = environment.ibm_peripherals + "/AdminFocal/getAvailablePeripherals";
+      axios.get(api2, { withCredentials: true }).then(res => {
+        esto.peripheralList = res.data;
+      }).catch(err => console.error(err));
+
+      var api3 = environment.ibm_peripherals + "/AdminFocal/getPeripheralFields";
+      axios.get(api3, { withCredentials: true }).then(res => {
+
+        res.data.ptype.forEach((element: { NAME: any; }) => {
+          esto.deviceType.push({
+            value: element.NAME,
+            checked: false
+          });
+        });
+        res.data.brand.forEach((element: { NAME: any; }) => {
+          esto.deviceBrands.push({
+            value: element.NAME,
+            checked: false
+          });
+        });
+
+      }).catch(err => console.log(err));
+
     }).catch(err => {
       console.log(err);
       rout.navigate(['./']);

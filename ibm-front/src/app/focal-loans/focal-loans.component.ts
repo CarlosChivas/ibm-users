@@ -1,7 +1,24 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import axios from 'axios';
-import { ButtonModule, CheckboxModule  } from 'carbon-components-angular';
+import { ButtonModule, CheckboxModule } from 'carbon-components-angular';
+import { environment } from '../../environments/environment';
+
+interface LOAN{
+  PERIPHERAL_SERIAL: number;
+  BRAND: string;
+  TYPE: string;
+  MODEL: string;
+  DESCRIPTION: string;
+  CREATION: string;
+  CONCLUDED: string;
+
+  LOAN_ID: number;
+  LOAN_STATUS: string;
+  EMPLOYEE_NAME: string;
+  CONDITION_ACCEPTED: boolean;
+  SECURITY_AUTH: boolean;
+}
 
 @Component({
   selector: 'app-focal-loans',
@@ -12,199 +29,223 @@ export class FocalLoansComponent implements OnInit {
 
   isOpen: boolean = false
   showCloseButton: boolean = true;
-  specific = {
-    employeeID: 0,
-    employeeName: 'No employee asigned',
-    deviceType: "No type",
-    deviceBrand: "No brand",
-    serialNumber: "N/A",
-    termsConditions: false,
-    secAuth: false,
-    returned: false
+  userType: string = "";
+  specific: LOAN = {
+    PERIPHERAL_SERIAL: 0,
+    BRAND: '',
+    TYPE: '',
+    MODEL: '',
+    DESCRIPTION: '',
+    CREATION: '',
+    CONCLUDED: '',
+    LOAN_ID: 0,
+    LOAN_STATUS: '',
+    EMPLOYEE_NAME: '',
+    CONDITION_ACCEPTED: false,
+    SECURITY_AUTH: false
   };
 
-  columns = ["Employee ID",
+  columns = [
     "Employee Name",
+    "Device Brand",
     "Device Type",
-    "Brand",
-    "Serial Number",
+    "Date",
     "Accepted Conditions",
     "Security Authorization",
-    "Returned"
+    "Status",
   ];
 
-  areaLoans = [
-    {
-      employeeID: 2,
-      employeeName: "Name 1",
-      deviceType: "Monitor",
-      deviceBrand: "ACER",
-      serialNumber: "10007",
-      termsConditions: false,
-      secAuth: false,
-      returned: false
-    },
-    {
-      employeeID: 3,
-      employeeName: "Name 2",
-      deviceType: "Headphones",
-      deviceBrand: "SONY",
-      serialNumber: "10009",
-      termsConditions: false,
-      secAuth: false,
-      returned: false
-    },
-    {
-      employeeID: 5,
-      employeeName: "Name 3",
-      deviceType: "MOUSE",
-      deviceBrand: "HP",
-      serialNumber: "10037",
-      termsConditions: true,
-      secAuth: false,
-      returned: false
-    },
-    {
-      employeeID: 7,
-      employeeName: "Name 4",
-      deviceType: "KEY BOARD",
-      deviceBrand: "DELL",
-      serialNumber: "10039",
-      termsConditions: true,
-      secAuth: false,
-      returned: false
-    },
-    {
-      employeeID: 11,
-      employeeName: "Name 5",
-      deviceType: "SPEAKERS",
-      deviceBrand: "BOSE",
-      serialNumber: "10061",
-      termsConditions: true,
-      secAuth: true,
-      returned: false
-    },
-    {
-      employeeID: 13,
-      employeeName: "Name 6",
-      deviceType: "MICROPHONE",
-      deviceBrand: "BLUE YETI",
-      serialNumber: "10069",
-      termsConditions: true,
-      secAuth: true,
-      returned: false
-    },
-    {
-      employeeID: 17,
-      employeeName: "Name 7",
-      deviceType: "HARD DRIVE",
-      deviceBrand: "KINGSTONE",
-      serialNumber: "10079",
-      termsConditions: true,
-      secAuth: true,
-      returned: false
-    },
-    {
-      employeeID: 19,
-      employeeName: "Name 8",
-      deviceType: "WEB CAM",
-      deviceBrand: "LOGITECH",
-      serialNumber: "10091",
-      termsConditions: true,
-      secAuth: true,
-      returned: true
-    },
-    {
-      employeeID: 23,
-      employeeName: "Name 9",
-      deviceType: "TRACK PAD",
-      deviceBrand: "APPLE",
-      serialNumber: "10099",
-      termsConditions: true,
-      secAuth: true,
-      returned: true
-    },
-    {
-      employeeID: 29,
-      employeeName: "Name 10",
-      deviceType: "ROUTER",
-      deviceBrand: "TP-LINK",
-      serialNumber: "10103",
-      termsConditions: true,
-      secAuth: true,
-      returned: true
-    }
-  ];
+  areaLoans: LOAN[] = [ ];
 
   constructor(private router: Router) { }
 
-	deviceTypeFilters = [];
-	radioFilter = null;
-
-	radios = [
-		{ color: "Accepted Conditions", checked: false },
-		{ color: "Security Authorization", checked: false },
-		{ color: "Returned", checked: false }
-	];
-
-	deviceType = [
-		{ value: "Monitor", checked: false},
-		{ value: "Keyboard", checked: false},
-		{ value: "Mouse", checked: false}
-	];
-
-  openModal(index: number){
-    console.log(index);
+  openModal(index: number) {
     this.isOpen = true;
     this.specific = this.areaLoans[index];
   }
-  closeModal(){
+  closeModal() {
     this.isOpen = false;
   }
-  cancel(){
+  cancel() {
     this.isOpen = false;
   }
-  returnDevice(){
+  returnDevice() {
     this.isOpen = false;
   }
 
-	onCheckboxChange() {
-	}
 
-	onRadioChange() {
-	}
+  typeFilter: string = "";
+  brandFilter: string = "";
+  statusFilter: string = "";
+  searchFilter: string = "";
 
-	resetFilters() {
-		this.resetCheckboxList();
-		this.resetRadios();
-	}
+  deviceTypeFilters: number = 0;
+  deviceBrandFilters: number = 0;
 
-	resetCheckboxList() {
-		this.deviceTypeFilters = [];
-		this.deviceType = this.deviceType.map(obj => ({ value: obj.value, checked: false }));
-		this.applyFilters();
-	}
+  deviceStatus: { value: any; checked: boolean }[] = [
+    { value: "In Process", checked: false },
+    { value: "Borrowed", checked: false },
+    { value: "Concluded", checked: false }
+  ];
+  deviceType: { value: any; checked: boolean }[] = [];
+  deviceBrands: { value: any; checked: boolean }[] = [];
 
-	resetRadios() {
-		this.radioFilter = null;
-		this.radios = this.radios.map(obj => ({ color: obj.color, checked: false }));
-		this.applyFilters();
-	}
-
-	applyFilters() {
-	}
-
-	ngOnInit() {
-    var api = "http://localhost:4000/isLogged";
+  checkPin($event: KeyboardEvent) {
     var rout = this.router;
-    axios.get(api, {withCredentials:true}).then(function (response) {
-      if (response.status != 200) rout.navigate(['./home']);
+    var esto = this;
+    if (event) {
+      esto.searchFilter = (<HTMLInputElement>event.target).value.trim();
+      // @ts-ignore
+      if (event.keyCode == 13) {
+        esto.applyFilters();
+      }
+    }
+  }
+
+  onTypeChange(index: number) {
+
+    var rout = this.router;
+    this.typeFilter = "";
+    this.deviceType[index].checked = !this.deviceType[index].checked;
+    if (this.deviceType[index].checked) this.deviceTypeFilters++;
+    else this.deviceTypeFilters--;
+
+    var esto = this;
+    this.deviceType.forEach(field => {
+      if (field.checked) {
+        if (esto.typeFilter != "") esto.typeFilter = esto.typeFilter + "," + field.value;
+        else esto.typeFilter = field.value;
+      }
+    });
+
+    this.applyFilters();
+  }
+
+  onBrandChange(index: number) {
+
+    var esto = this;
+    esto.typeFilter = "";
+    esto.deviceBrands[index].checked = !esto.deviceBrands[index].checked;
+    if (esto.deviceBrands[index].checked) esto.deviceBrandFilters++;
+    else esto.deviceBrandFilters--;
+    esto.deviceBrands.forEach(field => {
+      if (field.checked) {
+        if (esto.brandFilter != "") esto.brandFilter = esto.brandFilter + "," + field.value;
+        else esto.brandFilter = field.value;
+      }
+    });
+
+    this.applyFilters();
+  }
+
+  onStatusChange(index: number) {
+
+    var esto = this;
+    this.statusFilter = this.deviceStatus[index].value;
+    this.deviceStatus = this.deviceStatus.map(obj => ({ value: obj.value, checked: false }));
+    this.deviceStatus[index].checked = true;
+
+    this.applyFilters();
+  }
+
+  resetFilters() {
+    this.resetType();
+    this.resetBrand();
+    this.resetStatus();
+  }
+
+  resetBrand() {
+    this.deviceBrandFilters = 0;
+    this.brandFilter = "";
+    this.deviceBrands = this.deviceBrands.map(obj => ({ value: obj.value, checked: false }));
+    this.applyFilters();
+  }
+
+  resetType() {
+    this.deviceTypeFilters = 0;
+    this.typeFilter = "";
+    this.deviceType = this.deviceType.map(obj => ({ value: obj.value, checked: false }));
+    this.applyFilters();
+  }
+
+  resetStatus() {
+    this.statusFilter = "";
+    this.deviceStatus = this.deviceStatus.map(obj => ({ value: obj.value, checked: false }));
+    this.applyFilters();
+  }
+
+  applyFilters() {
+
+    var api = environment.ibm_peripherals + "/AdminFocal/searchLoan/";
+
+    var filterNow = [];
+    if (this.searchFilter != "")
+      filterNow.push("search=" + this.searchFilter);
+    if (this.statusFilter != "")
+      filterNow.push("status=" + this.statusFilter);
+    if (this.typeFilter != "")
+      filterNow.push("type=" + this.typeFilter);
+    if (this.brandFilter != "")
+      filterNow.push("brand=" + this.brandFilter);
+
+    var querry = "";
+    filterNow.forEach(target => {
+      if (querry == "") querry = "?"
+      else querry += "&";
+      querry += target;
+    });
+
+    api += querry;
+
+    console.log(querry);
+    console.log(api);
+
+    var esto = this;
+    axios.get(api, { withCredentials: true }).then(res => {
+
+      console.log(res.data);
+      esto.areaLoans = res.data;
+
+    }).catch(err => console.error(err));
+
+  }
+
+  ngOnInit() {
+    var api = environment.ibm_users + "/isLogged";
+    var rout = this.router;
+    var esto = this;
+    axios.get(api, { withCredentials: true }).then(function (response) {
+      esto.userType = response.data.ROLE_NAME;
+
+      api = environment.ibm_peripherals + "/AdminFocal/getLoans";
+      axios.get(api, { withCredentials: true }).then(res => {
+        esto.areaLoans = res.data;
+      }).catch(err => console.error(err));
+
+      var api3 = environment.ibm_peripherals + "/AdminFocal/getPeripheralFields";
+      axios.get(api3, { withCredentials: true }).then(res => {
+
+        res.data.ptype.forEach((element: { NAME: any; }) => {
+          esto.deviceType.push({
+            value: element.NAME,
+            checked: false
+          });
+        });
+        res.data.brand.forEach((element: { NAME: any; }) => {
+          esto.deviceBrands.push({
+            value: element.NAME,
+            checked: false
+          });
+        });
+
+      }).catch(err => console.log(err));
+
     }).catch(err => {
-      console.log(err);
+      console.error(err);
       rout.navigate(['./']);
     });
-	}
-	ngOnDestroy() {
-	}
+  }
+  ngOnDestroy() {
+  }
 
 }

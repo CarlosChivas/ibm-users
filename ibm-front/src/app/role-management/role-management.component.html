@@ -1,8 +1,4 @@
-<style>
-
-</style>
-
-<app-menu-bar></app-menu-bar>
+<app-menu-bar [userType]="userType"></app-menu-bar>
 <section class="overview-page__banner" aria-label="overview page banner">
 
   <div class="container">
@@ -32,7 +28,7 @@
                 </ibm-tag-filter>
               </div>
             </div>
-            <ibm-checkbox *ngFor="let listItem of deviceType" [checked]="listItem.checked">
+            <ibm-checkbox *ngFor="let listItem of deviceType; index as i" [checked]="listItem.checked" (change)="onRoleFilter(i)">
               {{ listItem.value }}
             </ibm-checkbox>
           </fieldset>
