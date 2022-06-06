@@ -28,7 +28,7 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    padding: 8px; /*$spacing-03*/
+    padding: 25px; /*$spacing-03*/
     background-color: 	#f4f4f4;
 }
 .DeviceCard>img{
@@ -66,8 +66,8 @@
 .CardParent{
     width: 100%;
     display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    gap: 24px; /*$spacing-06*/
+    grid-template-columns: repeat(4, 1fr);
+    gap: 42px; /*$spacing-06*/
     grid-auto-rows: minmax(100px, auto);
 }
 hr {

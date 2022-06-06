@@ -6,6 +6,8 @@
     <div class="container">
         <div class="LoanInfo">
             <h2 class="page-title"> {{ title }} </h2>
+            <a style="padding-bottom: 20px;" ibmButton="secondary" [routerLink]="['../../newloan']" style="float: right;">Download</a>
+            
             <ibm-tabs>
                 
                     <div *ngFor="let loans of Devices" >
