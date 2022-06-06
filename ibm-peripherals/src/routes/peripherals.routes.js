@@ -120,4 +120,8 @@ router.get("/AdminFocal/searchLoan/", rolesCtrl.validateToken,
                                       rolesCtrl.isFocalORAdmin,
                                       peripheralsCtrl.searchLoan);
 
+router.get("/AdminFocal/downloadReport", rolesCtrl.validateToken,
+                                         rolesCtrl.isFocalORAdmin,
+                                         peripheralsCtrl.downloadReport);
+
 module.exports = router;

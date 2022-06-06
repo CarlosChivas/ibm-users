@@ -1,5 +1,6 @@
 const peripheralsCtrl = {};
 const pool = require("../database");
+const excel = require("exceljs");
 
 peripheralsCtrl.getHome = async (req, res) => {
     res.status(200).send("Working!");
@@ -320,7 +321,7 @@ peripheralsCtrl.getLoans = async (req, res) => {
                     INNER JOIN ptype ON peripheral.ptype = ptype.id
                     INNER JOIN brand ON peripheral.brand = brand.id
                     ${focalRole}
-                    ORDER BY loan.creation, loan.loan_status;`, function(err, data){
+                    ORDER BY loan_status.id DESC, loan.creation;`, function(err, data){
                 if(err){
                     res.status(400).send(err);
                 } else{
@@ -547,11 +548,141 @@ peripheralsCtrl.searchLoan = async (req, res) => {
                     OR LOWER(peripheral.model) LIKE LOWER('%${req.query.search}%')
                     OR LOWER(users.first_name || ' ' || users.last_name) LIKE LOWER('%${req.query.search}%'))
                     ${typeQuery} ${brandQuery} ${statusQuery}
-                    ORDER BY loan.creation, loan.loan_status;`, function(err, data){
+                    ORDER BY loan_status.id DESC, loan.creation;`, function(err, data){
                 if(err){
                     res.status(400).send(err);
                 } else{
                     res.status(200).send(data);
+                }
+            })
+            db.close(function (error) { // RETURN CONNECTION TO POOL
+                if (error) {
+                    res.send("Error mientras se cerraba la conexion");
+                }
+            });
+        }
+    })
+
+}
+
+peripheralsCtrl.downloadReport = async (req, res) => {
+
+    if(req.user.ROLE_NAME === 'Administrator'){
+        req.user.ID = 'true';
+    }
+
+    pool.open(process.env.DATABASE_STRING, function (err, db) {
+        if (err) {
+            res.status(403).send(err)
+        } else{
+            db.query(`SELECT
+                        peripheral.serial as peripheral_serial,  
+                        users.first_name as focal_first_name,
+                        users.last_name as focal_last_name,
+                        users.email as focal_email,
+                        ptype.name as type,
+                        brand.name as brand,
+                        peripheral.model,
+                        peripheral.description,
+                        department.name as department,
+                        peripheral_status.name as peripheral_status
+                    FROM peripheral
+                    INNER JOIN users ON peripheral.focal = users.id
+                    INNER JOIN ptype ON peripheral.ptype = ptype.id
+                    INNER JOIN brand ON peripheral.brand = brand.id
+                    INNER JOIN peripheral_status ON peripheral.peripheral_status = peripheral_status.id
+                    INNER JOIN department ON peripheral.department = department.id
+                    WHERE peripheral.focal = ${req.user.ID}
+                    ORDER BY peripheral_status.id, peripheral.serial`, function(err, data){
+                if(err){
+                    res.status(400).send(err);
+                } else{
+                    req.peripheral = data;
+                }
+            })
+            db.query(`SELECT
+                        loan.id as loan_id,  
+                        users.first_name as employee_first_name,
+                        users.last_name as employee_last_name,
+                        users.email as employee_email,
+                        loan.peripheral_serial,
+                        ptype.name as type,
+                        brand.name as brand,
+                        peripheral.model,
+                        peripheral.description,
+                        user_focal.first_name as focal_first_name,
+                        user_focal.last_name as focal_last_name,
+                        user_focal.email as focal_email,
+                        department.name as department,
+                        loan.creation,
+                        loan.concluded,
+                        loan.condition_accepted,
+                        loan.security_auth,
+                        loan_status.name as loan_status
+                    FROM loan
+                    INNER JOIN users ON loan.employee = users.id
+                    INNER JOIN loan_status ON loan.loan_status = loan_status.id
+                    INNER JOIN peripheral ON loan.peripheral_serial = peripheral.serial
+                    INNER JOIN ptype ON peripheral.ptype = ptype.id
+                    INNER JOIN brand ON peripheral.brand = brand.id
+                    INNER JOIN department ON peripheral.department = department.id
+                    INNER JOIN users as user_focal ON peripheral.focal = user_focal.id
+                    WHERE loan.focal = ${req.user.ID}
+                    ORDER BY loan_status.id DESC, loan.creation`, function(err, data){
+                if(err){
+                    res.status(400).send(err);
+                } else{                                        
+                    let workbook = new excel.Workbook();
+
+                    let worksheet = workbook.addWorksheet("Loans", {properties:{defaultColWidth: 15}});
+                    worksheet.columns = [
+                        { header: "Loan Id", key: "LOAN_ID" },
+                        { header: "Employee First Name", key: "EMPLOYEE_FIRST_NAME" },
+                        { header: "Employee Last Name", key: "EMPLOYEE_LAST_NAME" },
+                        { header: "Employee Email", key: "EMPLOYEE_EMAIL" },
+                        { header: "Peripheral Serial", key: "PERIPHERAL_SERIAL" },
+                        { header: "Type", key: "TYPE" },
+                        { header: "Brand", key: "BRAND" },
+                        { header: "Model", key: "MODEL" },
+                        { header: "Description", key: "DESCRIPTION" },
+                        { header: "Focal First Name", key: "FOCAL_FIRST_NAME" },
+                        { header: "Focal Last Name", key: "FOCAL_LAST_NAME" },
+                        { header: "Focal Email", key: "FOCAL_EMAIL" },
+                        { header: "Department", key: "DEPARTMENT" },
+                        { header: "Creation", key: "CREATION" },
+                        { header: "Concluded", key: "CONCLUDED" },
+                        { header: "Condition Accepted", key: "CONDITION_ACCEPTED" },
+                        { header: "Security Auth", key: "SECURITY_AUTH" },
+                        { header: "Loan Status", key: "LOAN_STATUS" }
+                    ];
+                    worksheet.addRows(data);
+
+                    worksheet = workbook.addWorksheet("Peripherals", {properties:{defaultColWidth: 15}});
+                    worksheet.columns = [
+                        { header: "Peripheral Serial", key: "PERIPHERAL_SERIAL" },
+                        { header: "Focal First Name", key: "FOCAL_FIRST_NAME" },
+                        { header: "Focal Last Name", key: "FOCAL_LAST_NAME" },
+                        { header: "Focal Email", key: "FOCAL_EMAIL" },
+                        { header: "Type", key: "TYPE" },
+                        { header: "Brand", key: "BRAND" },
+                        { header: "Model", key: "MODEL" },
+                        { header: "Description", key: "DESCRIPTION" },
+                        { header: "Department", key: "DEPARTMENT" },
+                        { header: "Peripheral Status", key: "PERIPHERAL_STATUS" }
+                    ];
+                    worksheet.addRows(req.peripheral);
+
+                    res.setHeader(
+                        "Content-Type",
+                        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                      );
+                      res.setHeader(
+                        "Content-Disposition",
+                        "attachment; filename=" + "Peripheral Report.xlsx"
+                      );
+                      return workbook.xlsx.write(res).then(function () {
+                        res.status(200).end();
+                      });
                 }
             })
             db.close(function (error) { // RETURN CONNECTION TO POOL
