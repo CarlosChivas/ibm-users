@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import axios from 'axios';
+import { environment } from '../../environments/environment';
 
 @Component({
   selector: 'app-login',
@@ -21,7 +22,8 @@ export class LoginComponent implements OnInit {
   ) { }
 
   validateLogin(): boolean | undefined {
-    var api = "http://localhost:4000/login";
+
+    var api = environment.ibm_users+"/login";
     var rout = this.router;
     var form = this.LoginForm;
     console.log(form.value);

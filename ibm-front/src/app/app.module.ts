@@ -1,9 +1,11 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
+import { ChartsModule } from "@carbon/charts-angular";
 import { Ng2SearchPipeModule } from 'ng2-search-filter';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
+
 import axios from 'axios';
 
 
@@ -23,7 +25,8 @@ import {
   TagModule,
   ModalModule,
   DropdownModule,
-  NotificationModule
+  NotificationModule,
+  
 } from 'carbon-components-angular';
 
 import { LoginComponent } from './login/login.component';
@@ -38,6 +41,8 @@ import { RoleManagementComponent } from './role-management/role-management.compo
 import { Ng2SearchPipe } from 'ng2-search-filter';
 import { PeripheralRegistrationComponent } from './peripheral-registration/peripheral-registration.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
+import { AngularCsv } from 'angular7-csv/dist/Angular-csv';
+
 
 @NgModule({
   declarations: [
@@ -52,7 +57,8 @@ import { DashboardComponent } from './dashboard/dashboard.component';
     RoleManagementComponent,
     PeripheralRegistrationComponent,
     LoanConfirmationComponent,
-    DashboardComponent
+    DashboardComponent,
+
   ],
   imports: [
     BrowserModule,
@@ -82,6 +88,8 @@ import { DashboardComponent } from './dashboard/dashboard.component';
     SearchModule,
     NotificationModule,
     ModalModule,
+    ChartsModule,
+
   ],
   providers: [MyLoansComponent, ProfileComponent],
   bootstrap: [AppComponent]
