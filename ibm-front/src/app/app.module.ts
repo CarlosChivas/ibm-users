@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
+import { ChartsModule } from "@carbon/charts-angular";
 import { Ng2SearchPipeModule } from 'ng2-search-filter';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -52,7 +53,7 @@ import { DashboardComponent } from './dashboard/dashboard.component';
     RoleManagementComponent,
     PeripheralRegistrationComponent,
     LoanConfirmationComponent,
-    DashboardComponent
+    DashboardComponent,
   ],
   imports: [
     BrowserModule,
@@ -82,6 +83,7 @@ import { DashboardComponent } from './dashboard/dashboard.component';
     SearchModule,
     NotificationModule,
     ModalModule,
+    ChartsModule
   ],
   providers: [MyLoansComponent, ProfileComponent],
   bootstrap: [AppComponent]
