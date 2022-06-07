@@ -138,6 +138,6 @@
   </section>
   <ibm-modal-footer>
     <button class="bx--btn bx--btn--secondary" (click)="cancel()" *ngIf="specific.SECURITY_AUTH == false">Cancel Registration</button>
-    <button class="bx--btn bx--btn--primary" modal-primary-focus (click)="returnDevice()">Update Registration</button>
+    <button class="bx--btn bx--btn--primary" modal-primary-focus (click)="returnDevice()" *ngIf="specific.LOAN_STATUS == 'Borrowed'">Update Registration</button>
   </ibm-modal-footer>
 </ibm-modal>
