@@ -184,7 +184,8 @@ router.post("/AdminFocal/setToConcluded", rolesCtrl.validateToken,
                                           peripheralsCtrl.setToAvailable);
 
 /*
-Cancel a loan by deleting it from the database
+Cancel a loan by changing it status to "Cancelled"
+Normally loans with this status are hiden from front-end users
 It can only be canceled while it is still "In process"
 It changes the status of the peripheral to "Available"
 Body:
@@ -194,7 +195,6 @@ Body:
 */
 router.post("/AdminFocal/cancelLoan", rolesCtrl.validateToken,
                                       rolesCtrl.isFocalORAdmin,
-                                      peripheralsCtrl.validateDeletion,
                                       peripheralsCtrl.cancelLoan,
                                       peripheralsCtrl.setToAvailable);
 
