@@ -842,7 +842,7 @@ peripheralsCtrl.setToConcluded = async (req, res, next) => {
         if (err) {
             res.status(403).send(err)
         } else{
-            db.query(`UPDATE loan SET loan_status = (SELECT id FROM loan_status WHERE name = 'Concluded') WHERE id = ${req.body.loan_id} AND condition_accepted = 1 AND security_auth = 1 AND loan_status = (SELECT id FROM loan_status WHERE name = 'Borrowed');`, function(err, data){
+            db.query(`UPDATE loan SET loan_status = (SELECT id FROM loan_status WHERE name = 'Concluded'), concluded = CURRENT_DATE WHERE id = ${req.body.loan_id} AND condition_accepted = 1 AND security_auth = 1 AND loan_status = (SELECT id FROM loan_status WHERE name = 'Borrowed');`, function(err, data){
                 if(err){
                     res.status(400).send(err);
                 }
