@@ -1,6 +1,8 @@
 const peripheralsCtrl = {};
 const pool = require("../database");
 const excel = require("exceljs");
+const QRCode = require('qrcode');
+const nodemailer = require('nodemailer');
 
 peripheralsCtrl.getHome = async (req, res) => {
     res.status(200).send("Working!");
@@ -265,7 +267,7 @@ peripheralsCtrl.createLoan = async (req, res, next) => {
 
 }
 
-peripheralsCtrl.changePeripheralStatus = async (req, res) => {
+peripheralsCtrl.changePeripheralStatus = async (req, res, next) => {
     
     pool.open(process.env.DATABASE_STRING, function (err, db) {
         
@@ -276,7 +278,7 @@ peripheralsCtrl.changePeripheralStatus = async (req, res) => {
                 if(err){
                     res.status(400).send(err);
                 } else{
-                    res.status(201).send("Registro de prestamo creado correctamente");
+                    next();
                 }
             })
             db.close(function (error) { // RETURN CONNECTION TO POOL
@@ -286,6 +288,53 @@ peripheralsCtrl.changePeripheralStatus = async (req, res) => {
             });
         }
     })
+} 
+
+peripheralsCtrl.sendTermsConditions = async (req, res) => {
+    
+    pool.open(process.env.DATABASE_STRING, function (err, db) {
+        
+        if (err) {
+            res.status(403).send(err)
+        } else{
+            db.query("SELECT id FROM loan WHERE peripheral_serial = ?",[req.body.peripheral_serial], function(err, data){
+                if(err){
+                    res.status(400).send(err);
+                } else{
+                    let loan_id = data[0].ID;
+                    const transporter = nodemailer.createTransport({
+                        service: 'gmail',
+                        auth: {
+                          user: 'dtest8549@gmail.com',
+                          pass: 'izbiqajsfhniawej'
+                        }
+                      });
+                
+                      const mailOptions = {
+                        from: '"Peripheral Loan Bot" <dtest8549@gmail.com>',
+                        to: req.body.employee_email,
+                        subject: 'Terms and Services for your New Loan',
+                        html: `<b>Click the button to accept terms and services</b></br>   
+                              <a href="http://159.122.181.210:31748/accept/${loan_id}"><button>Click Me!</button></a>`
+                      };
+                      
+                      transporter.sendMail(mailOptions, function(error, info){
+                        if (error) {
+                          res.status(400).send(err);
+                        } else {
+                          res.status(201).send('Email sent: ' + info.response);
+                        }
+                      });
+                }
+            })
+            db.close(function (error) { // RETURN CONNECTION TO POOL
+                if (error) {
+                    res.send("Error mientras se cerraba la conexion");
+                }
+            });
+        }
+    })
+
 } 
 
 peripheralsCtrl.getLoans = async (req, res) => {
@@ -758,17 +807,26 @@ peripheralsCtrl.downloadReport = async (req, res) => {
 
 }
 
-peripheralsCtrl.acceptTermsConditions = async (req, res) => {
+peripheralsCtrl.acceptTermsConditions = async (req, res, next) => {
 
     pool.open(process.env.DATABASE_STRING, function (err, db) {
         if (err) {
             res.status(403).send(err)
         } else{
-            db.query(`UPDATE loan SET condition_accepted = 1 WHERE id = ${req.body.loan_id};`, function(err, data){
+            db.query(`UPDATE loan SET condition_accepted = 1 WHERE id = ${req.body.loan_id} AND employee = (SELECT id from users where email = '${req.user.EMAIL}');`, function(err, data){
+                if(err){
+                    res.status(400).send(err);
+                }
+            })
+            db.query(`SELECT peripheral_serial FROM loan WHERE id = ${req.body.loan_id} AND condition_accepted = 1 AND employee = (SELECT id from users where email = '${req.user.EMAIL}');`, function(err, data){
                 if(err){
                     res.status(400).send(err);
                 } else{
-                    res.status(201).send("Terminos y condiciones aceptados");
+                    if(JSON.stringify(data) === '[]'){
+                        res.status(401).send("Este usuario no puede aceptar los terminos y condiciones de este prestamo");
+                  } else{
+                        next();
+                  }
                 }
             })
             db.close(function (error) { // RETURN CONNECTION TO POOL
@@ -780,6 +838,52 @@ peripheralsCtrl.acceptTermsConditions = async (req, res) => {
     })
 
 }
+
+peripheralsCtrl.generateQRCode = async (req, res, next) => {
+        
+    try {
+    req.qrCode = (await QRCode.toDataURL(`http://159.122.181.210:31748/Security/${req.body.loan_id}`)).slice(22);
+    next();
+    } catch(err){
+          res.status(400).send(err);
+    }
+
+}
+
+peripheralsCtrl.sendSecurityQRCode = async (req, res) => {
+    
+    const transporter = nodemailer.createTransport({
+        service: 'gmail',
+        auth: {
+            user: 'dtest8549@gmail.com',
+            pass: 'izbiqajsfhniawej'
+        }
+        });
+
+        const mailOptions = {
+        from: '"Peripheral Loan Bot"',
+        to: req.user.EMAIL,
+        subject: 'Loan QR Code',
+        text: 'Show QR code to security guard to pick up your peripheral.',
+        attachments: 
+        [
+          {
+            filename: 'qrcode.png',
+            content: req.qrCode,
+            encoding: "base64"
+          }
+        ]
+        };
+        
+        transporter.sendMail(mailOptions, function(error, info){
+        if (error) {
+            res.status(400).send(err);
+        } else {
+            res.status(201).send('Email sent: ' + info.response);
+        }
+        });
+
+} 
 
 peripheralsCtrl.confirmSecurityAuth = async (req, res, next) => {
 

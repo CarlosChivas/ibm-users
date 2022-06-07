@@ -56,7 +56,8 @@ router.post("/AdminFocal/createLoan", rolesCtrl.validateToken,
                                       peripheralsCtrl.findLoanStatus,
                                       peripheralsCtrl.checkPeripheralStatus,
                                       peripheralsCtrl.createLoan,
-                                      peripheralsCtrl.changePeripheralStatus);
+                                      peripheralsCtrl.changePeripheralStatus,
+                                      peripheralsCtrl.sendTermsConditions);
 
 router.get("/AdminFocal/getLoans", rolesCtrl.validateToken,
                                    rolesCtrl.isFocalORAdmin,
@@ -141,6 +142,7 @@ router.get("/AdminFocal/downloadReport", rolesCtrl.validateToken,
 
 /*
 Change terms and conditions value to true of a specific loan
+Only the employee can accept the terms and conditions
 Body:
 {
     "loan_id": 5
@@ -148,7 +150,9 @@ Body:
 */
 router.post("/acceptTermsConditions", rolesCtrl.validateToken,
                                       rolesCtrl.notSecurity,
-                                      peripheralsCtrl.acceptTermsConditions);
+                                      peripheralsCtrl.acceptTermsConditions,
+                                      peripheralsCtrl.generateQRCode,
+                                      peripheralsCtrl.sendSecurityQRCode);
 
 /*
 Change security authentication value to true of a specific loan
