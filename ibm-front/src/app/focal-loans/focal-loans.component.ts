@@ -68,9 +68,29 @@ export class FocalLoansComponent implements OnInit {
   }
   cancel() {
     this.isOpen = false;
+    var api = environment.ibm_peripherals + "/AdminFocal/cancelLoan"
+    var esto = this;
+    var body = {
+      loan_id: esto.specific.LOAN_ID
+    }
+    axios.post(api, body, {withCredentials: true}).then(res => {
+
+      console.log(res);
+
+    }).catch(err => console.error(err));
   }
   returnDevice() {
     this.isOpen = false;
+    var api = environment.ibm_peripherals + "/AdminFocal/setToConcluded"
+    var esto = this;
+    var body = {
+      loan_id: esto.specific.LOAN_ID
+    }
+    axios.post(api, body, {withCredentials: true}).then(res => {
+
+      console.log(res);
+      
+    }).catch(err => console.error(err));
   }
 
 

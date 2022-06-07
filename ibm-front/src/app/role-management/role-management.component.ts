@@ -62,8 +62,19 @@ export class RoleManagementComponent implements OnInit {
 
   updateRole(changes: Object, index: number) {
     // @ts-ignore
-    this.employees[index].ROLE_NAME = changes.item.content;
+    var newRole = changes.item.content;
+    this.employees[index].ROLE_NAME = newRole;
+    var empID = this.employees[index].ID;
+
+    var api = environment.ibm_users + "/Admin/updateRole/?";
+    var querry = `role=${newRole}&id=${empID}`;
+    api += querry;
     // TODO: Actualizar con la API
+    axios.get(api, {withCredentials: true}).then(res => {
+
+      console.log(res);
+      
+    }).catch(err => console.error(err));
   }
 
   searchNow() {
@@ -139,7 +150,7 @@ export class RoleManagementComponent implements OnInit {
       if (response.data.ROLE_NAME != "Administrator") rout.navigate(['./']);
       api = environment.ibm_users + "/Admin/getAllUsers";
       axios.get(api, { withCredentials: true }).then(function (response) {
-        
+
         esto.employees = response.data;
 
       });

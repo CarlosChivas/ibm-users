@@ -156,7 +156,33 @@ export class LoanFormComponent implements OnInit {
   }
 
   applyFilters() {
-    
+    var api = environment.ibm_peripherals + "/AdminFocal/searchAvailablePeripheral/";
+
+    var filterNow = [];
+    if (this.typeFilter != "")
+      filterNow.push("type=" + this.typeFilter);
+    if (this.brandFilter != "")
+      filterNow.push("brand=" + this.brandFilter);
+
+    var querry = "";
+    filterNow.forEach(target => {
+      if (querry == "") querry = "?"
+      else querry += "&";
+      querry += target;
+    });
+
+    api += querry;
+
+    console.log(querry);
+    console.log(api);
+
+    var esto = this;
+    axios.get(api, { withCredentials: true }).then(res => {
+
+      console.log(res.data);
+      esto.peripheralList = res.data;
+
+    }).catch(err => console.error(err));
   }
 
   ngOnInit() {
@@ -169,7 +195,7 @@ export class LoanFormComponent implements OnInit {
       var me = response.data;
       esto.user = me.EMAIL;
 
-      var api2 = environment.ibm_peripherals + "/AdminFocal/getAvailablePeripherals";
+      var api2 = environment.ibm_peripherals + "/AdminFocal/searchAvailablePeripheral/";
       axios.get(api2, { withCredentials: true }).then(res => {
         esto.peripheralList = res.data;
       }).catch(err => console.error(err));
