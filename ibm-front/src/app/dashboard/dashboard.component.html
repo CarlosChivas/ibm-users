@@ -1,0 +1,72 @@
+<app-menu-bar></app-menu-bar>
+<style>
+</style>
+
+<section class="overview-page__banner" aria-label="overview page banner">
+    <div class="container">
+        <div ibmCol> <a ibmButton="primary" (click) ="downloadCSV()" style="float: right;">Download Data</a></div>
+
+        <div class="LoanInfo">
+            <h2 class="page-title"> {{ title }} </h2>
+
+            
+            <ibm-tabs>
+
+                    <div class="CardParent" >
+                        
+                        <div *ngFor="let device of Loans" class="DeviceCard">
+                            
+                            <ng-container  *ngIf="device.num === 1; else Pending">
+                                <div class="DeviceCard--Info" >
+                                    <p style="text-align: left; padding-left:10px;font-size: 24px; font-weight: bold;  letter-spacing:0.5px;" >{{device.description}}</p>
+                                    <hr>
+                                    <p style="text-align: left; padding-left:10px;font-size: 20px; font-weight: bold;">{{conta1}}</p>
+                                    <p style="text-align: left; padding-left:10px; padding-top:6px">Loans</p>
+                                </div>
+                            </ng-container>
+                            <ng-template #Pending>
+                                <ng-container *ngIf="device.num === 2;else Request">
+                                    <div class="DeviceCard--Info2" >
+                                        <p style="text-align: left; padding-left:10px;font-size: 24px; font-weight: bold;  letter-spacing:0.5px;" >{{device.description}}</p>
+                                        <hr>
+                                        <p style="text-align: left; padding-left:10px;font-size: 20px; font-weight: bold;">{{conta2}}</p>
+                                        <p style="text-align: left; padding-left:10px; padding-top:6px">Loans</p>
+                                    </div>
+                                </ng-container>
+                            </ng-template>
+                            <ng-template #Request>
+                                <ng-container *ngIf="device.num === 3;else NotInTime">
+                                    <div class="DeviceCard--Info3">
+                                        <p style="text-align: left; padding-left:10px;font-size: 24px; font-weight: bold;  letter-spacing:0.5px;" >{{device.description}}</p>
+                                        <hr>
+                                        <p style="text-align: left; padding-left:10px;font-size: 20px; font-weight: bold;">{{conta3}}</p>
+                                        <p style="text-align: left; padding-left:10px; padding-top:6px">Loans</p>
+                                    </div>
+                                </ng-container>
+                            </ng-template>
+                            <ng-template #NotInTime>
+                                <div class="DeviceCard--Info4" >
+                                    <p style="text-align: left; padding-left:10px;font-size: 24px; font-weight: bold;  letter-spacing:0.5px;" >{{device.description}}</p>
+                                    <hr>
+                                    <p style="text-align: left; padding-left:10px;font-size: 20px; font-weight: bold;">{{conta4}}</p>
+                                    <p style="text-align: left; padding-left:10px; padding-top:6px">Loans</p>
+                                </div>
+                            </ng-template> 
+                        </div>                
+                    </div>
+            </ibm-tabs>
+            <div></div>
+        </div>
+        <div class="LoanChart">
+            <div class="chart">
+                <ibm-simple-bar-chart [data]="data1" [options]="options1"></ibm-simple-bar-chart>
+            </div>
+            <div class="chart">
+                <ibm-donut-chart [data]="data2" [options]="options2"></ibm-donut-chart>
+            </div>
+            <div class="chart">
+                <ibm-pie-chart [data]="data3" [options]="options3"></ibm-pie-chart>
+            </div>
+        </div>
+    </div>
+</section>
