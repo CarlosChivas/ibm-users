@@ -18,7 +18,7 @@ router.get("/AdminFocal/getUser/id=:id", rolesCtrl.validateToken, rolesCtrl.isFo
 
 router.get("/Admin/searchUsers/", rolesCtrl.validateToken, rolesCtrl.isAdmin,usersCtrl.findRole,usersCtrl.findUsersAdmin);
 
-router.get("/Admin/updateRole/", /*rolesCtrl.validateToken, rolesCtrl.isAdmin,*/ usersCtrl.findRole, usersCtrl.updateRole);
+router.get("/Admin/updateRole/", rolesCtrl.validateToken, rolesCtrl.isAdmin, usersCtrl.findRole, usersCtrl.updateRole);
 router.post("/login", usersCtrl.matchEmail,usersCtrl.matchPassword);
 router.post("/register", usersCtrl.register);
 module.exports = router; 
