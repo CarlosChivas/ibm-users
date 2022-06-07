@@ -11,8 +11,8 @@ import axios from 'axios';
 
 // carbon-components-angular default imports
 import {
-  UIShellModule,
   IconModule,
+  UIShellModule,
   IconService,
   ButtonModule,
   InputModule,

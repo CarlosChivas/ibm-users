@@ -23,7 +23,7 @@ interface Emp {
 export class RoleManagementComponent implements OnInit {
   searchText = "";
   filter = "";
-  userType: string = "";
+  user: any;
 
   columns = ["Emploee ID",
     "First Name",
@@ -146,7 +146,7 @@ export class RoleManagementComponent implements OnInit {
     var rout = this.router;
     var esto = this;
     axios.get(api, { withCredentials: true }).then((response) => {
-      esto.userType = response.data.ROLE_NAME;
+      esto.user = response.data;
       if (response.data.ROLE_NAME != "Administrator") rout.navigate(['./']);
       api = environment.ibm_users + "/Admin/getAllUsers";
       axios.get(api, { withCredentials: true }).then(function (response) {

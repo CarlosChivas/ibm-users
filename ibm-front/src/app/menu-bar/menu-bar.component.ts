@@ -23,7 +23,7 @@ export class MenuBarComponent implements OnInit {
     }],
   };
 
-  @Input() userType: string = "";
+  @Input() user: any;
   
   constructor(private router: Router, private loansNum: MyLoansComponent, public profileComponent: ProfileComponent) {
     this.numLoan = this.loansNum.getNumLoans();

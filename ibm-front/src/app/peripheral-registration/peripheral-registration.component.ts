@@ -20,7 +20,7 @@ export class PeripheralRegistrationComponent implements OnInit {
   diviceTypes: any[] = [];
   diviceBrands: any[] = [];
   me: any = {};
-  userType: string = "";
+  user: string = "";
 
   deviceForm = this.formBuilder.group({
     deviceType: '',
@@ -73,7 +73,7 @@ export class PeripheralRegistrationComponent implements OnInit {
     var rout = this.router;
     var esto = this;
     axios.get(api, { withCredentials: true }).then(function (response) {
-      esto.userType = response.data.ROLE_NAME;
+      esto.user = response.data;
       esto.me = response.data;
       var api3 = environment.ibm_peripherals+"/AdminFocal/getPeripheralFields";
       axios.get(api3, { withCredentials: true }).then(res => {

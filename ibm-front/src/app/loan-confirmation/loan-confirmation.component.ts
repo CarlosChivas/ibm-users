@@ -5,6 +5,7 @@ import { Component, OnInit,
 	ViewEncapsulation, } from '@angular/core';
 import { Router } from '@angular/router';
 import axios from 'axios';
+import { environment } from '../../environments/environment';
 
 @Component({
   selector: 'app-loan-confirmation',
@@ -15,6 +16,7 @@ export class LoanConfirmationComponent implements OnInit {
 
   showClose: boolean = true
   lowContrast: boolean = false
+  user:any;
 
 
   notificationConfig = {
@@ -40,12 +42,18 @@ export class LoanConfirmationComponent implements OnInit {
   constructor(private router: Router) { }
 
   ngOnInit(): void {
-    var api = "/isLogged";
-    var rout = this.router;
-    axios.get(api, {withCredentials:true}).then(function (response) {
-      if (response.status != 200)
+    var api = environment.ibm_users+"/isLogged";
+      var rout = this.router;
+      var esto = this;
+      axios.get(api, { withCredentials: true }).then(response => {
+
+        esto.user = response.data;
+        console.log(response.data);
+  
+      }).catch(err => {
+        console.error(err);
         rout.navigate(['./']);
-    })
+      });
   }
 
 }

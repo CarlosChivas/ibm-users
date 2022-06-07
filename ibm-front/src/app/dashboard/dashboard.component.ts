@@ -1,8 +1,9 @@
-import { NumberFormatStyle } from '@angular/common';
+//import { NumberFormatStyle } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { AngularCsv } from 'angular7-csv/dist/Angular-csv'
+//import { AngularCsv } from 'angular7-csv/dist/Angular-csv'
 import { Router } from '@angular/router';
 import axios from 'axios';
+import { environment } from '../../environments/environment';
 
 @Component({
   selector: 'app-dashboard',
@@ -13,6 +14,7 @@ export class DashboardComponent implements OnInit {
   open: boolean = false
   showCloseButton: boolean = true;
   title = 'Dashboard'
+  user:any;
 
 
   Loans = [{
@@ -317,20 +319,24 @@ export class DashboardComponent implements OnInit {
   
   downloadCSV(){
     //this.dtHolidays : JSONDATA , HolidayList : CSV file Name, this.csvOptions : file options
-    new  AngularCsv(this.Devices, "Loans Table", this.csvOptions);
+    //new  AngularCsv(this.Devices, "Loans Table", this.csvOptions);
   }
 
   constructor(private router: Router) { }
 
   ngOnInit(): void {
-    console.log("ei");
-    var api = "/isLogged";
-    var rout = this.router;
-    axios.get(api, {withCredentials:true}).then(function (response) {
-      console.log("wacha -> ",response);
-      if (response.status == 401)
+      var api = environment.ibm_users+"/isLogged";
+      var rout = this.router;
+      var esto = this;
+      axios.get(api, { withCredentials: true }).then(response => {
+
+        esto.user = response.data;
+        console.log(response.data);
+  
+      }).catch(err => {
+        console.error(err);
         rout.navigate(['./']);
-    })
+      });
 
 
       for (let i = 0;i < this.Devices.length; i++){
