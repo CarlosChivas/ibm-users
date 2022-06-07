@@ -71,6 +71,14 @@ rolesCtrl.isFocalORAdmin = async(req,res,next) => {
     }
 }
 
+rolesCtrl.isSecurity = async(req,res,next) => {
+    if(req.user.ROLE_NAME === "Security"){
+        next();
+    } else{
+        res.status(401).send("You don't have access");
+    }
+}
+
 rolesCtrl.notSecurity = async(req,res,next) => {
     if(req.user.ROLE_NAME !== "Security"){
         next();
@@ -78,7 +86,6 @@ rolesCtrl.notSecurity = async(req,res,next) => {
         res.status(401).send("You don't have access");
     }
 }
-
 
 module.exports = rolesCtrl;
 

@@ -118,7 +118,7 @@ peripheralsCtrl.getAvailablePeripherals = async (req, res) => {
     let focalRole = '';
     
     if(req.user.ROLE_NAME === 'Focal'){
-        focalRole = 'AND peripheral.focal = ' + req.user.ID;
+        focalRole = `peripheral.department = (SELECT id from department where name = '${req.user.DEPARTMENT_NAME}')`;
     }
     
     pool.open(process.env.DATABASE_STRING, function (err, db) {
@@ -140,7 +140,7 @@ peripheralsCtrl.getAvailablePeripherals = async (req, res) => {
             INNER JOIN users ON peripheral.focal = users.id
             INNER JOIN peripheral_status ON peripheral.peripheral_status = peripheral_status.id
             INNER JOIN department ON peripheral.department = department.id
-            WHERE peripheral_status.name = 'Available' ${focalRole};`, function(err, data){
+            WHERE peripheral_status.name = 'Available' AND ${focalRole};`, function(err, data){
                 if(err){
                     res.status(400).send(err);
                 } else{
@@ -293,7 +293,7 @@ peripheralsCtrl.getLoans = async (req, res) => {
     let focalRole = '';
     
     if(req.user.ROLE_NAME === 'Focal'){
-        focalRole = 'WHERE loan.focal = ' + req.user.ID;
+        focalRole = `WHERE peripheral.department = (SELECT id from department where name = '${req.user.DEPARTMENT_NAME}')`;
     }
     
     pool.open(process.env.DATABASE_STRING, function (err, db) {
@@ -495,9 +495,16 @@ function prepareForInQuery(s) {
 
 peripheralsCtrl.searchLoan = async (req, res) => {
 
-    if(req.user.ROLE_NAME === 'Administrator'){
-        req.user.ID = 'true';
+    // if(req.user.ROLE_NAME === 'Administrator'){
+    //     req.user.ID = 'true';
+    //     WHERE loan.focal = ${req.user.ID}
+    // }
+    
+    let focalRole = 'true';
+    if(req.user.ROLE_NAME !== 'Administrator'){
+        focalRole = `(SELECT id from department where name = '${req.user.DEPARTMENT_NAME}')`;
     }
+
     if(!req.query.search){
         req.query.search = "";
     }
@@ -541,7 +548,7 @@ peripheralsCtrl.searchLoan = async (req, res) => {
                     INNER JOIN peripheral ON loan.peripheral_serial = peripheral.serial
                     INNER JOIN ptype ON peripheral.ptype = ptype.id
                     INNER JOIN brand ON peripheral.brand = brand.id
-                    WHERE loan.focal = ${req.user.ID}
+                    WHERE peripheral.department = ${focalRole}
                     AND
                     (LOWER(users.first_name) LIKE LOWER('%${req.query.search}%')
                     OR LOWER(users.last_name) LIKE LOWER('%${req.query.search}%')
@@ -565,10 +572,66 @@ peripheralsCtrl.searchLoan = async (req, res) => {
 
 }
 
+peripheralsCtrl.searchAvailablePeripheral = async (req, res) => {
+    
+    let focalRole = '';
+    if(req.user.ROLE_NAME !== 'Administrator'){
+        focalRole = `AND peripheral.department = (SELECT id from department where name = '${req.user.DEPARTMENT_NAME}')`;
+    }
+    
+    let typeQuery = '';
+    if(req.query.type){
+        typeQuery = `AND LOWER(ptype.name) IN (${prepareForInQuery(req.query.type)})`;
+    }
+
+    let brandQuery = '';
+    if(req.query.brand){
+        brandQuery = `AND LOWER(brand.name) IN (${prepareForInQuery(req.query.brand)})`;
+    }
+    
+    pool.open(process.env.DATABASE_STRING, function (err, db) {
+        
+        if (err) {
+            res.status(403).send(err)
+        } else{
+            db.query(`SELECT peripheral.serial, 
+                                ptype.name as ptype, 
+                                peripheral.description, 
+                                brand.name as brand, 
+                                peripheral.model, 
+                                peripheral_status.name as peripheral_status,
+                                users.first_name || ' ' || users.last_name as user_name,
+                                department.name as department_name
+                    FROM peripheral
+                    INNER JOIN ptype ON peripheral.ptype = ptype.id
+                    INNER JOIN brand ON peripheral.brand = brand.id
+                    INNER JOIN users ON peripheral.focal = users.id
+                    INNER JOIN peripheral_status ON peripheral.peripheral_status = peripheral_status.id
+                    INNER JOIN department ON peripheral.department = department.id
+                    WHERE peripheral_status.name = 'Available'
+                    ${focalRole} ${typeQuery} ${brandQuery}
+                    ORDER BY peripheral.serial;`, function(err, data){
+                if(err){
+                    res.status(400).send(err);
+                } else{
+                    res.status(200).send(data);
+                }
+            })
+            db.close(function (error) { // RETURN CONNECTION TO POOL
+                if (error) {
+                    res.send("Error mientras se cerraba la conexion");
+                }
+            });
+        }
+    })
+
+}
+
 peripheralsCtrl.downloadReport = async (req, res) => {
 
-    if(req.user.ROLE_NAME === 'Administrator'){
-        req.user.ID = 'true';
+    let focalRole = 'true';
+    if(req.user.ROLE_NAME !== 'Administrator'){
+        focalRole = `(SELECT id from department where name = '${req.user.DEPARTMENT_NAME}')`;
     }
 
     pool.open(process.env.DATABASE_STRING, function (err, db) {
@@ -592,7 +655,7 @@ peripheralsCtrl.downloadReport = async (req, res) => {
                     INNER JOIN brand ON peripheral.brand = brand.id
                     INNER JOIN peripheral_status ON peripheral.peripheral_status = peripheral_status.id
                     INNER JOIN department ON peripheral.department = department.id
-                    WHERE peripheral.focal = ${req.user.ID}
+                    WHERE peripheral.department = ${focalRole}
                     ORDER BY peripheral_status.id, peripheral.serial`, function(err, data){
                 if(err){
                     res.status(400).send(err);
@@ -627,7 +690,7 @@ peripheralsCtrl.downloadReport = async (req, res) => {
                     INNER JOIN brand ON peripheral.brand = brand.id
                     INNER JOIN department ON peripheral.department = department.id
                     INNER JOIN users as user_focal ON peripheral.focal = user_focal.id
-                    WHERE loan.focal = ${req.user.ID}
+                    WHERE peripheral.department = ${focalRole}
                     ORDER BY loan_status.id DESC, loan.creation`, function(err, data){
                 if(err){
                     res.status(400).send(err);
@@ -683,6 +746,191 @@ peripheralsCtrl.downloadReport = async (req, res) => {
                       return workbook.xlsx.write(res).then(function () {
                         res.status(200).end();
                       });
+                }
+            })
+            db.close(function (error) { // RETURN CONNECTION TO POOL
+                if (error) {
+                    res.send("Error mientras se cerraba la conexion");
+                }
+            });
+        }
+    })
+
+}
+
+peripheralsCtrl.acceptTermsConditions = async (req, res) => {
+
+    pool.open(process.env.DATABASE_STRING, function (err, db) {
+        if (err) {
+            res.status(403).send(err)
+        } else{
+            db.query(`UPDATE loan SET condition_accepted = 1 WHERE id = ${req.body.loan_id};`, function(err, data){
+                if(err){
+                    res.status(400).send(err);
+                } else{
+                    res.status(201).send("Terminos y condiciones aceptados");
+                }
+            })
+            db.close(function (error) { // RETURN CONNECTION TO POOL
+                if (error) {
+                    res.send("Error mientras se cerraba la conexion");
+                }
+            });
+        }
+    })
+
+}
+
+peripheralsCtrl.confirmSecurityAuth = async (req, res, next) => {
+
+    pool.open(process.env.DATABASE_STRING, function (err, db) {
+        if (err) {
+            res.status(403).send(err)
+        } else{
+            db.query(`UPDATE loan SET security_auth = 1 WHERE id = ${req.body.loan_id} AND condition_accepted = 1;`, function(err, data){
+                if(err){
+                    res.status(400).send(err);
+                }
+            })
+            db.query(`SELECT peripheral_serial FROM loan WHERE id = ${req.body.loan_id} AND condition_accepted = 1 AND security_auth = 1;`, function(err, data){
+                if(err){
+                    res.status(400).send(err);
+                } else{
+                    if(JSON.stringify(data) === '[]'){
+                        res.status(401).send("No se puede hacer la autenticacion de seguridad en este momento");
+                  } else{
+                        next();
+                  }
+                }
+            })
+            db.close(function (error) { // RETURN CONNECTION TO POOL
+                if (error) {
+                    res.send("Error mientras se cerraba la conexion");
+                }
+            });
+        }
+    })
+
+}
+
+peripheralsCtrl.setToBorrowed = async (req, res) => {
+
+    pool.open(process.env.DATABASE_STRING, function (err, db) {
+        if (err) {
+            res.status(403).send(err)
+        } else{
+            db.query(`UPDATE loan SET loan_status = (SELECT id FROM loan_status WHERE name = 'Borrowed') WHERE id = ${req.body.loan_id};`, function(err, data){
+                if(err){
+                    res.status(400).send(err);
+                } else{
+                    res.status(201).send("Autenticacion de seguridad hecho, periferico prestado");
+                }
+            })
+            db.close(function (error) { // RETURN CONNECTION TO POOL
+                if (error) {
+                    res.send("Error mientras se cerraba la conexion");
+                }
+            });
+        }
+    })
+
+}
+
+peripheralsCtrl.setToConcluded = async (req, res, next) => {
+
+    pool.open(process.env.DATABASE_STRING, function (err, db) {
+        if (err) {
+            res.status(403).send(err)
+        } else{
+            db.query(`UPDATE loan SET loan_status = (SELECT id FROM loan_status WHERE name = 'Concluded') WHERE id = ${req.body.loan_id} AND condition_accepted = 1 AND security_auth = 1 AND loan_status = (SELECT id FROM loan_status WHERE name = 'Borrowed');`, function(err, data){
+                if(err){
+                    res.status(400).send(err);
+                }
+            })
+            db.query(`SELECT peripheral_serial as serial FROM loan WHERE id = ${req.body.loan_id}  AND condition_accepted = 1 AND security_auth = 1 AND loan_status = (SELECT id FROM loan_status WHERE name = 'Concluded');`, function(err, data){
+                if(err){
+                    res.status(400).send(err);
+                } else{
+                    if(JSON.stringify(data) === '[]'){
+                        res.status(401).send("Este periferico sigue en proceso");
+                  } else{
+                        req.peripheral_serial = data[0];
+                        next();
+                  }
+                }
+            })
+            db.close(function (error) { // RETURN CONNECTION TO POOL
+                if (error) {
+                    res.send("Error mientras se cerraba la conexion");
+                }
+            });
+        }
+    })
+
+}
+
+peripheralsCtrl.validateDeletion = async (req, res, next) => {
+
+    pool.open(process.env.DATABASE_STRING, function (err, db) {
+        if (err) {
+            res.status(403).send(err)
+        } else{
+            db.query(`SELECT peripheral_serial as serial FROM loan WHERE id = ${req.body.loan_id} AND loan_status = (SELECT id FROM loan_status WHERE name = 'In process');`, function(err, data){
+                if(err){
+                    res.status(400).send(err);
+                } else{
+                    if(JSON.stringify(data) === '[]'){
+                        res.status(401).send("No se puede cancelar el prestamo de este dispositivo en este momento");
+                  } else{
+                        req.peripheral_serial = data[0];
+                        next();
+                  }
+                }
+            })
+            db.close(function (error) { // RETURN CONNECTION TO POOL
+                if (error) {
+                    res.send("Error mientras se cerraba la conexion");
+                }
+            });
+        }
+    })
+
+}
+
+peripheralsCtrl.cancelLoan = async (req, res, next) => {
+
+    pool.open(process.env.DATABASE_STRING, function (err, db) {
+        if (err) {
+            res.status(403).send(err)
+        } else{
+            db.query(`DELETE FROM loan WHERE id = ${req.body.loan_id} and loan_status = (SELECT id FROM loan_status WHERE name = 'In process');`, function(err, data){
+                if(err){
+                    res.status(400).send(err);
+                } else {
+                    next();
+                }
+            })
+            db.close(function (error) { // RETURN CONNECTION TO POOL
+                if (error) {
+                    res.send("Error mientras se cerraba la conexion");
+                }
+            });
+        }
+    })
+
+}
+
+peripheralsCtrl.setToAvailable = async (req, res) => {
+
+    pool.open(process.env.DATABASE_STRING, function (err, db) {
+        if (err) {
+            res.status(403).send(err)
+        } else{
+            db.query(`UPDATE peripheral SET peripheral_status = (SELECT id FROM peripheral_status WHERE name = 'Available') WHERE serial = ${req.peripheral_serial.SERIAL};`, function(err, data){
+                if(err){
+                    res.status(400).send(err);
+                } else{
+                    res.status(200).send("Estatus de periferico a disponible");
                 }
             })
             db.close(function (error) { // RETURN CONNECTION TO POOL

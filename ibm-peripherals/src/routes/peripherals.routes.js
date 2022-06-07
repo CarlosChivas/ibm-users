@@ -120,8 +120,78 @@ router.get("/AdminFocal/searchLoan/", rolesCtrl.validateToken,
                                       rolesCtrl.isFocalORAdmin,
                                       peripheralsCtrl.searchLoan);
 
+/*
+Filter only available peripherals
+
+URL example:
+localhost:4001/AdminFocal/searchAvailablePeripheral/?type=Keyboard&brand=Samsung%2CSteren
+
+URL variables
+type: only return peripherals of the specified type, can be many (Ex: type=Keyboard%2CMouse)
+
+brand: only return peripherals of the specified brand, can be many (Ex: brand=Samsung%2CLogitech)
+*/
+router.get("/AdminFocal/searchAvailablePeripheral/", rolesCtrl.validateToken,
+                                                     rolesCtrl.isFocalORAdmin,
+                                                     peripheralsCtrl.searchAvailablePeripheral);
+
 router.get("/AdminFocal/downloadReport", rolesCtrl.validateToken,
                                          rolesCtrl.isFocalORAdmin,
                                          peripheralsCtrl.downloadReport);
+
+/*
+Change terms and conditions value to true of a specific loan
+Body:
+{
+    "loan_id": 5
+}
+*/
+router.post("/acceptTermsConditions", rolesCtrl.validateToken,
+                                      rolesCtrl.notSecurity,
+                                      peripheralsCtrl.acceptTermsConditions);
+
+/*
+Change security authentication value to true of a specific loan
+It will also change the status of the loan to "Borrowed"
+It can only be perform by a security guard
+Terms and conditions must be accepted beforehand this can be used
+Body:
+{
+    "loan_id": 5
+}
+*/
+router.post("/Security/confirmSecurityAuth", rolesCtrl.validateToken,
+                                             rolesCtrl.isSecurity,
+                                             peripheralsCtrl.confirmSecurityAuth,
+                                             peripheralsCtrl.setToBorrowed);
+
+/*
+Set loan status to "Concluded" by the admin or focal once the device is returned
+The status of the loan should be "Borrowed" before it can conclude
+It changes the status of the peripheral to "Available"
+Body:
+{
+    "loan_id": 5
+}
+*/
+router.post("/AdminFocal/setToConcluded", rolesCtrl.validateToken,
+                                          rolesCtrl.isFocalORAdmin,
+                                          peripheralsCtrl.setToConcluded,
+                                          peripheralsCtrl.setToAvailable);
+
+/*
+Cancel a loan by deleting it from the database
+It can only be canceled while it is still "In process"
+It changes the status of the peripheral to "Available"
+Body:
+{
+    "loan_id": 5
+}
+*/
+router.post("/AdminFocal/cancelLoan", rolesCtrl.validateToken,
+                                      rolesCtrl.isFocalORAdmin,
+                                      peripheralsCtrl.validateDeletion,
+                                      peripheralsCtrl.cancelLoan,
+                                      peripheralsCtrl.setToAvailable);
 
 module.exports = router;
