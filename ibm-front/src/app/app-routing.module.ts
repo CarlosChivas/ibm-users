@@ -8,19 +8,24 @@ import { MyLoansComponent } from './my-loans/my-loans.component';
 import { PeripheralRegistrationComponent } from './peripheral-registration/peripheral-registration.component';
 import { ProfileComponent } from './profile/profile.component';
 import { RecoverComponent } from './recover/recover.component';
+import { LoanConfirmationComponent } from './loan-confirmation/loan-confirmation.component';
 import { RoleManagementComponent } from './role-management/role-management.component';
+import { DashboardComponent } from './dashboard/dashboard.component';
+import { SecurityAuthComponent } from './security-auth/security-auth.component';
 
 
 const routes: Routes = [
   { path: '', component: LoginComponent },
   { path: 'recover', component: RecoverComponent },
-  { path: 'newloan', component: LoanFormComponent },
-  { path: 'loan/:area', component: FocalLoansComponent },
   { path: 'home', component: MyLoansComponent },
-  { path: 'profile/', component: ProfileComponent },
-  { path: 'profile/:id', component: ProfileComponent },
+  { path: 'loan/:area', component: FocalLoansComponent },
+  { path: 'newloan', component: LoanFormComponent },
+  { path: 'dashboard', component: DashboardComponent },
   { path: 'manage', component: RoleManagementComponent },
-  { path: 'newperipheral', component: PeripheralRegistrationComponent }
+  { path: 'newperipheral', component: PeripheralRegistrationComponent },
+  { path: 'profile/:id', component: ProfileComponent },
+  { path: 'accept/:id', component: LoanConfirmationComponent },
+  { path: 'security/:id', component: SecurityAuthComponent },
 ];
 
 @NgModule({
