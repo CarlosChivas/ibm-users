@@ -290,4 +290,11 @@ router.get("/AdminFocal/getLoansByDepartment", rolesCtrl.validateToken,
                                                rolesCtrl.isFocalORAdmin,
                                                peripheralsCtrl.getLoansByDepartment);
 
+/*
+Res the total amount of PERIPHERALS (in the department in the case of focal users)
+*/
+router.get("/AdminFocal/getTotalPeripherals", rolesCtrl.validateToken,
+                                              rolesCtrl.isFocalORAdmin,
+                                              peripheralsCtrl.getTotalPeripherals);
+
 module.exports = router;

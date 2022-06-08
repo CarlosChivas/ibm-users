@@ -1202,4 +1202,35 @@ peripheralsCtrl.getLoansByDepartment = async (req, res) => {
 
 }
 
+peripheralsCtrl.getTotalPeripherals = async (req, res) => {
+
+    let focalRole = '';
+    if(req.user.ROLE_NAME !== 'Administrator'){
+        focalRole = `WHERE department = (SELECT id from department where name = '${req.user.DEPARTMENT_NAME}')`;
+    }
+    
+    let query = `SELECT count(*) as total FROM peripheral ${focalRole};`;
+
+    pool.open(process.env.DATABASE_STRING, function (err, db) {
+        
+        if (err) {
+            res.status(403).send(err)
+        } else{
+            db.query(`${query}`, function(err, data){
+                if(err){
+                    res.status(400).send(err);
+                } else{
+                    res.status(200).send(data);
+                }
+            })
+            db.close(function (error) { // RETURN CONNECTION TO POOL
+                if (error) {
+                    res.send("Error mientras se cerraba la conexion");
+                }
+            });
+        }
+    })
+
+}
+
 module.exports = peripheralsCtrl;
