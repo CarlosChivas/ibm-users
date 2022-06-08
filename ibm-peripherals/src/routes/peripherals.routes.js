@@ -44,6 +44,7 @@ router.get("/AdminFocal/getAvailablePeripherals", rolesCtrl.validateToken,
                                                   peripheralsCtrl.getAvailablePeripherals);
 
 /*
+After creating a loan, it sends an email to the employee to accept the terms and conditions
 Body:
 {
     "employee_email": "miguel@gmail.com",
@@ -143,6 +144,7 @@ router.get("/AdminFocal/downloadReport", rolesCtrl.validateToken,
 /*
 Change terms and conditions value to true of a specific loan
 Only the employee can accept the terms and conditions
+After accepting terms and conditions, it send an email with qrcode to the employee for the security auth
 Body:
 {
     "loan_id": 5
@@ -197,5 +199,94 @@ router.post("/AdminFocal/cancelLoan", rolesCtrl.validateToken,
                                       rolesCtrl.isFocalORAdmin,
                                       peripheralsCtrl.cancelLoan,
                                       peripheralsCtrl.setToAvailable);
+
+/*
+It returns the essential information of a specific peripheral asigned to a loan
+All loged-in users can access this function
+Body:
+{
+    "loan_id": 5
+}
+*/
+router.post("/getPeripheralByLoanId", rolesCtrl.validateToken,
+                                      peripheralsCtrl.getPeripheralByLoanId);
+
+/*
+Information for the top part of the dashboard
+Res:
+[
+    {
+        "LOAN_STATUS": "Borrowed",
+        "NUM_LOANS": 1
+    },
+    {
+        "LOAN_STATUS": "Concluded",
+        "NUM_LOANS": 3
+    },
+    {
+        "LOAN_STATUS": "In process",
+        "NUM_LOANS": 4
+    }
+]
+*/
+router.get("/AdminFocal/getLoansInfo", rolesCtrl.validateToken,
+                                       rolesCtrl.isFocalORAdmin,
+                                       peripheralsCtrl.getLoansInfo);
+
+/*
+Amount of peripherals per type
+Res:
+[
+    {
+        "PERIPHERAL_TYPE": "Headset",
+        "NUM_PERIPHERALS": 3
+    },
+    {
+        "PERIPHERAL_TYPE": "Keyboard",
+        "NUM_PERIPHERALS": 8
+    },
+    {...}
+]
+*/
+router.get("/AdminFocal/getPeripheralsByType", rolesCtrl.validateToken,
+                                               rolesCtrl.isFocalORAdmin,
+                                               peripheralsCtrl.getPeripheralsByType);
+
+/*
+Amount of peripheral availability
+Res:
+[
+    {
+        "PERIPHERAL_STATUS": "Available",
+        "NUM_PERIPHERALS": 10
+    },
+    {
+        "PERIPHERAL_STATUS": "On loan",
+        "NUM_PERIPHERALS": 7
+    }
+]
+*/
+router.get("/AdminFocal/getPeripheralAvailability", rolesCtrl.validateToken,
+                                                    rolesCtrl.isFocalORAdmin,
+                                                    peripheralsCtrl.getPeripheralAvailability);
+
+/*
+Amount of peripherals per area
+Res:
+[
+    {
+        "DEPARTMENT_NAME": "Cloud",
+        "NUM_PERIPHERALS": 5
+    },
+    {
+        "DEPARTMENT_NAME": "Labs",
+        "NUM_PERIPHERALS": 6
+    },
+    {...}
+]
+*/
+router.get("/AdminFocal/getPeripheralsByDepartment", rolesCtrl.validateToken,
+                                                     rolesCtrl.isFocalORAdmin,
+                                                     peripheralsCtrl.getPeripheralsByDepartment);
 
 module.exports = router;

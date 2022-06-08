@@ -1029,4 +1029,159 @@ peripheralsCtrl.setToAvailable = async (req, res) => {
 
 }
 
+peripheralsCtrl.getPeripheralByLoanId = async (req, res) => {
+
+    let query = `SELECT
+                    loan.peripheral_serial,
+                    ptype.name as type,
+                    brand.name as brand,
+                    peripheral.model,
+                    peripheral.description
+                FROM loan
+                INNER JOIN peripheral ON loan.peripheral_serial = peripheral.serial
+                INNER JOIN ptype ON peripheral.ptype = ptype.id
+                INNER JOIN brand ON peripheral.brand = brand.id
+                WHERE loan.id = ${req.body.loan_id};`;
+
+    pool.open(process.env.DATABASE_STRING, function (err, db) {
+        
+        if (err) {
+            res.status(403).send(err)
+        } else{
+            db.query(`${query}`, function(err, data){
+                if(err){
+                    res.status(400).send(err);
+                } else{
+                    res.status(200).send(data);
+                }
+            })
+            db.close(function (error) { // RETURN CONNECTION TO POOL
+                if (error) {
+                    res.send("Error mientras se cerraba la conexion");
+                }
+            });
+        }
+    })
+
+}
+
+peripheralsCtrl.getLoansInfo = async (req, res) => {
+
+    let query = `SELECT *
+                FROM
+                (SELECT loan_status.name as loan_status, COUNT(*) as num_loans
+                FROM loan
+                INNER JOIN loan_status ON loan.loan_status = loan_status.id
+                GROUP BY loan_status.name)
+                WHERE loan_status != 'Cancelled';`;
+
+    pool.open(process.env.DATABASE_STRING, function (err, db) {
+        
+        if (err) {
+            res.status(403).send(err)
+        } else{
+            db.query(`${query}`, function(err, data){
+                if(err){
+                    res.status(400).send(err);
+                } else{
+                    res.status(200).send(data);
+                }
+            })
+            db.close(function (error) { // RETURN CONNECTION TO POOL
+                if (error) {
+                    res.send("Error mientras se cerraba la conexion");
+                }
+            });
+        }
+    })
+
+}
+
+peripheralsCtrl.getPeripheralsByType = async (req, res) => {
+
+    let query = `SELECT ptype.name as peripheral_type, COUNT(*) as num_peripherals
+                FROM peripheral
+                INNER JOIN ptype ON peripheral.ptype = ptype.id
+                GROUP BY ptype.name;`;
+
+    pool.open(process.env.DATABASE_STRING, function (err, db) {
+        
+        if (err) {
+            res.status(403).send(err)
+        } else{
+            db.query(`${query}`, function(err, data){
+                if(err){
+                    res.status(400).send(err);
+                } else{
+                    res.status(200).send(data);
+                }
+            })
+            db.close(function (error) { // RETURN CONNECTION TO POOL
+                if (error) {
+                    res.send("Error mientras se cerraba la conexion");
+                }
+            });
+        }
+    })
+
+}
+
+peripheralsCtrl.getPeripheralAvailability = async (req, res) => {
+
+    let query = `SELECT peripheral_status.name as peripheral_status, COUNT(*) as num_peripherals
+                FROM peripheral
+                INNER JOIN peripheral_status ON peripheral.peripheral_status = peripheral_status.id
+                GROUP BY peripheral_status.name;`;
+
+    pool.open(process.env.DATABASE_STRING, function (err, db) {
+        
+        if (err) {
+            res.status(403).send(err)
+        } else{
+            db.query(`${query}`, function(err, data){
+                if(err){
+                    res.status(400).send(err);
+                } else{
+                    res.status(200).send(data);
+                }
+            })
+            db.close(function (error) { // RETURN CONNECTION TO POOL
+                if (error) {
+                    res.send("Error mientras se cerraba la conexion");
+                }
+            });
+        }
+    })
+
+}
+
+peripheralsCtrl.getPeripheralsByDepartment = async (req, res) => {
+
+    let query = `SELECT department.name as department_name, COUNT(*) as num_peripherals
+                FROM peripheral
+                INNER JOIN department ON peripheral.department = department.id
+                GROUP BY department.name;`;
+
+    pool.open(process.env.DATABASE_STRING, function (err, db) {
+        
+        if (err) {
+            res.status(403).send(err)
+        } else{
+            db.query(`${query}`, function(err, data){
+                if(err){
+                    res.status(400).send(err);
+                } else{
+                    res.status(200).send(data);
+                }
+            })
+            db.close(function (error) { // RETURN CONNECTION TO POOL
+                if (error) {
+                    res.send("Error mientras se cerraba la conexion");
+                }
+            });
+        }
+    })
+
+}
+
 module.exports = peripheralsCtrl;
