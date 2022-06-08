@@ -39,6 +39,15 @@ export class MyLoansComponent implements OnInit {
 
   numLoans: number = 0;
 
+  notificationMesage = {
+    type: 'info',
+    title: 'You have no devices here',
+    subtitle: '',
+    caption: 'Try contacting a focal point to request a device which can then be displayed here',
+    lowContrast: false,
+    showClose: false
+  };
+
   headers: { title: string; val: string }[] = [
     { title: "Borrowed", val: "borrowed" },
     { title: "In Process", val: "in_process" },

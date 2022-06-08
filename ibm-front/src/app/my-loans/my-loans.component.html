@@ -5,6 +5,9 @@
             <h2 class="page-title"> {{ title }} </h2>
             <ibm-tabs>
                 <ibm-tab *ngFor="let item of myLoans | keyvalue" heading="{{item.key}}" class="tab">
+                    <ng-template [ngIf]="item.value.length == 0">
+                        <ibm-toast [notificationObj]="notificationMesage" style="width:calc(100% + 2rem);"></ibm-toast>
+                      </ng-template>
                     <div class="CardParent">
                         <div *ngFor="let device of item.value" class="DeviceCard">
 
