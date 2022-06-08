@@ -11,9 +11,7 @@
 <section class="overview-page__banner" aria-label="overview page banner">
 
   <div class="container">
-    <h2 class="page-title">Loans</h2>
-
-
+    <h2>Loans</h2>
 
     <div ibmGrid>
       <div ibmRow>
@@ -31,9 +29,8 @@
           <a ibmButton="ghost" [routerLink]="['../../newperipheral']" style="float: right;">New Device</a>
         </div>
       </div>
-      <div style="padding-top: 10px;"></div>
       <div ibmRow>
-        <div ibmCol class="multi-selection">
+        <div ibmCol>
           <button ibmButton="secondary" (click)="resetFilters()" class="reset-button">Reset Filters</button>
           <fieldset class="bx--fieldset">
             <legend class="bx--label">Device Status</legend>
@@ -74,7 +71,7 @@
             </ibm-checkbox>
           </fieldset>
         </div>
-        <div ibmCol [columnNumbers]="{'lg': 10, 'md': 10, 'sm': 3}" class="data-table">
+        <div ibmCol [columnNumbers]="{'lg': 10, 'md': 10, 'sm': 3}">
           <ibm-structured-list>
             <ibm-list-header>
               <ibm-list-column *ngFor="let product of columns" class="listColumn--Header">
