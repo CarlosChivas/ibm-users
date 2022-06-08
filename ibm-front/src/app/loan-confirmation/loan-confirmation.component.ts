@@ -22,19 +22,15 @@ interface DEVICES {
   styleUrls: ['./loan-confirmation.component.scss']
 })
 export class LoanConfirmationComponent implements OnInit {
-
-  showClose: boolean = true
-  lowContrast: boolean = false
   user: any;
 
-
   notificationConfig = {
-    type: 'success',
+    type: 'info',
     title: 'Please Wait',
     subtitle: '',
     caption: 'Updating loan status',
-    lowContrast: this.lowContrast,
-    showClose: this.showClose
+    lowContrast: false,
+    showClose: false
   };
 
   Device: DEVICES =
@@ -69,24 +65,34 @@ export class LoanConfirmationComponent implements OnInit {
       axios.post(api, body, { withCredentials: true }).then(res => {
 
         //esto.Device = res.data;
-        console.log(res);
-        esto.notificationConfig.title = "Update was succsesfull";
-        esto.notificationConfig.caption = "An e-mail was sent with instructions on how to withdrae the device";
+        console.log("pito -> ", res);
+        esto.notificationConfig = {
+          type: 'success',
+          title: 'Update was succsesfull',
+          subtitle: '',
+          caption: 'An e-mail was sent with instructions on how to withdrae the device',
+          lowContrast: false,
+          showClose: false
+        };
 
       }).catch(e => {
 
         console.error(e);
-        esto.notificationConfig.type = "error";
-        esto.notificationConfig.title = "Error while updating";
-        esto.notificationConfig.caption = "Something went wrong, please try agian later";
+        esto.notificationConfig = {
+          type: 'error',
+          title: 'Error while updating',
+          subtitle: '',
+          caption: 'Something went wrong, please try agian later',
+          lowContrast: false,
+          showClose: false
+        };
 
       });
 
-      api = environment.ibm_peripherals + "/getPeripheralByID/";
-      api+=loanID;
-      axios.get(api, {withCredentials:true}).then(res => {
-        console.log(res);
-        esto.Device = res.data;
+      var api = environment.ibm_peripherals + "/getPeripheralByLoanId/";
+      var body = { loan_id: loanID };
+      axios.post(api, body, { withCredentials: true }).then(res => {
+        esto.Device = res.data[0];
       }).catch(e => console.error(e));
 
     }).catch(err => {

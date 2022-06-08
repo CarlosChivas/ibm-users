@@ -1,5 +1,14 @@
 @import '~carbon-components/scss/globals/scss/styles';
 
+.overview-page__banner {
+    min-height: 100vh;
+    padding: $spacing-06;
+    padding-top: $spacing-08;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+}
+
 .container {
     width: 80%;
     z-index: 100;
@@ -10,83 +19,42 @@
     grid-auto-rows: minmax(100px, auto);
 }
 
-.overview-page__banner {
-    min-height: 100vh;
-    padding: $spacing-06;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
 .CardParent>img {
     width: 120px;
-    padding: 20px;
+    padding: $spacing-06;
 }
 
-.img {
-    width: 120px;
-    padding: 20px;
-}
-
-span.b {
-    display: inline-block;
-    width: 412px;
-    height: 100px;
-    padding: 5px;
-    padding-top: 50px;
-    padding-left: 200px;
-}
-
-.span.b>img {
-    width: 120px;
-    padding: 20px;
+.EmployyeData {
+    width: 100%;
+    padding: 26px;
+    display: grid;
+    grid-template-columns: repeat(2, 0.24fr);
+    background-color: #f4f4f4;
 }
 
 .c {
     display: inline-block;
-    width: 200px;
-    height: 100px;
-    padding: 5px;
-    right: 100px;
-    padding-left: 78px;
-    padding-top: 60px;
+    width: auto;
+    height: auto;
+    padding: 0;
     align-items: center;
+}
 
+span.b {
+    display: inline-block;
+    width: auto;
+    height: auto;
+    padding: 0;
+    margin: auto;
 }
 
 .CardParent {
     width: 100%;
-    height: 100%;
     display: grid;
-    grid-template-columns: repeat(2, 0.24fr);
-    background-color: rgba(244, 244, 244, 1);
     gap: 24px;
-    /*$spacing-06*/
-    grid-auto-rows: minmax(200px, 400px);
-}
-
-.d {
-    width: 10px;
-}
-
-p {
-    font-size: 15px;
-    padding: 5px;
-}
-
-.ImageText {
-    width: 152px;
-    font-size: 15px;
-    padding: 5px;
-    text-align: center;
-}
-
-.LoanChart img {
-    width: 100%;
-}
-
-.page-title {
-    padding-bottom: 20px;
+    background-color: transparent;
+    grid-template-columns: repeat(5, 1fr);
+    grid-auto-rows: minmax(100px, auto);    
 }
 
 .DeviceCard {
@@ -103,29 +71,26 @@ p {
     width: 120px;
 }
 
-.DeviceCard--Info2 {
-    width: 100%;
-}
-
 .DeviceCard--Info {
     width: 100%;
     padding: 20px;
-}
-
-.CardParent2 {
-    width: 100%;
-    display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    gap: 24px;
-    /*$spacing-06*/
-    grid-auto-rows: minmax(100px, auto);
 }
 
 .LoanInfo2 {
     padding-top: 60px;
 }
 
+p {
+    font-size: 15px;
+    padding: 5px;
+}
 
+.ImageText {
+    width: 152px;
+    font-size: 15px;
+    padding: 5px;
+    text-align: center;
+}
 
 @media screen and (min-width: 1515px) {
     .banner__title {

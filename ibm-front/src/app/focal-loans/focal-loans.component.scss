@@ -3,24 +3,13 @@
 .overview-page__banner {
     min-height: 100vh;
     padding: $spacing-06;
+    padding-top: $spacing-08;
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     justify-content: center;
 }
 
-.page-title {
-    padding-top: 30px;
-}
-
-ibm-list-column.listColumn{
-    padding: 1rem 0.5rem;
-    vertical-align: middle;
-}
-ibm-list-column.listColumn--Header{
-    padding: 0.5rem;
-    vertical-align: middle;
-}
-.container{
+.container {
     width: 80%;
     z-index: 100;
     padding: $spacing-08;
@@ -29,8 +18,13 @@ ibm-list-column.listColumn--Header{
     gap: $spacing-06;
     grid-auto-rows: minmax(100px, auto);
 }
-.Separate{
-    display: grid;
-    grid-template-columns: 8fr 1fr;
-    
-  }
+
+ibm-list-column.listColumn {
+    padding: $spacing-05 $spacing-03;
+    vertical-align: middle;
+}
+
+ibm-list-column.listColumn--Header {
+    padding: $spacing-03;
+    vertical-align: middle;
+}

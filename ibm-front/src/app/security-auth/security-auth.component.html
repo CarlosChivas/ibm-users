@@ -2,6 +2,9 @@
 
 <section class="overview-page__banner" aria-label="overview page banner">
   <div class="container">
+    <ng-template [ngIf]="charged == true">
+      <ibm-toast [notificationObj]="notificationConfig" style="width:calc(100% + 2rem);"></ibm-toast>
+    </ng-template>
     <div class="LoanInfo">
       <h2>Security Filter</h2>
       <ibm-tabs>
@@ -14,10 +17,9 @@
               <p class="b"> {{Device.TYPE}}</p>
             </div>
             <span class="b">
-              <h5> <svg ibmIcon="document" size="16"></svg> Device Information: </h5>
-              <p>Device: {{Device.BRAND}} {{Device.TYPE}} {{Device.MODEL}}</p>
-              <p>{{Device.DESCRIPTION}}</p>
-              <p>Request Date: {{Device.CREATION}}</p>
+              <h3> <svg ibmIcon="document" size="20"></svg> Device Information: </h3>
+              <h4>Device: {{Device.BRAND}} {{Device.TYPE}} {{Device.MODEL}}</h4>
+              <h4>{{Device.DESCRIPTION}}</h4>
             </span>
           </div>
           <div>
