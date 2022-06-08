@@ -41,6 +41,7 @@ import { RoleManagementComponent } from './role-management/role-management.compo
 import { Ng2SearchPipe } from 'ng2-search-filter';
 import { PeripheralRegistrationComponent } from './peripheral-registration/peripheral-registration.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
+import { SecurityAuthComponent } from './security-auth/security-auth.component';
 //import { AngularCsv } from 'angular7-csv/dist/Angular-csv';
 
 
@@ -58,6 +59,7 @@ import { DashboardComponent } from './dashboard/dashboard.component';
     PeripheralRegistrationComponent,
     LoanConfirmationComponent,
     DashboardComponent,
+    SecurityAuthComponent,
 
   ],
   imports: [
