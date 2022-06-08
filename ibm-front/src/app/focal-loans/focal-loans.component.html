@@ -26,13 +26,15 @@
               preserveAspectRatio="xMidYMid meet" aria-hidden="true" width="16" height="16" viewBox="0 0 16 16"></svg>
           </div>
         </div>
-        <div ibmCol> <a ibmButton="secondary" [routerLink]="['../../newloan']" style="float: right;">Register Loan</a>
+        <div ibmCol>
+          <a ibmButton="primary" [routerLink]="['../../newloan']" style="float: right;">Request Loan</a>
+          <a ibmButton="ghost" [routerLink]="['../../newperipheral']" style="float: right;">New Device</a>
         </div>
       </div>
       <div style="padding-top: 10px;"></div>
       <div ibmRow>
         <div ibmCol class="multi-selection">
-          <button ibmButton="primary" (click)="resetFilters()" class="reset-button">Reset Filters</button>
+          <button ibmButton="secondary" (click)="resetFilters()" class="reset-button">Reset Filters</button>
           <fieldset class="bx--fieldset">
             <legend class="bx--label">Device Status</legend>
             <ibm-radio-group aria-label="radiogroup" orientation="vertical" labelPlacement="right">
