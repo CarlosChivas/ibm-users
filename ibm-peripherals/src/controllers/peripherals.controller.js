@@ -228,7 +228,7 @@ peripheralsCtrl.checkPeripheralStatus = async (req, res, next) => {
                     res.status(400).send(err);
                 } else{
                     if(JSON.stringify(data) === '[]'){
-                        res.status(401).send("No se puede crear prestamo, el dispositivo no esta disponible o esta a cargo de otro focal");
+                        res.status(401).send("No se puede crear prestamo, el dispositivo no esta disponible");
                   } else{
                         next();
                   }
@@ -297,11 +297,18 @@ peripheralsCtrl.sendTermsConditions = async (req, res) => {
         if (err) {
             res.status(403).send(err)
         } else{
-            db.query("SELECT id FROM loan WHERE peripheral_serial = ?",[req.body.peripheral_serial], function(err, data){
+            db.query(`SELECT loan.id as loan_id, ptype.name as type, brand.name as brand, peripheral.model, peripheral.description
+                        FROM loan 
+                        INNER JOIN peripheral ON loan.peripheral_serial = peripheral.serial
+                        INNER JOIN ptype ON peripheral.ptype = ptype.id
+                        INNER JOIN brand ON peripheral.brand = brand.id
+                        WHERE loan.peripheral_serial = ${req.body.peripheral_serial} 
+                        AND loan.loan_status = (SELECT id from loan_status WHERE name = 'In process')
+                        `, function(err, data){
                 if(err){
                     res.status(400).send(err);
                 } else{
-                    let loan_id = data[0].ID;
+   
                     const transporter = nodemailer.createTransport({
                         service: 'gmail',
                         auth: {
@@ -314,8 +321,15 @@ peripheralsCtrl.sendTermsConditions = async (req, res) => {
                         from: '"Peripheral Loan Bot" <dtest8549@gmail.com>',
                         to: req.body.employee_email,
                         subject: 'Terms and Services for your New Loan',
-                        html: `<b>Click the button to accept terms and services</b></br>   
-                              <a href="http://159.122.181.210:31748/accept/${loan_id}"><button>Click Me!</button></a>`
+                        html:   `<p>By clicking the link bellow you are agreeing to be bound by the terms of service at IBM.</p>
+                                <a href="http://159.122.181.210:31748/accept/${data[0].LOAN_ID}"><button cursos="pointer">Accept terms and services</button></a><br>
+                                <p>Peripheral Details:</p>
+                                <ul>
+                                    <li><b>Type:</b> ${data[0].TYPE}</li>
+                                    <li><b>Brand:</b> ${data[0].BRAND}</li>
+                                    <li><b>Model:</b> ${data[0].MODEL}</li>
+                                    <li><b>Description:</b> ${data[0].DESCRIPTION}</li>
+                                </ul>`
                       };
                       
                       transporter.sendMail(mailOptions, function(error, info){
