@@ -303,8 +303,7 @@ peripheralsCtrl.sendTermsConditions = async (req, res) => {
                         INNER JOIN ptype ON peripheral.ptype = ptype.id
                         INNER JOIN brand ON peripheral.brand = brand.id
                         WHERE loan.peripheral_serial = ${req.body.peripheral_serial} 
-                        AND loan.loan_status = (SELECT id from loan_status WHERE name = 'In process')
-                        `, function(err, data){
+                        AND loan.loan_status = (SELECT id from loan_status WHERE name = 'In process')`, function(err, data){
                 if(err){
                     res.status(400).send(err);
                 } else{
@@ -320,7 +319,7 @@ peripheralsCtrl.sendTermsConditions = async (req, res) => {
                       const mailOptions = {
                         from: '"Peripheral Loan Bot" <dtest8549@gmail.com>',
                         to: req.body.employee_email,
-                        subject: 'Terms and Services for your New Loan',
+                        subject: 'Terms and Services for your New Peripheral Loan',
                         html:   `<p>By clicking the link bellow you are agreeing to be bound by the terms of service at IBM.</p>
                                 <a href="http://159.122.181.210:31748/accept/${data[0].LOAN_ID}"><button cursos="pointer">Accept terms and services</button></a><br>
                                 <p>Peripheral Details:</p>
@@ -866,36 +865,68 @@ peripheralsCtrl.generateQRCode = async (req, res, next) => {
 
 peripheralsCtrl.sendSecurityQRCode = async (req, res) => {
     
-    const transporter = nodemailer.createTransport({
-        service: 'gmail',
-        auth: {
-            user: 'dtest8549@gmail.com',
-            pass: 'izbiqajsfhniawej'
-        }
-        });
-
-        const mailOptions = {
-        from: '"Peripheral Loan Bot"',
-        to: req.user.EMAIL,
-        subject: 'Loan QR Code',
-        text: 'Show QR code to security guard to pick up your peripheral.',
-        attachments: 
-        [
-          {
-            filename: 'qrcode.png',
-            content: req.qrCode,
-            encoding: "base64"
-          }
-        ]
-        };
+    pool.open(process.env.DATABASE_STRING, function (err, db) {
         
-        transporter.sendMail(mailOptions, function(error, info){
-        if (error) {
-            res.status(400).send(err);
-        } else {
-            res.status(201).send('Email sent: ' + info.response);
+        if (err) {
+            res.status(403).send(err)
+        } else{
+            db.query(`SELECT ptype.name as type, brand.name as brand, peripheral.model, peripheral.description
+                        FROM loan 
+                        INNER JOIN peripheral ON loan.peripheral_serial = peripheral.serial
+                        INNER JOIN ptype ON peripheral.ptype = ptype.id
+                        INNER JOIN brand ON peripheral.brand = brand.id
+                        WHERE loan.id = ${req.body.loan_id}`, function(err, data){
+                if(err){
+                    res.status(400).send(err);
+                } else{
+
+                    const transporter = nodemailer.createTransport({
+                        service: 'gmail',
+                        auth: {
+                            user: 'dtest8549@gmail.com',
+                            pass: 'izbiqajsfhniawej'
+                        }
+                        });
+                
+                    const mailOptions = {
+                        from: '"Peripheral Loan Bot" <dtest8549@gmail.com>',
+                        to:  req.user.EMAIL,
+                        subject: 'QR Code for your Peripheral Loan',
+                        html:   `<p>Show the attached QR Code to the security guard to pick up your peripheral.</p>
+                                <p>Peripheral Details:</p>
+                                <ul>
+                                <li><b>Type:</b> ${data[0].TYPE}</li>
+                                <li><b>Brand:</b> ${data[0].BRAND}</li>
+                                <li><b>Model:</b> ${data[0].MODEL}</li>
+                                <li><b>Description:</b> ${data[0].DESCRIPTION}</li>
+                                </ul>`,
+                        attachments: 
+                        [
+                            {
+                            filename: 'qrcode.png',
+                            content: req.qrCode,
+                            encoding: "base64"
+                            }
+                        ]
+                        };
+                    
+                    transporter.sendMail(mailOptions, function(error, info){
+                    if (error) {
+                        res.status(400).send(err);
+                    } else {
+                        res.status(201).send('Email sent: ' + info.response);
+                    }
+                    });
+
+                }
+            })
+            db.close(function (error) { // RETURN CONNECTION TO POOL
+                if (error) {
+                    res.send("Error mientras se cerraba la conexion");
+                }
+            });
         }
-        });
+    })
 
 } 
 
