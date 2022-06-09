@@ -1067,13 +1067,20 @@ peripheralsCtrl.getPeripheralByLoanId = async (req, res) => {
 
 peripheralsCtrl.getLoansInfo = async (req, res) => {
 
-    let query = `SELECT *
-                FROM
-                (SELECT loan_status.name as loan_status, COUNT(*) as num_loans
+    let focalRole = 'true';
+    if(req.user.ROLE_NAME !== 'Administrator'){
+        focalRole = `(SELECT id from department where name = '${req.user.DEPARTMENT_NAME}')`;
+    }
+
+    query = `SELECT loan.loan_status, COUNT(*) as num_loans
+            FROM
+                (SELECT loan_status.name as loan_status, department.name as department_name
                 FROM loan
+                INNER JOIN peripheral ON loan.peripheral_serial = peripheral.serial
+                INNER JOIN department ON peripheral.department = department.id
                 INNER JOIN loan_status ON loan.loan_status = loan_status.id
-                GROUP BY loan_status.name)
-                WHERE loan_status != 'Cancelled';`;
+                WHERE loan_status.name != 'Cancelled' AND peripheral.department = ${focalRole}) as loan
+                GROUP BY loan.loan_status`;
 
     pool.open(process.env.DATABASE_STRING, function (err, db) {
         
@@ -1099,8 +1106,13 @@ peripheralsCtrl.getLoansInfo = async (req, res) => {
 
 peripheralsCtrl.getPeripheralsByType = async (req, res) => {
 
+    let focalRole = 'true';
+    if(req.user.ROLE_NAME !== 'Administrator'){
+        focalRole = `(SELECT id from department where name = '${req.user.DEPARTMENT_NAME}')`;
+    }
+    
     let query = `SELECT ptype.name as peripheral_type, COUNT(*) as num_peripherals
-                FROM peripheral
+                FROM (SELECT * FROM peripheral WHERE peripheral.department = ${focalRole}) as peripheral
                 INNER JOIN ptype ON peripheral.ptype = ptype.id
                 GROUP BY ptype.name;`;
 
@@ -1128,8 +1140,13 @@ peripheralsCtrl.getPeripheralsByType = async (req, res) => {
 
 peripheralsCtrl.getPeripheralAvailability = async (req, res) => {
 
+    let focalRole = 'true';
+    if(req.user.ROLE_NAME !== 'Administrator'){
+        focalRole = `(SELECT id from department where name = '${req.user.DEPARTMENT_NAME}')`;
+    }
+    
     let query = `SELECT peripheral_status.name as peripheral_status, COUNT(*) as num_peripherals
-                FROM peripheral
+                FROM (SELECT * FROM peripheral WHERE peripheral.department = ${focalRole}) as peripheral
                 INNER JOIN peripheral_status ON peripheral.peripheral_status = peripheral_status.id
                 GROUP BY peripheral_status.name;`;
 
@@ -1155,12 +1172,44 @@ peripheralsCtrl.getPeripheralAvailability = async (req, res) => {
 
 }
 
-peripheralsCtrl.getPeripheralsByDepartment = async (req, res) => {
+peripheralsCtrl.getLoansByDepartment = async (req, res) => {
 
-    let query = `SELECT department.name as department_name, COUNT(*) as num_peripherals
-                FROM peripheral
+    let query = `SELECT department.name as department_name, COUNT(*) as num_loans
+                FROM (SELECT * FROM loan WHERE loan.loan_status != (SELECT id from loan_status WHERE name = 'Cancelled')) loan
+                INNER JOIN peripheral ON loan.peripheral_serial = peripheral.serial
                 INNER JOIN department ON peripheral.department = department.id
                 GROUP BY department.name;`;
+
+    pool.open(process.env.DATABASE_STRING, function (err, db) {
+        
+        if (err) {
+            res.status(403).send(err)
+        } else{
+            db.query(`${query}`, function(err, data){
+                if(err){
+                    res.status(400).send(err);
+                } else{
+                    res.status(200).send(data);
+                }
+            })
+            db.close(function (error) { // RETURN CONNECTION TO POOL
+                if (error) {
+                    res.send("Error mientras se cerraba la conexion");
+                }
+            });
+        }
+    })
+
+}
+
+peripheralsCtrl.getTotalPeripherals = async (req, res) => {
+
+    let focalRole = '';
+    if(req.user.ROLE_NAME !== 'Administrator'){
+        focalRole = `WHERE department = (SELECT id from department where name = '${req.user.DEPARTMENT_NAME}')`;
+    }
+    
+    let query = `SELECT count(*) as total FROM peripheral ${focalRole};`;
 
     pool.open(process.env.DATABASE_STRING, function (err, db) {
         

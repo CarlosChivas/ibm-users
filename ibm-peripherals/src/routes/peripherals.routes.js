@@ -271,22 +271,30 @@ router.get("/AdminFocal/getPeripheralAvailability", rolesCtrl.validateToken,
                                                     peripheralsCtrl.getPeripheralAvailability);
 
 /*
-Amount of peripherals per area
+The total amount per area includes active loans "In process", "Borrowed" and "Concluded"
+This one is global and does not change between focal or admin
 Res:
 [
     {
         "DEPARTMENT_NAME": "Cloud",
-        "NUM_PERIPHERALS": 5
+        "NUM_LOANS": 2
     },
     {
         "DEPARTMENT_NAME": "Labs",
-        "NUM_PERIPHERALS": 6
+        "NUM_LOANS": 3
     },
     {...}
 ]
 */
-router.get("/AdminFocal/getPeripheralsByDepartment", rolesCtrl.validateToken,
-                                                     rolesCtrl.isFocalORAdmin,
-                                                     peripheralsCtrl.getPeripheralsByDepartment);
+router.get("/AdminFocal/getLoansByDepartment", rolesCtrl.validateToken,
+                                               rolesCtrl.isFocalORAdmin,
+                                               peripheralsCtrl.getLoansByDepartment);
+
+/*
+Res the total amount of PERIPHERALS (in the department in the case of focal users)
+*/
+router.get("/AdminFocal/getTotalPeripherals", rolesCtrl.validateToken,
+                                              rolesCtrl.isFocalORAdmin,
+                                              peripheralsCtrl.getTotalPeripherals);
 
 module.exports = router;
