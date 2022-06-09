@@ -19,7 +19,7 @@ interface DeviceInfo {
 })
 export class DashboardComponent implements OnInit {
   title = 'Dashboard'
-  user: any;
+  user: any = undefined;
 
   StatusInfoList: StatusInfo[] = [];
 
@@ -105,10 +105,10 @@ export class DashboardComponent implements OnInit {
       axios.get(api, { withCredentials: true }).then(res => {
         esto.StatusInfoList = res.data;
       }).catch(e => console.log(e));
+      
       api = environment.ibm_peripherals + "/AdminFocal/getTotalPeripherals";
       axios.get(api, { withCredentials: true }).then(res => {
-        console.log(res.data);
-        //esto.StatusInfoList = res.data;
+        esto.StatusInfoList.push({LOAN_STATUS: "Total Device", NUM_LOANS:res.data[0].TOTAL});
       }).catch(e => console.log(e));
 
       api = environment.ibm_peripherals + "/AdminFocal/getPeripheralsByType";
@@ -118,14 +118,12 @@ export class DashboardComponent implements OnInit {
 
       api = environment.ibm_peripherals + "/AdminFocal/getPeripheralAvailability";
       axios.get(api, { withCredentials: true }).then(res => {
-        console.log("Availability -> ",res.data);
         esto.deviceAvailability = res.data.map((obj: { PERIPHERAL_STATUS: any; NUM_PERIPHERALS: any; }) => ({ group: obj.PERIPHERAL_STATUS, value: obj.NUM_PERIPHERALS }));
       }).catch(e => console.log(e));
 
-      api = environment.ibm_peripherals + "/AdminFocal/getPeripheralsByDepartment";
+      api = environment.ibm_peripherals + "/AdminFocal/getLoansByDepartment";
       axios.get(api, { withCredentials: true }).then(res => {
-        console.log("By Area -> ",res.data);
-        esto.loansByArea = res.data.map((obj: { DEPARTMENT_NAME: any; NUM_PERIPHERALS: any; }) => ({ group: obj.DEPARTMENT_NAME, value: obj.NUM_PERIPHERALS }));
+        esto.loansByArea = res.data.map((obj: { DEPARTMENT_NAME: any; NUM_LOANS: any; }) => ({ group: obj.DEPARTMENT_NAME, value: obj.NUM_LOANS }));
       }).catch(e => console.log(e));
 
     }).catch(err => {
