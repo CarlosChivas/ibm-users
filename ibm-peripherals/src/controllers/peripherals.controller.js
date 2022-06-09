@@ -303,7 +303,7 @@ peripheralsCtrl.sendTermsConditions = async (req, res) => {
                         INNER JOIN ptype ON peripheral.ptype = ptype.id
                         INNER JOIN brand ON peripheral.brand = brand.id
                         WHERE loan.peripheral_serial = ${req.body.peripheral_serial} 
-                        `, function(err, data){
+                        AND loan.loan_status = (SELECT id from loan_status WHERE name = 'In process')`, function(err, data){
                 if(err){
                     res.status(400).send(err);
                 } else{
