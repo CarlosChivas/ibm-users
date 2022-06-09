@@ -105,6 +105,11 @@ export class DashboardComponent implements OnInit {
       axios.get(api, { withCredentials: true }).then(res => {
         esto.StatusInfoList = res.data;
       }).catch(e => console.log(e));
+      api = environment.ibm_peripherals + "/AdminFocal/getTotalPeripherals";
+      axios.get(api, { withCredentials: true }).then(res => {
+        console.log(res.data);
+        //esto.StatusInfoList = res.data;
+      }).catch(e => console.log(e));
 
       api = environment.ibm_peripherals + "/AdminFocal/getPeripheralsByType";
       axios.get(api, { withCredentials: true }).then(res => {
@@ -113,12 +118,14 @@ export class DashboardComponent implements OnInit {
 
       api = environment.ibm_peripherals + "/AdminFocal/getPeripheralAvailability";
       axios.get(api, { withCredentials: true }).then(res => {
-        esto.deviceAvailability = res.data.map((obj: { PERIPHERAL_TYPE: any; NUM_PERIPHERALS: any; }) => ({ group: obj.PERIPHERAL_TYPE, value: obj.NUM_PERIPHERALS }));
+        console.log("Availability -> ",res.data);
+        esto.deviceAvailability = res.data.map((obj: { PERIPHERAL_STATUS: any; NUM_PERIPHERALS: any; }) => ({ group: obj.PERIPHERAL_STATUS, value: obj.NUM_PERIPHERALS }));
       }).catch(e => console.log(e));
 
       api = environment.ibm_peripherals + "/AdminFocal/getPeripheralsByDepartment";
       axios.get(api, { withCredentials: true }).then(res => {
-        esto.loansByArea = res.data.map((obj: { PERIPHERAL_TYPE: any; NUM_PERIPHERALS: any; }) => ({ group: obj.PERIPHERAL_TYPE, value: obj.NUM_PERIPHERALS }));
+        console.log("By Area -> ",res.data);
+        esto.loansByArea = res.data.map((obj: { DEPARTMENT_NAME: any; NUM_PERIPHERALS: any; }) => ({ group: obj.DEPARTMENT_NAME, value: obj.NUM_PERIPHERALS }));
       }).catch(e => console.log(e));
 
     }).catch(err => {
