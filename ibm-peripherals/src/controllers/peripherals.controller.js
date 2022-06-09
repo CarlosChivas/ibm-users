@@ -303,7 +303,7 @@ peripheralsCtrl.sendTermsConditions = async (req, res) => {
                         INNER JOIN ptype ON peripheral.ptype = ptype.id
                         INNER JOIN brand ON peripheral.brand = brand.id
                         WHERE loan.peripheral_serial = ${req.body.peripheral_serial} 
-                        AND loan.loan_status = (SELECT id from loan_status WHERE name = 'In process')`, function(err, data){
+                        `, function(err, data){
                 if(err){
                     res.status(400).send(err);
                 } else{
@@ -319,9 +319,15 @@ peripheralsCtrl.sendTermsConditions = async (req, res) => {
                       const mailOptions = {
                         from: '"Peripheral Loan Bot" <dtest8549@gmail.com>',
                         to: req.body.employee_email,
-                        subject: 'Terms and Services for your New Peripheral Loan',
+                        subject: 'Terms of Service for your New Peripheral Loan',
                         html:   `<p>By clicking the link bellow you are agreeing to be bound by the terms of service at IBM.</p>
-                                <a href="http://159.122.181.210:31748/accept/${data[0].LOAN_ID}"><button cursos="pointer">Accept terms and services</button></a><br>
+                                <ol>
+                                    <li>I agree to be responsible for the care of the device that is being assigned to me as a work tool, so I certify that I have the knowledge and ability to use it properly.</li>
+                                    <li>In case the device is damaged due to negligence or misuse, since it is a work tool, the case will be reviewed to determine if there was any misuse or neglect of the same, with the understanding that I could be responsible for covering the cost of repair or replacement.</li>
+                                    <li>The Device is being assigned to me as a work tool for the performance of the activities of my position, so I will follow these rules regarding the use and care of these instruments provided by IBM and must be returned against the requirement of IBM with the natural wear of use.</li>
+                                    <li>In case of loss or theft of the Device for not complying with the security rules established by the company or not delivering it on the established return date, I will be responsible for replacing the amount indicated to me.</li>
+                                </ol>
+                                <a href="http://159.122.181.210:31748/accept/${data[0].LOAN_ID}"><button cursos="pointer">I accept the terms of service</button></a><br>
                                 <p>Peripheral Details:</p>
                                 <ul>
                                     <li><b>Type:</b> ${data[0].TYPE}</li>
