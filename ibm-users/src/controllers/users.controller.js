@@ -4,7 +4,7 @@ const jwt = require("jsonwebtoken");
 const bcryptjs = require("bcryptjs");
 
 usersCtrl.getHome = async (req, res) => {
-  res.status(200).send("Hola mundo * Carlos Estrada");
+  res.status(200).send("ibm-users working!");
 };
 
 usersCtrl.matchEmail = async (req, res, next) => {

@@ -5,7 +5,7 @@ const QRCode = require('qrcode');
 const nodemailer = require('nodemailer');
 
 peripheralsCtrl.getHome = async (req, res) => {
-    res.status(200).send("Working!");
+    res.status(200).send("ibm-peripherals working!");
   };
 
 peripheralsCtrl.findPtype = async (req, res, next) => {
