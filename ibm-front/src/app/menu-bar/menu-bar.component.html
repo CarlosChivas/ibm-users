@@ -1,10 +1,13 @@
 <ibm-header name="Peripheral Loan" [route]="['home']">
   <ibm-header-navigation>
-    <ibm-header-item *ngIf="userType == 'Administrator' || userType =='Focal' || userType=='Employee'"
+    <ibm-header-item *ngIf="user.ROLE_NAME == 'Administrator' || user.ROLE_NAME =='Focal' || user.ROLE_NAME=='Employee'"
       [route]="['home']">My Loans</ibm-header-item>
-    <ibm-header-item [route]="['loan/AreaID']" *ngIf="userType == 'Administrator'|| userType =='Focal'">Area Loan
-    </ibm-header-item>
-    <ibm-header-item [route]="['manage']" *ngIf="userType == 'Administrator'">Manage User</ibm-header-item>
+      <ibm-header-item [route]="['loan/AreaID']" *ngIf="user.ROLE_NAME == 'Administrator'|| user.ROLE_NAME =='Focal'">Area Loan
+      </ibm-header-item>
+      <ibm-header-item [route]="['dashboard']" *ngIf="user.ROLE_NAME == 'Administrator'|| user.ROLE_NAME =='Focal'">Dashboard
+      </ibm-header-item>
+      <ibm-header-item [route]="['manage']" *ngIf="user.ROLE_NAME == 'Administrator'">Manage User</ibm-header-item>
+      <ibm-header-item [route]="['newperipheral']" *ngIf="user.ROLE_NAME == 'Administrator'">Register Devices</ibm-header-item>
   </ibm-header-navigation>
   <ibm-header-global>
     <ibm-header-action #firstAction title="action">
@@ -32,12 +35,10 @@
     <div *ngFor="let item of Profile | keyvalue" class="tab">
       <div *ngFor="let profile of item.value">
         <div class="c">
-          <p class="profile-bar-p">{{profile.name}}</p>
+          <p class="profile-bar-p">{{user.FIRST_NAME}} {{user.LAST_NAME}}</p>
           <hr>
-          <p class="profile-bar-p" style="color: royalblue;">{{profile.role}}</p>
+          <p class="profile-bar-p" style="color: royalblue;">{{user.ROLE_NAME}}</p>
           <p class="profile-bar-p">Active Loans: {{numLoan}}</p>
-          <br>
-          <p class="profile-bar-p"><a id="profile-anchor" [routerLink]="['../profile']">View Profile</a></p>
         </div>
       </div>
     </div>
@@ -46,12 +47,13 @@
 
 <ibm-panel [expanded]="secondAction.active">
   <ibm-switcher-list>
-    <ibm-switcher-list-item [route]="['home']" *ngIf="userType == 'Administrator'|| userType =='Focal' || userType=='Employee'">My Loans</ibm-switcher-list-item>
+    <ibm-switcher-list-item [route]="['home']" *ngIf="user.ROLE_NAME == 'Administrator'|| user.ROLE_NAME =='Focal' || user.ROLE_NAME=='Employee'">My Loans</ibm-switcher-list-item>
     <hr>
-    <ibm-switcher-list-item [route]="['loan/AreaID']" *ngIf="userType == 'Administrator'|| userType =='Focal'">Area Loan</ibm-switcher-list-item>
-    <ibm-switcher-list-item [route]="['newloan']" *ngIf="userType == 'Administrator'|| userType =='Focal'">New Loan</ibm-switcher-list-item>
-    <ibm-switcher-list-item [route]="['manage']" *ngIf="userType == 'Administrator'">Manage Users</ibm-switcher-list-item>
-    <ibm-switcher-list-item [route]="['newperipheral']" *ngIf="userType == 'Administrator'">Register Peripheral</ibm-switcher-list-item>
+    <ibm-switcher-list-item [route]="['loan/AreaID']" *ngIf="user.ROLE_NAME == 'Administrator'|| user.ROLE_NAME =='Focal'">Area Loan</ibm-switcher-list-item>
+    <ibm-switcher-list-item [route]="['newloan']" *ngIf="user.ROLE_NAME == 'Administrator'|| user.ROLE_NAME =='Focal'">New Loan</ibm-switcher-list-item>
+    <ibm-switcher-list-item [route]="['dashboard']" *ngIf="user.ROLE_NAME == 'Administrator'|| user.ROLE_NAME =='Focal'">Dashboard</ibm-switcher-list-item>
+    <ibm-switcher-list-item [route]="['manage']" *ngIf="user.ROLE_NAME == 'Administrator'">Manage Users</ibm-switcher-list-item>
+    <ibm-switcher-list-item [route]="['newperipheral']" *ngIf="user.ROLE_NAME == 'Administrator'">Register Peripheral</ibm-switcher-list-item>
     <hr>
     <ibm-switcher-list-item (click)="logout()">Log Out</ibm-switcher-list-item>
   </ibm-switcher-list>

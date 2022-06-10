@@ -33,7 +33,7 @@ type OnlyKeys = keyof MyDevices;
 @Injectable()
 export class ProfileComponent implements OnInit {
 
-  userType: string = "";
+  user: any;
   open = false;
   profile = {
     ID: 1,
@@ -62,7 +62,7 @@ export class ProfileComponent implements OnInit {
     var esto = this;
     axios.get(api, { withCredentials: true }).then((response) => {
       if (response.status == 200) {
-        esto.userType = response.data.ROLE_NAME;
+        esto.user = response.data;
         var me = response.data;
         var myParam = rout.snapshot.paramMap.get('id');
         if (myParam != me.ID && (me.ROLE_NAME == "Administrator" || me.ROLE_NAME == "Focal")) {

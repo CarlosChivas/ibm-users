@@ -7,13 +7,11 @@
 
 </style>
 
-<app-menu-bar [userType]="userType"></app-menu-bar>
+<app-menu-bar [user]="user"></app-menu-bar>
 <section class="overview-page__banner" aria-label="overview page banner">
 
   <div class="container">
-    <h2 class="page-title">Loans</h2>
-
-
+    <h2>Loans</h2>
 
     <div ibmGrid>
       <div ibmRow>
@@ -26,13 +24,14 @@
               preserveAspectRatio="xMidYMid meet" aria-hidden="true" width="16" height="16" viewBox="0 0 16 16"></svg>
           </div>
         </div>
-        <div ibmCol> <a ibmButton="secondary" [routerLink]="['../../newloan']" style="float: right;">Register Loan</a>
+        <div ibmCol>
+          <a ibmButton="primary" [routerLink]="['../../newloan']" style="float: right;">Request Loan</a>
+          <a ibmButton="ghost" [routerLink]="['../../newperipheral']" style="float: right;">New Device</a>
         </div>
       </div>
-      <div style="padding-top: 10px;"></div>
       <div ibmRow>
-        <div ibmCol class="multi-selection">
-          <button ibmButton="primary" (click)="resetFilters()" class="reset-button">Reset Filters</button>
+        <div ibmCol>
+          <button ibmButton="secondary" (click)="resetFilters()" class="reset-button">Reset Filters</button>
           <fieldset class="bx--fieldset">
             <legend class="bx--label">Device Status</legend>
             <ibm-radio-group aria-label="radiogroup" orientation="vertical" labelPlacement="right">
@@ -72,7 +71,7 @@
             </ibm-checkbox>
           </fieldset>
         </div>
-        <div ibmCol [columnNumbers]="{'lg': 10, 'md': 10, 'sm': 3}" class="data-table">
+        <div ibmCol [columnNumbers]="{'lg': 10, 'md': 10, 'sm': 3}">
           <ibm-structured-list>
             <ibm-list-header>
               <ibm-list-column *ngFor="let product of columns" class="listColumn--Header">
@@ -138,6 +137,6 @@
   </section>
   <ibm-modal-footer>
     <button class="bx--btn bx--btn--secondary" (click)="cancel()" *ngIf="specific.SECURITY_AUTH == false">Cancel Registration</button>
-    <button class="bx--btn bx--btn--primary" modal-primary-focus (click)="returnDevice()">Update Registration</button>
+    <button class="bx--btn bx--btn--primary" modal-primary-focus (click)="returnDevice()" *ngIf="specific.LOAN_STATUS == 'Borrowed'">Update Registration</button>
   </ibm-modal-footer>
 </ibm-modal>

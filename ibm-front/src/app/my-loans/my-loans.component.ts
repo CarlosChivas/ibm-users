@@ -35,9 +35,18 @@ export class MyLoansComponent implements OnInit {
   open: boolean = false
   showCloseButton: boolean = true;
   title = 'My Loans'
-  userType: string = "";
+  user: string = "";
 
   numLoans: number = 0;
+
+  notificationMesage = {
+    type: 'info',
+    title: 'You have no devices here',
+    subtitle: '',
+    caption: 'Try contacting a focal point to request a device which can then be displayed here',
+    lowContrast: false,
+    showClose: false
+  };
 
   headers: { title: string; val: string }[] = [
     { title: "Borrowed", val: "borrowed" },
@@ -61,7 +70,7 @@ export class MyLoansComponent implements OnInit {
     var rout = this.router;
     var esto = this;
     axios.get(api, { withCredentials: true }).then(response => {
-      esto.userType = response.data.ROLE_NAME;
+      esto.user = response.data;
       api = environment.ibm_peripherals+"/getOwnLoans";
       axios.get(api, { withCredentials: true }).then(res => {
         

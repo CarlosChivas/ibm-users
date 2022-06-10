@@ -15,7 +15,7 @@ export class LoanFormComponent implements OnInit {
   isOpen: boolean = false
   openConfirmation: boolean = false;
   showCloseButton: boolean = true;
-  userType: string = "";
+  user: any;
   confModal = {
     title: "",
     body: ""
@@ -33,7 +33,7 @@ export class LoanFormComponent implements OnInit {
     DEPARTMENT_NAME: "",
     FOCAL_NAME: ""
   };
-  user = "";
+  userMail = "";
 
   loanForm = this.formBuilder.group({
     employeeMail: ''
@@ -59,7 +59,7 @@ export class LoanFormComponent implements OnInit {
   sendForm() {
     var esto = this;
     var mail = esto.loanForm.value.employeeMail.trim().toLowerCase();
-    if (mail == "") mail = esto.user;
+    if (mail == "") mail = esto.userMail;
     var body = {
       employee_email: mail,
       peripheral_serial: esto.device.SERIAL
@@ -156,7 +156,33 @@ export class LoanFormComponent implements OnInit {
   }
 
   applyFilters() {
-    
+    var api = environment.ibm_peripherals + "/AdminFocal/searchAvailablePeripheral/";
+
+    var filterNow = [];
+    if (this.typeFilter != "")
+      filterNow.push("type=" + this.typeFilter);
+    if (this.brandFilter != "")
+      filterNow.push("brand=" + this.brandFilter);
+
+    var querry = "";
+    filterNow.forEach(target => {
+      if (querry == "") querry = "?"
+      else querry += "&";
+      querry += target;
+    });
+
+    api += querry;
+
+    console.log(querry);
+    console.log(api);
+
+    var esto = this;
+    axios.get(api, { withCredentials: true }).then(res => {
+
+      console.log(res.data);
+      esto.peripheralList = res.data;
+
+    }).catch(err => console.error(err));
   }
 
   ngOnInit() {
@@ -165,11 +191,11 @@ export class LoanFormComponent implements OnInit {
     var rout = this.router;
     var esto = this;
     axios.get(api, { withCredentials: true }).then(function (response) {
-      esto.userType = response.data.ROLE_NAME;
+      esto.user = response.data;
       var me = response.data;
-      esto.user = me.EMAIL;
+      esto.userMail = me.EMAIL;
 
-      var api2 = environment.ibm_peripherals + "/AdminFocal/getAvailablePeripherals";
+      var api2 = environment.ibm_peripherals + "/AdminFocal/searchAvailablePeripheral/";
       axios.get(api2, { withCredentials: true }).then(res => {
         esto.peripheralList = res.data;
       }).catch(err => console.error(err));

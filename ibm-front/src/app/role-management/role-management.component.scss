@@ -3,8 +3,9 @@
 .overview-page__banner {
     min-height: 100vh;
     padding: $spacing-06;
+    padding-top: $spacing-08;
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     justify-content: center;
 }
 

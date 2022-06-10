@@ -4,7 +4,7 @@ const jwt = require("jsonwebtoken");
 const bcryptjs = require("bcryptjs");
 
 usersCtrl.getHome = async (req, res) => {
-  res.status(200).send("Hola mundo * Carlos Estrada");
+  res.status(200).send("ibm-users working!");
 };
 
 usersCtrl.matchEmail = async (req, res, next) => {
@@ -218,7 +218,7 @@ usersCtrl.findUsersAdmin = async(req,res) => {
             
             db.query(query, function(err, data){
                 if(err){
-                    res.status(401).send(err);
+                    res.status(500).send(err);
                 } else{
                     if(data.length>0){
                         res.status(200).send(data);
@@ -275,4 +275,31 @@ usersCtrl.findRole = async (req,res,next)=>{
     }
 }
 
+usersCtrl.updateRole = async(req, res) => {
+    if(!req.query.rolesID){
+        res.status(400).send("Role nedeed");
+    } else{
+        console.log(req.query.rolesID);
+        pool.open(process.env.DATABASE_STRING, function (err, db) {
+            if (err) {
+                res.status(401).send(err);
+            } else{
+                
+                db.query(`UPDATE Users
+                    SET Role = ? 
+                    WHERE id = ?`, [req.query.rolesID,req.query.id],function(err, data){
+                    if(err){
+                        res.status(500).send(err);
+                    } else{
+                        res.status(200).send(data);
+                    }
+                })
+                db.close(function (error) { // RETURN CONNECTION TO POOL
+                    if (error) {
+                        res.send("Error mientras se cerraba la conexion")
+                    }
+                });
+            }})
+    }
+}
 module.exports = usersCtrl;

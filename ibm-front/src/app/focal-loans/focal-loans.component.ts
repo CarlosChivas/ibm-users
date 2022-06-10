@@ -29,7 +29,7 @@ export class FocalLoansComponent implements OnInit {
 
   isOpen: boolean = false
   showCloseButton: boolean = true;
-  userType: string = "";
+  user: any;
   specific: LOAN = {
     PERIPHERAL_SERIAL: 0,
     BRAND: '',
@@ -68,9 +68,29 @@ export class FocalLoansComponent implements OnInit {
   }
   cancel() {
     this.isOpen = false;
+    var api = environment.ibm_peripherals + "/AdminFocal/cancelLoan"
+    var esto = this;
+    var body = {
+      loan_id: esto.specific.LOAN_ID
+    }
+    axios.post(api, body, {withCredentials: true}).then(res => {
+
+      console.log(res);
+
+    }).catch(err => console.error(err));
   }
   returnDevice() {
     this.isOpen = false;
+    var api = environment.ibm_peripherals + "/AdminFocal/setToConcluded"
+    var esto = this;
+    var body = {
+      loan_id: esto.specific.LOAN_ID
+    }
+    axios.post(api, body, {withCredentials: true}).then(res => {
+
+      console.log(res);
+      
+    }).catch(err => console.error(err));
   }
 
 
@@ -215,7 +235,7 @@ export class FocalLoansComponent implements OnInit {
     var rout = this.router;
     var esto = this;
     axios.get(api, { withCredentials: true }).then(function (response) {
-      esto.userType = response.data.ROLE_NAME;
+      esto.user = response.data;
 
       api = environment.ibm_peripherals + "/AdminFocal/getLoans";
       axios.get(api, { withCredentials: true }).then(res => {
