@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
+import { ChartsModule } from "@carbon/charts-angular";
 import { Ng2SearchPipeModule } from 'ng2-search-filter';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -24,7 +25,7 @@ import {
   TagModule,
   ModalModule,
   DropdownModule,
-  NotificationModule
+  NotificationModule,
   
 } from 'carbon-components-angular';
 
@@ -80,6 +81,7 @@ import { SecurityAuthComponent } from './security-auth/security-auth.component';
     ModalModule,
     DropdownModule,
     NotificationModule,
+    ChartsModule,
 
   ],
   providers: [MyLoansComponent, ProfileComponent],
