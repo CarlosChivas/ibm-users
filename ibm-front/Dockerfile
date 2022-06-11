@@ -1,5 +1,5 @@
 # Stage 0, "build-stage", based on Node.js, to build and compile the frontend
-FROM node:12-slim as build-stage
+FROM node:14.19.3-slim as build-stage
 WORKDIR /app
 COPY package*.json /app/
 RUN npm install
